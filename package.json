@@ -1,0 +1,28 @@
+{
+  "name": "sonolus-d4dj-engine",
+  "version": "1.4.1",
+  "description": "A recreation of D4DJ Groovy Mix engine in Sonolus.",
+  "type": "module",
+  "scripts": {
+    "dev:play": "sonolus-cli --dev ./play",
+    "dev:watch": "sonolus-cli --dev ./watch",
+    "dev:preview": "sonolus-cli --dev ./preview",
+    "dev:tutorial": "sonolus-cli --dev ./tutorial",
+    "type-check": "tsc -p ./shared --noEmit && tsc -p ./play --noEmit && tsc -p ./watch --noEmit && tsc -p ./preview --noEmit && tsc -p ./tutorial --noEmit",
+    "format": "prettier . --write",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "build": "sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "@sonolus/core": "^7.7.0",
+    "@sonolus/sonolus.js": "~9.4.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.1",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "typescript": "~5.4.5",
+    "typescript-eslint": "^7.12.0"
+  }
+}
