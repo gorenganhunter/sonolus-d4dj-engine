@@ -1,92 +1,53 @@
-# Sonolus.js Template (TS + ESLint + Prettier)
+# Sonolus D4DJ Engine
 
-## Prerequisites
+A recreation of D4DJ Groovy Mix engine in Sonolus.
 
--   [Node.js](https://nodejs.org) (16+)
+Todo list:
 
-## Recommended Setup
+- [ ] Finish writing play mode
+- [ ] Make it customizable
+- [ ] Finish writing tutorial mode
+- [ ] Finish writing preview mode
+- [ ] Finish writing watch mode
+- [ ] Designed particle effect for D4DJ
 
--   [Visual Studio Code](https://code.visualstudio.com)
--   [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+## Links
 
-## Get Started
+-   [Sonolus Website](https://sonolus.com)
+-   [Sonolus Wiki](https://github.com/NonSpicyBurrito/sonolus-wiki)
 
-To get this template, run (change `my-project` to desired name):
+## Custom Resources
 
-```
-npx degit Sonolus/sonolus.js-template-ts-eslint-prettier my-project
-```
+### Skin Sprites
 
-To install dependencies, run in project directory:
+| Name                                          |
+| --------------------------------------------- |
+| `DJ Scratch Note`                             |
+| `DJ Scratch Arrow`                            |
+| `DJ Slider`                                   |
+| `DJ Slider Bar`                               |
+| `DJ Line`                                     |
 
-```
-npm i
-```
+### Effect Clips
 
-## Start Dev Server
-
-Run in project directory:
-
-```
-npm run dev:play
-```
-
-```
-npm run dev:watch
-```
-
-```
-npm run dev:preview
-```
-
-```
-npm run dev:tutorial
-```
-
-A dev server will be up and running. You can connect to it using Sonolus app and play test the level.
-
-Changes made to the project will be automatically detected and trigger rebuild.
-
-Temporary files and extraction artifacts can be found in `.dev`.
-
-## Format Code
-
-Run in project directory:
-
-```
-npm run format
-```
-
-## Type Check
-
-Run in project directory:
-
-```
-npm run type-check
-```
-
-## Lint
-
-Run in project directory:
-
-```
-npm run lint
-```
-
-## Fix Linting Issues
-
-Run in project directory:
-
-```
-npm run lint-fix
-```
-
-## Build
-
-Run in project directory:
-
-```
-npm run build
-```
-
-Build artifacts can be found in `dist`.
+| Name                                          |
+| --------------------------------------------- |
+| `DJ Scratch Empty`                            |
+| `DJ Scratch Good`                             |
+| `DJ Scratch Great`                            |
+| `DJ Scratch Perfect`                          |
+| `DJ Tap Empty`                                |
+| `DJ Tap 1 Good`                               |
+| `DJ Tap 1 Great`                              |
+| `DJ Tap 1 Perfect`                            |
+| `DJ Tap 2 Good`                               |
+| `DJ Tap 2 Great`                              |
+| `DJ Tap 2 Perfect`                            |
+| `DJ Long Loop`                                |
+| `DJ Long Good`                                |
+| `DJ Long Great`                               |
+| `DJ Long Perfect`                             |
+| `DJ Slider Good`                              |
+| `DJ Slider Great`                             |
+| `DJ Slider Perfect`                           |
+| `DJ Slider Flick Perfect`                     |
