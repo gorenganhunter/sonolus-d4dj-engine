@@ -63,7 +63,7 @@ export class Stage extends Archetype {
         //     b: 1 + note.radius / 4,
         // })
 
-        const t = 0
+        const t = 0 + note.radius
         const b = 1
 
         skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, 1)
@@ -89,7 +89,7 @@ export class Stage extends Archetype {
             1,
         )
 
-        skin.sprites.lane.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1, t: 0 }), 0, 1)
+        skin.sprites.lane.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1, t }), 0, 1)
 
     }
 }
