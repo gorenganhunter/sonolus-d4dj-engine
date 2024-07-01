@@ -15,10 +15,10 @@ export class HoldEndNote extends HoldNote {
     preprocess() {
         super.preprocess()
 
-        const minPrevInputTime =
-            bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
+        // const minPrevInputTime =
+        //     bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
 
-        this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
+        // this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
     
     touch() {

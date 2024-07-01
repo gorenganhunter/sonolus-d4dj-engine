@@ -1,6 +1,6 @@
 import { LevelData } from '@sonolus/core'
 
-export { default as data } from "./tabun.json"
+export { default as data } from "./yamero.json"
 
 // export const data: LevelData = {
 //     bgmOffset: 0,

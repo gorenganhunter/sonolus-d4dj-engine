@@ -30,7 +30,7 @@ export class ScratchNote extends Note {
     // }
 
     drawNote() {
-        this.y = approach(this.visualTime.min, this.visualTime.max, time.now - this.targetTime + this.visualTime.max)
+        // this.y = approach(this.visualTime.min, this.visualTime.max, time.now - this.targetTime + this.visualTime.max)
         super.drawNote()
         skin.sprites.scratchArrow.draw(this.arrowPosition.mul(this.y), this.z + 1, 1)
     }

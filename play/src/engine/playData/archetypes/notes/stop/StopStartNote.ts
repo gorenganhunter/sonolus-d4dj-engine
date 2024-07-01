@@ -10,7 +10,7 @@ export class StopStartNote extends HoldStartNote {
     bucket = buckets.stopStartNote
 
     drawNote() {
-        this.y = approach(this.visualTime.min, this.visualTime.max, time.now + this.visualTime.max - this.targetTime)
+        // this.y = approach(this.visualTime.min, this.visualTime.max, time.now + this.visualTime.max - this.targetTime)
         // debug.log(this.y)
         super.drawNote()
     }

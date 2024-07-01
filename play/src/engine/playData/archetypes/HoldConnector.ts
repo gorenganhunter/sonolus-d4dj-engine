@@ -62,9 +62,9 @@ export class HoldConnector extends Archetype {
         this.head.time = bpmChanges.at(this.headImport.beat).time
         this.head.scaledTime = /* (this.headImport.lane === -3 || this.headImport.lane === 3) ? this.head.time : */ timeScaleChanges.at(this.head.time).scaledTime
 
-        this.scheduleSFXTime = this.head.scaledTime - 0.5
+        this.scheduleSFXTime = ((this.headImport.lane === -3 || this.headImport.lane === 3) ? this.head.time : this.head.scaledTime) - 0.5
 
-        this.visualTime.min = this.head.scaledTime - note.duration
+        this.visualTime.min = ((this.headImport.lane === -3 || this.headImport.lane === 3) ? this.head.time : this.head.scaledTime) - note.duration
         
         // debug.log(this.visualTime.min)
         // debug.log(note.duration)
@@ -77,12 +77,12 @@ export class HoldConnector extends Archetype {
         // debug.log(this.spawnTime)
     }
 
-    spawnOrder() {
-        return 1000 + this.spawnTime
+    spawnOrder(): number {
+        return 1000 + ((this.headImport.lane === -3 || this.headImport.lane === 3) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
     }
 
     shouldSpawn() {
-        return time.now >= this.spawnTime
+        return time.scaled >= this.spawnTime
     }
 
     initialize() {
@@ -114,7 +114,7 @@ export class HoldConnector extends Archetype {
 
     updateParallel() {
         if (
-            ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now - this.tail.time + this.tail.scaledTime : time.scaled) >= this.tail.scaledTime ||
+            ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) >= this.tail.scaledTime ||
             (this.startInfo.state === EntityState.Despawned &&
                 !this.startSharedMemory.activatedTouchId) ||
             this.endInfo.state === EntityState.Despawned
@@ -125,11 +125,11 @@ export class HoldConnector extends Archetype {
 
         // if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* (this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : */ time.scaled) >= this.scheduleSFXTime) this.scheduleSFX()
 
-        if ((/* (this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : */ time.scaled) < this.visualTime.min) return
+        if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < this.visualTime.min) return
 
         this.renderConnector()
 
-        if ((/* (this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : */ time.scaled) < this.head.scaledTime) return
+        if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < this.head.scaledTime) return
 
         this.renderSlide()
         this.updateEffects()
@@ -180,8 +180,8 @@ export class HoldConnector extends Archetype {
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now - this.head.time + this.head.scaledTime : time.scaled) + hiddenDuration),
-            max: Math.min((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.tail.time - this.head.time + this.head.scaledTime : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now - this.head.time + this.head.scaledTime : time.scaled) + note.duration),
+            min: Math.max((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.head.time : this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) + hiddenDuration),
+            max: Math.min((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.tail.time : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) + note.duration),
         }
 
         // debug.log(visibleTime.min)
@@ -198,8 +198,8 @@ export class HoldConnector extends Archetype {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now - this.head.time + this.head.scaledTime : time.scaled)),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now - this.head.time + this.head.scaledTime : time.scaled)),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled)),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled)),
         }
 
         // debug.log(l.min)
@@ -240,14 +240,14 @@ export class HoldConnector extends Archetype {
     }
 
     getLane(time: number) {
-        return Math.remap(this.head.scaledTime, this.tail.time - this.head.time + this.head.scaledTime, this.head.lane, this.tail.lane, time)
+        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3) ? this.tail.time : this.tail.scaledTime, this.head.lane, this.tail.lane, time)
     }
 
     getL(time: number) {
-        return Math.remap(this.head.scaledTime, this.tail.time - this.head.time + this.head.scaledTime, this.head.l, this.tail.l, time)
+        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3) ? this.tail.time : this.tail.scaledTime, this.head.l, this.tail.l, time)
     }
 
     getR(time: number) {
-        return Math.remap(this.head.scaledTime, this.tail.time - this.head.time + this.head.scaledTime, this.head.r, this.tail.r, time)
+        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3) ? this.tail.time : this.tail.scaledTime, this.head.r, this.tail.r, time)
     }
 }
