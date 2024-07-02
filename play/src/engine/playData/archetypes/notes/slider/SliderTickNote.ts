@@ -57,8 +57,8 @@ export class SliderTickNote extends SliderNote {
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
 
-        slider.next.beat = 99999999
         slider.isUsed = false
+        slider.next.lane = this.nextImport.lane
     }
     
     complete(hitTime: number) {
@@ -67,7 +67,6 @@ export class SliderTickNote extends SliderNote {
             slider.next.lane = this.nextImport.lane
             slider.isUsed = true
         } else {
-            slider.next.beat = 99999999
             slider.isUsed = false
         }
 

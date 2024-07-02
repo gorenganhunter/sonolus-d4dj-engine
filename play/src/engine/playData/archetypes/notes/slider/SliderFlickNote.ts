@@ -117,6 +117,7 @@ export class SliderFlickNote extends SliderNote {
         super.incomplete(hitTime)
         
         slider.isUsed = false
+        slider.next.lane = this.import.lane + this.sliderImport.direction
     }
 
     complete(hitTime: number) {
@@ -142,6 +143,6 @@ export class SliderFlickNote extends SliderNote {
 
         this.despawn = true
         slider.isUsed = false
-        slider.next.beat = 99999
+        slider.next.lane = this.import.lane + this.sliderImport.direction
     }
 }

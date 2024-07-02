@@ -79,10 +79,11 @@ export class Slider extends SpawnableArchetype({}) {
         new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
     }
 
-    preprocess() {
-        slider.next.beat = 999999
-        slider.isUsed = false
-    }
+    // preprocess() {
+    //     slider.next.beat = 999999
+    //     slider.isUsed = false
+    //     slider.next.lane = -2
+    // }
     
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return

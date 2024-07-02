@@ -33,6 +33,7 @@ export class Initialization extends Archetype {
         note.radius = noteRadius / h
         note.duration = (12 - options.noteSpeed) / 3
         slider.isUsed = false
+        slider.next.beat = 99999999
 
         ui.menu.set({
             anchor: screen.rect.lt.add(new Vec(0.05, -0.05)),

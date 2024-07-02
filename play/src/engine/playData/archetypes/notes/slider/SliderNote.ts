@@ -15,7 +15,7 @@ export abstract class SliderNote extends Note {
         prev: { name: "prev", type: Number },
         next: { name: "next", type: Number },
         direction: { name: "direction", type: Number },
-        target: { name: "target", type: Number }
+        // target: { name: "target", type: Number }
     })
 
     drawNote() {
@@ -27,14 +27,12 @@ export abstract class SliderNote extends Note {
         skin.sprites.sliderNote.draw(this.notePosition.mul(this.y), 100, 1)
     }
 
-    updateSequential() {
-        super.updateSequential()
-        if (!slider.isUsed) {
-            if (this.import.beat < slider.next.beat && time.now < this.targetTime) {
-                slider.next.beat = this.import.beat
-                slider.next.lane = this.import.lane
-                // debug.log(slider.next.lane)
-            }
+    preprocess() {
+        super.preprocess()
+        if (this.import.beat < slider.next.beat) {
+            slider.next.beat = this.import.beat
+            slider.next.lane = this.import.lane
+            // debug.log(slider.next.lane)
         }
     }
 
