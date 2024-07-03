@@ -9,7 +9,7 @@ export abstract class HoldNote extends Note {
     }
 
     holdImport = this.defineImport({
-        prevRef: { name: "prev", type: Number }
+        prevRef: { name: "head", type: Number }
     })
 
     sharedMemory = this.defineSharedMemory({

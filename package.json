@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@sonolus/core": "^7.7.0",
-    "@sonolus/sonolus.js": "~9.4.2",
+    "@sonolus/core": "^7.7.1",
+    "@sonolus/sonolus.js": "^9.4.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.1",

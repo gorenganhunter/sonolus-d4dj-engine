@@ -81,8 +81,8 @@ export class HoldConnector extends Archetype {
         return 1000 + ((this.headImport.lane === -3 || this.headImport.lane === 3) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
     }
 
-    shouldSpawn() {
-        return time.scaled >= this.spawnTime
+    shouldSpawn(): boolean {
+        return ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) >= this.spawnTime
     }
 
     initialize() {
@@ -94,7 +94,7 @@ export class HoldConnector extends Archetype {
         this.head.r = this.head.lane + w
 
         this.tail.time = bpmChanges.at(this.tailImport.beat).time
-        this.tail.scaledTime = /* (this.headImport.lane === -3 || this.headImport.lane === 3) ? this.tail.time : */ timeScaleChanges.at(this.tail.time).scaledTime
+        this.tail.scaledTime = (this.headImport.lane === -3 || this.headImport.lane === 3) ? this.tail.time : timeScaleChanges.at(this.tail.time).scaledTime
 
         this.tail.lane = this.tailImport.lane * 2.1
         this.tail.l = this.tail.lane - w
@@ -114,7 +114,7 @@ export class HoldConnector extends Archetype {
 
     updateParallel() {
         if (
-            ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) >= this.tail.scaledTime ||
+            ((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) >= ((this.headImport.lane === -3 || this.headImport.lane === 3) ? this.tail.time : this.tail.scaledTime) ||
             (this.startInfo.state === EntityState.Despawned &&
                 !this.startSharedMemory.activatedTouchId) ||
             this.endInfo.state === EntityState.Despawned
@@ -129,7 +129,7 @@ export class HoldConnector extends Archetype {
 
         this.renderConnector()
 
-        if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < this.head.scaledTime) return
+        if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < ((this.headImport.lane === -3 || this.headImport.lane === 3) ? this.head.time : this.head.scaledTime)) return
 
         this.renderSlide()
         this.updateEffects()

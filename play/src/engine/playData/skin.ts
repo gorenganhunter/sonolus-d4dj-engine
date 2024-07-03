@@ -6,6 +6,7 @@ export const skin = defineSkin({
         lane: SkinSpriteName.Lane,
         slot: SkinSpriteName.NoteSlot,
         line: "DJ Line",
+        simLine: SkinSpriteName.SimultaneousConnectionNeutral,
 
         borderBottom: SkinSpriteName.StageBottomBorder,
 

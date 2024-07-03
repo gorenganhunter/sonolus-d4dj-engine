@@ -5,6 +5,8 @@ import { InputManager } from './InputManager.js'
 import { ScratchManager } from './ScratchManager.js'
 import { Slider } from './Slider.js'
 import { Stage } from './Stage.js'
+import { BarLine } from './lines/BarLine.js'
+import { SimLine } from './lines/SimLine.js'
 import { HoldEndNote } from './notes/hold/HoldEndNote.js'
 import { HoldStartNote } from './notes/hold/HoldStartNote.js'
 import { ScratchNote } from './notes/scratch/ScratchNote.js'
@@ -36,5 +38,8 @@ export const archetypes = defineArchetypes({
     StopEndNote,
 
     SliderTickNote,
-    SliderFlickNote
+    SliderFlickNote,
+
+    BarLine,
+    SimLine
 })
