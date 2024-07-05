@@ -31,7 +31,14 @@ export class SliderFlickNote extends SliderNote {
 
     initialize() {
         super.initialize()
+
+        const lane = this.import.lane
+        const direction = this.sliderImport.direction
         
+        const l = (lane + (direction < 0 ? direction : 0)) * 2.1 - 1.05
+        const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
+
+        new Rect({ l, r, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.arrow.z = getZ(103, this.targetTime, this.import.lane)
     }
 
@@ -91,6 +98,7 @@ export class SliderFlickNote extends SliderNote {
                 if(!this.hitbox.contains(touch.position)) continue
 
                 markAsUsed(touch)
+                slider.isUsed = true
 
                 slider.position = touch.position.x
 
