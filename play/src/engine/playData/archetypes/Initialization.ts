@@ -24,11 +24,6 @@ export class Initialization extends Archetype {
             great: 0.7,
             good: 0.1,
         })
-        score.consecutive.good.set({
-            multiplier: 0.01,
-            step: 20,
-            cap: 100,
-        })
 
         note.radius = noteRadius / h
         note.duration = (12 - options.noteSpeed) / 3
