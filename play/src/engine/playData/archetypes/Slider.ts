@@ -19,7 +19,8 @@ export class Slider extends SpawnableArchetype({}) {
         for (const touch of touches) {
             if (isUsed(touch) && (slider.touch !== touch.id)) continue
 // debug.log(isUsed(touch))
-            if (!this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 1 - note.radius * 2, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) continue
+            
+            if ((slider.touch !== touch.id) && !this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) continue
 
             slider.touch = touch.id
             
