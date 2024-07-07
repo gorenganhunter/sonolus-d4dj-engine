@@ -1,6 +1,6 @@
 export class InputManager extends SpawnableArchetype({}) {
     touch() {
-        usedTouchIds.clear()
+        // usedTouchIds.clear()
     }
 }
 

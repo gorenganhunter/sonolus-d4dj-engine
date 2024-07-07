@@ -3,8 +3,6 @@ import { note } from "../note.js";
 import { skin } from "../skin.js";
 import { slider } from "../slider.js";
 import { isUsed, markAsUsed } from "./InputManager.js";
-import { archetypes } from "./index.js";
-import { SliderNote } from "./notes/slider/SliderNote.js";
 
 export class Slider extends SpawnableArchetype({}) {
     sliderBox = this.entityMemory(Rect)
@@ -33,7 +31,7 @@ export class Slider extends SpawnableArchetype({}) {
             // debug.log(sliderPos)
             slider.position = sliderPos
 
-            if (isUsed(touch)) markAsUsed(touch)
+            if (!isUsed(touch)) markAsUsed(touch)
             return
         }
     }
@@ -65,14 +63,6 @@ export class Slider extends SpawnableArchetype({}) {
         skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 0.95 + note.radius * 4, t: 1 - note.radius * 2 }), 105, 1)
         this.renderConnector()
         // skin.sprites.sliderConnector.draw(layout, 104, 1)
-    }
-
-    spawnOrder() {
-        return 2
-    }
-    
-    shouldSpawn() {
-        return entityInfos.get(0).state === EntityState.Despawned
     }
 
     initialize() {
