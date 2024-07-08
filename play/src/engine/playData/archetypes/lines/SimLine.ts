@@ -2,6 +2,7 @@ import { approach, perspectiveLayout } from "../../../../../../shared/src/engine
 import { note } from "../../note.js"
 import { skin } from "../../skin.js"
 import { archetypes } from "../index.js"
+import { options } from '../../../configuration/options.js'
 
 export class SimLine extends Archetype {
     import = this.defineImport({
@@ -45,7 +46,7 @@ export class SimLine extends Archetype {
     }
 
     shouldSpawn() {
-        return time.scaled >= this.spawnTime
+        return (time.scaled >= this.spawnTime) && options.simLine
     }
 
     get aImport() {

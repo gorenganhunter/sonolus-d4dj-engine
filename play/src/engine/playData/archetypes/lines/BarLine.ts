@@ -2,6 +2,7 @@ import { EngineArchetypeDataName } from "@sonolus/core"
 import { note } from "../../note.js"
 import { approach, leftRotated, perspectiveLayout } from "../../../../../../shared/src/engine/data/utils.js"
 import { skin } from "../../skin.js"
+import { options } from '../../../configuration/options.js'
 
 export class BarLine extends Archetype {
     import = this.defineImport({
@@ -30,7 +31,7 @@ export class BarLine extends Archetype {
     }
 
     shouldSpawn() {
-        return time.scaled >= this.spawnTime
+        return (time.scaled >= this.spawnTime) && options.barLine
     }
 
     updateParallel() {
