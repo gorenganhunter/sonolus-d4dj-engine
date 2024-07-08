@@ -5,6 +5,7 @@ import { skin } from "../../../skin.js";
 import { windows } from "../../../windows.js";
 import { queueHold } from "../../HoldManager.js";
 import { HoldNote } from "./HoldNote.js";
+import { options } from '../../../../configuration/options.js'
 
 export class HoldEndNote extends HoldNote {
 
@@ -64,7 +65,7 @@ export class HoldEndNote extends HoldNote {
         this.result.judgment = input.judge(hitTime, this.targetTime, windows)
         this.result.accuracy = hitTime - this.targetTime
         
-        switch (this.result.judgment) {
+        if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
                 break

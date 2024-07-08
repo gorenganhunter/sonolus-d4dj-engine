@@ -15,6 +15,7 @@ export const optionsDefinition = {
     noteSize: {
         name: Text.NoteSize,
         type: 'slider',
+        scope: "d4dj",
         def: 1.5,
         min: 0.5,
         max: 2,
@@ -24,6 +25,7 @@ export const optionsDefinition = {
     noteSpeed: {
         name: Text.NoteSpeed,
         type: "slider",
+        scope: "d4dj",
         def: 2,
         min: 1,
         max: 11.5,
@@ -32,38 +34,42 @@ export const optionsDefinition = {
     barLine: {
         name: "Bar Line",
         type: "toggle",
+        scope: "d4dj",
         def: 1
     },
     simLine: {
         name: Text.Simline,
         type: "toggle",
+        scope: "d4dj",
         def: 1
     },
-    laneLength: {
-        name: Text.Length,
-        type: "slider",
-        def: 1,
-        min: 0,
-        max: 1,
-        step: 0.05,
-        unit: Text.PercentageUnit
-    },
+    // laneLength: {
+    //     name: Text.Length,
+    //     type: "slider",
+    //     def: 1,
+    //     min: 0,
+    //     max: 1,
+    //     step: 0.05,
+    //     unit: Text.PercentageUnit
+    // },
     sfxEnabled: {
         name: Text.Effect,
         type: "toggle",
+        scope: "d4dj",
         def: 1
     },
-    laneWidth: {
-        name: Text.JudgelineSize,
-        type: "slider",
-        def: 1,
-        min: 0.8,
-        max: 1.5,
-        step: 0.
-    },
+    // laneWidth: {
+    //     name: Text.JudgelineSize,
+    //     type: "slider",
+    //     def: 1,
+    //     min: 0.8,
+    //     max: 1.5,
+    //     step: 0.
+    // },
     noteEffectEnabled: {
         name: Text.NoteEffect,
         type: "toggle",
+        scope: "d4dj",
         def: 1
     },
     // width: {

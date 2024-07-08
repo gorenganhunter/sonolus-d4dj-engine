@@ -39,8 +39,8 @@ export class Stage extends Archetype {
             // const t = 1 - note.radius * 2
             // const b = 1 + note.radius
 
-            effect.clips.tapEmpty.play(0.02)
-            particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+            if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
+            if (options.noteEffectEnabled) particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
 
             return
         }

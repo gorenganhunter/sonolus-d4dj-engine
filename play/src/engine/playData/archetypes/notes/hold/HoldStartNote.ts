@@ -6,6 +6,7 @@ import { skin } from "../../../skin.js";
 import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { HoldNote } from "./HoldNote.js";
+import { options } from '../../../../configuration/options.js'
 
 export class HoldStartNote extends HoldNote {
     sprite = skin.sprites.holdHead
@@ -42,7 +43,7 @@ export class HoldStartNote extends HoldNote {
         this.result.judgment = input.judge(touch.startTime, this.targetTime, windows)
         this.result.accuracy = touch.startTime - this.targetTime
         
-        switch (this.result.judgment) {
+        if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
                 break

@@ -1,5 +1,6 @@
 import { EngineArchetypeDataName, SkinSpriteName } from '@sonolus/core'
 import { approach, perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.js'
+import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { note } from '../../note.js'
@@ -43,7 +44,7 @@ export abstract class Note extends Archetype {
     hitbox = this.entityMemory(Rect)
 
     playEffect() {
-        this.effect.spawn(this.notePosition, 0.2, false)
+        if (options.noteEffectEnabled) this.effect.spawn(this.notePosition, 0.2, false)
         // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     }
 

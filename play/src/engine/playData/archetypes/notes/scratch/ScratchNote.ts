@@ -9,6 +9,7 @@ import { effect } from "../../../effect.js";
 import { buckets } from "../../../buckets.js";
 import { windows } from "../../../windows.js";
 import { claim, isClaimed } from "../../ScratchManager.js";
+import { options } from '../../../../configuration/options.js'
 
 export class ScratchNote extends Note {
     sprite: SkinSprite = skin.sprites.scratch
@@ -78,7 +79,7 @@ export class ScratchNote extends Note {
         this.result.judgment = input.judge(touch.t, this.targetTime, windows)
         this.result.accuracy = touch.t - this.targetTime
 // debug.log(touch.t)
-        switch (this.result.judgment) {
+        if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
                 break
