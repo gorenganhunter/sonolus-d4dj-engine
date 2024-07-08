@@ -7,6 +7,7 @@ import { skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
 import { sliderWindows, windows } from "../../../windows.js";
 import { SliderNote } from "./SliderNote.js";
+import { options } from '../../../../configuration/options.js'
 
 export class SliderTickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -76,7 +77,7 @@ export class SliderTickNote extends SliderNote {
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
-        switch (this.result.judgment) {
+        if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
                 break

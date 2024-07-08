@@ -9,6 +9,7 @@ import { slider } from "../../../slider.js";
 import { sliderWindows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
+import { options } from '../../../../configuration/options.js'
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -113,7 +114,7 @@ export class SliderFlickNote extends SliderNote {
     }
 
     playEffect() {
-        particle.effects.scratch.spawn(this.notePosition, 0.2, false)
+        if (options.noteEffectEnabled) particle.effects.scratch.spawn(this.notePosition, 0.2, false)
         // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     }
 
@@ -138,7 +139,7 @@ export class SliderFlickNote extends SliderNote {
 
         this.playEffect()
         
-        switch (this.result.judgment) {
+        if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
                 break
