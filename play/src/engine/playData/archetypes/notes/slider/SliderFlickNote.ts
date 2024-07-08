@@ -99,6 +99,7 @@ export class SliderFlickNote extends SliderNote {
 
                 markAsUsed(touch)
                 slider.isUsed = true
+                slider.touch = touch.id
 
                 slider.position = touch.position.x
 
