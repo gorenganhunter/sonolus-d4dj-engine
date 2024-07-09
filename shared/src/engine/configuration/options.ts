@@ -31,6 +31,16 @@ export const optionsDefinition = {
         max: 11.5,
         step: 0.1
     },
+    width: {
+        name: "Width",
+        type: "slider",
+        scope: "d4dj",
+        def: 1,
+        min: 0.8,
+        max: 1.5,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     barLine: {
         name: "Bar Line",
         type: "toggle",
@@ -43,13 +53,14 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 1
     },
-    // laneLength: {
-    //     name: Text.Length,
+    // height: {
+    //     name: "Height",
     //     type: "slider",
+    //     scope: "d4dj",
     //     def: 1,
     //     min: 0,
     //     max: 1,
-    //     step: 0.05,
+    //     step: 0.01,
     //     unit: Text.PercentageUnit
     // },
     sfxEnabled: {
@@ -58,14 +69,6 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 1
     },
-    // laneWidth: {
-    //     name: Text.JudgelineSize,
-    //     type: "slider",
-    //     def: 1,
-    //     min: 0.8,
-    //     max: 1.5,
-    //     step: 0.
-    // },
     noteEffectEnabled: {
         name: Text.NoteEffect,
         type: "toggle",

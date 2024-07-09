@@ -12,7 +12,7 @@ export class Stage extends Archetype {
 
     getLane(touch: Touch) {
         const x = touch.position.x
-        const l = x * 7.35 / 2.1
+        const l = x / screen.h * 10.75 / options.width / 2.1
         return l >= 0 ? l > 3 ? 3 : Math.floor(l) : l < -3 ? -3 : Math.ceil(l)
     }
 
