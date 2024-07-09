@@ -27,6 +27,8 @@ export class SimLine extends Archetype {
     z = this.entityMemory(Number)
 
     preprocess() {
+        if (!options.simLine) return
+
         this.targetTime = bpmChanges.at(this.aImport.beat).time
         // debug.log(this.targetTime)
         let l = this.aImport.lane
@@ -42,6 +44,8 @@ export class SimLine extends Archetype {
     }
 
     spawnOrder() {
+        if (!options.simLine) return 100000
+
         return 1000 + this.spawnTime
     }
 

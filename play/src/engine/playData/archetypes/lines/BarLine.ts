@@ -18,6 +18,8 @@ export class BarLine extends Archetype {
     targetTime = this.entityMemory(Number)
 
     preprocess() {
+        if (!options.barLine) return
+
         this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.visualTime.max = timeScaleChanges.at(this.targetTime).scaledTime
@@ -27,6 +29,8 @@ export class BarLine extends Archetype {
     }
 
     spawnOrder() {
+        if (!options.barLine) return 100000
+
         return 1000 + this.spawnTime
     }
 
