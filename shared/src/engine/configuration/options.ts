@@ -9,7 +9,7 @@ export const optionsDefinition = {
         def: 1,
         min: 0.5,
         max: 2,
-        step: 0.05,
+        step: 0.01,
         unit: Text.PercentageUnit,
     },
     noteSize: {
@@ -19,7 +19,7 @@ export const optionsDefinition = {
         def: 1.5,
         min: 0.5,
         max: 2,
-        step: 0.05,
+        step: 0.01,
         unit: Text.PercentageUnit,
     },
     noteSpeed: {
@@ -63,6 +63,26 @@ export const optionsDefinition = {
     //     step: 0.01,
     //     unit: Text.PercentageUnit
     // },
+    opacity: {
+        name: "Opacity",
+        type: "slider",
+        scope: "d4dj",
+        def: 0.65,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
+    lineOpacity: {
+        name: "Line Opacity",
+        type: "slider",
+        scope: "d4dj",
+        def: 0.9,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     sfxEnabled: {
         name: Text.Effect,
         type: "toggle",

@@ -66,15 +66,15 @@ export class Stage extends Archetype {
         const t = 0 + note.radius
         const b = 1
 
-        skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, 1)
-        skin.sprites.line.draw(perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, 1)
+        skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
+        skin.sprites.line.draw(perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
         skin.sprites.borderBottom.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1.01, t: 0.99 }), 2, 1)
 
         for (let i = -3; i <= 3; i++) {
             if (i < 3) skin.sprites.line.draw(
                 perspectiveLayout({ l: i * 2.1 + 1.05 - 0.08, r: i * 2.1 + 1.05 + 0.08, b, t }),
-                2, 
-                1,
+                2,
+                options.lineOpacity,
             )
             skin.sprites.slot.draw(
                 perspectiveLayout({ l: i * 2.1 - 0.25, r: i * 2.1 + 0.25, b: 1.02, t: 0.98 }),
@@ -86,10 +86,10 @@ export class Stage extends Archetype {
         skin.sprites.judgeLine.draw(
             perspectiveLayout({ l: -7.35, r: 7.35, b: 1 + note.radius, t: 1 - note.radius }),
             1,
-            1,
+            0.7,
         )
 
-        skin.sprites.lane.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1, t }), 0, 1)
+        skin.sprites.lane.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1, t }), 0, options.opacity)
 
     }
 }
