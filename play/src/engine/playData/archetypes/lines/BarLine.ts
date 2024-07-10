@@ -2,6 +2,7 @@ import { EngineArchetypeDataName } from "@sonolus/core"
 import { note } from "../../note.js"
 import { approach, leftRotated, perspectiveLayout } from "../../../../../../shared/src/engine/data/utils.js"
 import { skin } from "../../skin.js"
+import { options } from '../../../configuration/options.js'
 
 export class BarLine extends Archetype {
     import = this.defineImport({
@@ -17,6 +18,8 @@ export class BarLine extends Archetype {
     targetTime = this.entityMemory(Number)
 
     preprocess() {
+        if (!options.barLine) return
+
         this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.visualTime.max = timeScaleChanges.at(this.targetTime).scaledTime
@@ -26,11 +29,13 @@ export class BarLine extends Archetype {
     }
 
     spawnOrder() {
+        if (!options.barLine) return 100000
+
         return 1000 + this.spawnTime
     }
 
     shouldSpawn() {
-        return time.scaled >= this.spawnTime
+        return (time.scaled >= this.spawnTime) && options.barLine
     }
 
     updateParallel() {

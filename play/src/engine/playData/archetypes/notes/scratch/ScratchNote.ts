@@ -60,6 +60,8 @@ export class ScratchNote extends Note {
                 if(isUsed(touch)) continue
                 if(isClaimed(touch)) continue
 
+                // debug.log(touch.id)
+
                 this.activatedTouchId = touch.id
                 return
             }
@@ -75,10 +77,11 @@ export class ScratchNote extends Note {
         perspectiveLayout({ l, r, b: 1 - note.radius * 2, t: 1 - note.radius * 4 }).copyTo(this.arrowPosition)
     }
 
-    complete(touch: Touch) {
-        this.result.judgment = input.judge(touch.t, this.targetTime, windows)
-        this.result.accuracy = touch.t - this.targetTime
-// debug.log(touch.t)
+    updateParallel() {
+        super.updateParallel()
+
+        if (!this.result.judgment || time.now <= this.targetTime) return
+// debug.log(this.result.judgment)
         if (options.sfxEnabled) switch (this.result.judgment) {
             case Judgment.Perfect:
                 this.sfx.perfect.play(0.02)
@@ -90,14 +93,35 @@ export class ScratchNote extends Note {
                 this.sfx.good.play(0.02)
                 break
         }
+        
+        this.playEffect()
+
+        this.despawn = true
+    }
+
+    complete(touch: Touch) {
+        this.result.judgment = input.judge(Math.min(Math.max(touch.t, this.targetTime + windows.perfect.min + 0.00001), this.targetTime + windows.perfect.max - 0.00001), this.targetTime, windows)
+        this.result.accuracy = touch.t - this.targetTime
+        
+        // if (options.sfxEnabled) switch (this.result.judgment) {
+        //     case Judgment.Perfect:
+        //         this.sfx.perfect.play(0.02)
+        //         break
+        //     case Judgment.Great:
+        //         this.sfx.great.play(0.02)
+        //         break
+        //     case Judgment.Good:
+        //         this.sfx.good.play(0.02)
+        //         break
+        // }
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
-        this.playEffect()
+        // this.playEffect()
 
         claim(touch)
 
-        this.despawn = true
+        // this.despawn = true
     }
 }

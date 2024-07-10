@@ -23,17 +23,17 @@ export class ScratchManager extends SpawnableArchetype({}) {
     //     claimed.clear()
     // }
 
-    updateSequential() {
-        for (const touch of touches) {
-            const id = claimed.indexOf(touch.id)
+    // updateSequential() {
+    //     for (const touch of touches) {
+    //         const id = claimed.indexOf(touch.id)
 
-            if (id === -1) continue
+    //         if (id === -1) continue
 
-            const { position: pos, dx, dy, vr } = touch
-            // if (touch.vr < 1) claimed.set(touch.id, { pos, dx, dy, vr, isUsed: false })
-            // else claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
-        }
-    }
+    //         const { position: pos, dx, dy, vr } = touch
+    //         // if (touch.vr < 1) claimed.set(touch.id, { pos, dx, dy, vr, isUsed: false })
+    //         // else claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
+    //     }
+    // }
     // updateSequential(): void {
     //     claimed.clear()
 
@@ -96,7 +96,7 @@ export const isClaimed = (touch: Touch): boolean => {
     if (id === -1) return false
     
     const old = claimed.getValue(id)
-    if (!old.isUsed) return false
+    // if (!old.isUsed) return false
 
     if (touch.position.sub(old.pos).length < minScratchV) return true
 

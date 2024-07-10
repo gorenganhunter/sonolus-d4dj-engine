@@ -2,6 +2,7 @@ import { approach, perspectiveLayout } from "../../../../../../shared/src/engine
 import { note } from "../../note.js"
 import { skin } from "../../skin.js"
 import { archetypes } from "../index.js"
+import { options } from '../../../configuration/options.js'
 
 export class SimLine extends Archetype {
     import = this.defineImport({
@@ -26,6 +27,8 @@ export class SimLine extends Archetype {
     z = this.entityMemory(Number)
 
     preprocess() {
+        if (!options.simLine) return
+
         this.targetTime = bpmChanges.at(this.aImport.beat).time
         // debug.log(this.targetTime)
         let l = this.aImport.lane
@@ -41,11 +44,13 @@ export class SimLine extends Archetype {
     }
 
     spawnOrder() {
+        if (!options.simLine) return 100000
+
         return 1000 + this.spawnTime
     }
 
     shouldSpawn() {
-        return time.scaled >= this.spawnTime
+        return (time.scaled >= this.spawnTime) && options.simLine
     }
 
     get aImport() {

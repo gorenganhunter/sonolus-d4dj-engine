@@ -14,7 +14,7 @@ export class Initialization extends Archetype {
         const b = judgeLineY
         const h = t - b
 
-        const transform = Mat.identity.scale(screen.w / 22.3, -h).translate(0, t)
+        const transform = Mat.identity.scale(screen.h / 10.75 * options.width, -h).translate(0, t)
 
         skin.transform.set(transform)
         particle.transform.set(transform)
