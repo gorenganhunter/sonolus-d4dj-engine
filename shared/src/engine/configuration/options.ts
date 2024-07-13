@@ -83,6 +83,12 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
+    backspinAssist: {
+        name: "Back-Spin Assist",
+        type: "toggle",
+        scope: "d4dj",
+        def: 0
+    },
     sfxEnabled: {
         name: Text.Effect,
         type: "toggle",

@@ -84,8 +84,8 @@ export class Slider extends SpawnableArchetype({}) {
         const hiddenDuration = 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ time.scaled /* : timeScaleChanges.at(this.head.time).scaledTime */, time.scaled + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, time.scaled + note.duration),
+            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ (options.backspinAssist ? time.now : time.scaled) /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration),
         }
 
         const l = {
@@ -99,8 +99,8 @@ export class Slider extends SpawnableArchetype({}) {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, time.scaled),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, time.scaled),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, options.backspinAssist ? time.now : time.scaled),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, options.backspinAssist ? time.now : time.scaled),
         }
 
         const layout = {
@@ -118,14 +118,14 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     getLane(time2: number) {
-        return Math.remap(time.scaled, this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
+        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
     }
 
     getL(time2: number) {
-        return Math.remap(time.scaled, this.next.scaledTime, slider.position - 0.2, slider.next.lane * 2.1 - 0.2, time2)
+        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position - 0.2, slider.next.lane * 2.1 - 0.2, time2)
     }
 
     getR(time2: number) {
-        return Math.remap(time.scaled, this.next.scaledTime, slider.position + 0.2, slider.next.lane * 2.1 + 0.2, time2)
+        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + 0.2, slider.next.lane * 2.1 + 0.2, time2)
     }
 }

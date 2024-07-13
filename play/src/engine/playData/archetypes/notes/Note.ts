@@ -70,11 +70,11 @@ export abstract class Note extends Archetype {
     preprocess() {
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = (this.import.lane === -3 || this.import.lane === 3) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max = ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
 
         // const timescale = timeScaleChanges.at(this.targetTime)
 
-        this.visualTime.min = (this.import.lane === -3 || this.import.lane === 3) ? (this.visualTime.max - note.duration /* (this.targetTime - timescale.startingTime) - */ /* (timescale.startingTime - timescale.startingScaledTime) */ ) : (this.visualTime.max - note.duration)
+        this.visualTime.min = ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? (this.visualTime.max - note.duration /* (this.targetTime - timescale.startingTime) - */ /* (timescale.startingTime - timescale.startingScaledTime) */ ) : (this.visualTime.max - note.duration)
         this.spawnTime = this.visualTime.min
 
         // debug.log(this.spawnTime)
@@ -101,11 +101,11 @@ export abstract class Note extends Archetype {
     }
 
     spawnOrder() {
-        return 1000 + ((this.import.lane === -3 || this.import.lane === 3) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
+        return 1000 + (((this.import.lane === -3 || this.import.lane === 3) && !options.backspinAssist) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
     }
 
     shouldSpawn() {
-        return ((this.import.lane === -3 || this.import.lane === 3) ? time.now : time.scaled) >= this.spawnTime
+        return (((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) >= this.spawnTime
     }
 
     incomplete(hitTime: number) {
@@ -119,7 +119,7 @@ export abstract class Note extends Archetype {
 
         // debug.log(this.import.beat)
 
-        this.y = approach(this.visualTime.min, this.visualTime.max, (this.import.lane === -3 || this.import.lane === 3) ? time.now : time.scaled)
+        this.y = approach(this.visualTime.min, this.visualTime.max, ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled)
 
         const l = this.import.lane * 2.1 - 1.05 - 0.25
         const r = this.import.lane * 2.1 + 1.05 + 0.25

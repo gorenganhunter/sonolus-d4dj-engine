@@ -22,10 +22,10 @@ export class BarLine extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max = options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
         this.visualTime.min = this.visualTime.max - note.duration
 
-        this.spawnTime = this.visualTime.min
+        this.spawnTime = options.backspinAssist ? timeScaleChanges.at(this.visualTime.min).scaledTime : this.visualTime.min
     }
 
     spawnOrder() {
@@ -35,14 +35,14 @@ export class BarLine extends Archetype {
     }
 
     shouldSpawn() {
-        return (time.scaled >= this.spawnTime) && options.barLine
+        return ((options.backspinAssist ? time.now : time.scaled) >= this.spawnTime) && options.barLine
     }
 
     updateParallel() {
-        if (time.scaled > this.visualTime.max) this.despawn = true
+        if ((options.backspinAssist ? time.now : time.scaled) > this.visualTime.max) this.despawn = true
         if (this.despawn) return
 
-        const y = approach(this.visualTime.min, this.visualTime.max, time.scaled)
+        const y = approach(this.visualTime.min, this.visualTime.max, (options.backspinAssist ? time.now : time.scaled))
 
         skin.sprites.simLine.draw(perspectiveLayout({ l: -5.25, r: 5.25, t: 0.99, b: 1.01 }).mul(y), 999 - this.targetTime, 1)
     }
