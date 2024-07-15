@@ -49,7 +49,7 @@ export class SliderFlickNote extends SliderNote {
         const b = 1 + note.radius
         const t = 1 - note.radius
 
-        if (this.sliderImport.direction > 0) for (let i = 1; i < this.sliderImport.direction; i++) {
+        if (this.sliderImport.direction > 0) for (let i = 1; i <= this.sliderImport.direction; i++) {
             const lane = (this.import.lane + i) * 2.1
             const layout = {
                 r: lane - 1.05,
@@ -59,7 +59,7 @@ export class SliderFlickNote extends SliderNote {
             }
             skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
         }
-        else for (let i = -1; i > this.sliderImport.direction; i--) {
+        else for (let i = -1; i >= this.sliderImport.direction; i--) {
             const lane = (this.import.lane + i) * 2.1
             const layout = {
                 l: lane - 1.05,

@@ -94,7 +94,7 @@ export class HoldConnector extends Archetype {
         this.head.r = this.head.lane + w
 
         this.tail.time = bpmChanges.at(this.tailImport.beat).time
-        this.tail.scaledTime = ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.tail.time : timeScaleChanges.at(this.tail.time).scaledTime
+        this.tail.scaledTime = timeScaleChanges.at(this.tail.time).scaledTime
 
         this.tail.lane = this.tailImport.lane * 2.1
         this.tail.l = this.tail.lane - w
@@ -119,8 +119,6 @@ export class HoldConnector extends Archetype {
                 !this.startSharedMemory.activatedTouchId) ||
             this.endInfo.state === EntityState.Despawned
         ) {
-            debug.log(time.now)
-            debug.log(this.tail.time)
             this.despawn = true
             return
         }

@@ -25,7 +25,7 @@ export class Slider extends SpawnableArchetype({}) {
 
             slider.touch = touch.id
             
-            const tch = touch.x / screen.h * 10.75 / options.width
+            const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
             const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
             
             if (!touch.ended) skin.sprites.sliderConnector.draw(perspectiveLayout({ l: sliderPos - 1.05, r: sliderPos + 1.05, b: 1 + note.radius, t: 1 - note.radius * 8 }), 101, 0.5)
