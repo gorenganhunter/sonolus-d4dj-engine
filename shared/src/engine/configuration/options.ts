@@ -12,15 +12,11 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit,
     },
-    noteSize: {
-        name: Text.NoteSize,
-        type: 'slider',
+    backspinAssist: {
+        name: "Back-Spin Assist",
+        type: "toggle",
         scope: "d4dj",
-        def: 1.5,
-        min: 0.5,
-        max: 2,
-        step: 0.01,
-        unit: Text.PercentageUnit,
+        def: 0
     },
     noteSpeed: {
         name: Text.NoteSpeed,
@@ -31,6 +27,26 @@ export const optionsDefinition = {
         max: 11.5,
         step: 0.1
     },
+    noteSize: {
+        name: Text.NoteSize,
+        type: 'slider',
+        scope: "d4dj",
+        def: 1.5,
+        min: 0.5,
+        max: 2,
+        step: 0.01,
+        unit: Text.PercentageUnit,
+    },
+    // laneLength: {
+    //     name: Text.Length,
+    //     type: "slider",
+    //     scope: "d4dj",
+    //     def: 1,
+    //     min: 0,
+    //     max: 1,
+    //     step: 0.01,
+    //     unit: Text.PercentageUnit
+    // },
     width: {
         name: "Width",
         type: "slider",
@@ -53,16 +69,6 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 1
     },
-    // height: {
-    //     name: "Height",
-    //     type: "slider",
-    //     scope: "d4dj",
-    //     def: 1,
-    //     min: 0,
-    //     max: 1,
-    //     step: 0.01,
-    //     unit: Text.PercentageUnit
-    // },
     opacity: {
         name: "Opacity",
         type: "slider",
@@ -83,19 +89,32 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
+    connectorAlpha: {
+        name: Text.ConnectorAlpha,
+        type: "slider",
+        scope: "d4dj",
+        def: 1,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     sfxEnabled: {
         name: Text.Effect,
         type: "toggle",
         scope: "d4dj",
         def: 1
     },
+    autoSfx: {
+        name: Text.EffectAuto,
+        type: "toggle",
+        scope: "d4dj",
+        def: 0
+    },
     noteEffectEnabled: {
         name: Text.NoteEffect,
         type: "toggle",
         scope: "d4dj",
         def: 1
-    },
-    // width: {
-    //     name: ""
-    // },
+    }
 } satisfies Record<string, EngineConfigurationOption>

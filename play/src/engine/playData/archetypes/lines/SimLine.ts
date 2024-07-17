@@ -35,12 +35,12 @@ export class SimLine extends Archetype {
         let r = this.bImport.lane
         if (l > r) [l, r] = [r, l]
 
-        this.visualTime.max.l = (l === 3 || l === -3) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
-        this.visualTime.max.r = (r === 3 || r === -3) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max.l = (l === -3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max.r = (r === 3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
         this.visualTime.min.l = this.visualTime.max.l - note.duration
         this.visualTime.min.r = this.visualTime.max.r - note.duration
 
-        this.spawnTime = Math.min((l === 3 || l === -3) ? timeScaleChanges.at(this.visualTime.min.l).scaledTime : this.visualTime.min.l, (r === 3 || r === -3) ? timeScaleChanges.at(this.visualTime.min.r).scaledTime : this.visualTime.min.r)
+        this.spawnTime = options.backspinAssist ? Math.min(this.visualTime.min.l, this.visualTime.min.r) : Math.min((l === -3) ? timeScaleChanges.at(this.visualTime.min.l).scaledTime : this.visualTime.min.l, (r === 3) ? timeScaleChanges.at(this.visualTime.min.r).scaledTime : this.visualTime.min.r)
     }
 
     spawnOrder() {
@@ -50,7 +50,7 @@ export class SimLine extends Archetype {
     }
 
     shouldSpawn() {
-        return (time.scaled >= this.spawnTime) && options.simLine
+        return ((options.backspinAssist ? time.now : time.scaled) >= this.spawnTime) && options.simLine
     }
 
     get aImport() {
@@ -82,8 +82,8 @@ export class SimLine extends Archetype {
         if (l > r) [l, r] = [r, l]
 
         const y = {
-            l: approach(this.visualTime.min.l, this.visualTime.max.l, (l === -3 || l === 3) ? time.now : time.scaled),
-            r: approach(this.visualTime.min.r, this.visualTime.max.r, (r === -3 || r === 3) ? time.now : time.scaled)
+            l: approach(this.visualTime.min.l, this.visualTime.max.l, (l === -3 || l === 3) ? time.now : (options.backspinAssist ? time.now : time.scaled)),
+            r: approach(this.visualTime.min.r, this.visualTime.max.r, (r === -3 || r === 3) ? time.now : (options.backspinAssist ? time.now : time.scaled))
         }
 
         l *= 2.1

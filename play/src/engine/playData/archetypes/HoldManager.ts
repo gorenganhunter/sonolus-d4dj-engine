@@ -61,7 +61,7 @@ export class HoldManager extends SpawnableArchetype({}) {
 
 const shouldPlay = {
     get holdSFX() {
-        return options.sfxEnabled && effect.clips.longLoop.exists /* && !options.autoSFX */
+        return options.sfxEnabled && effect.clips.longLoop.exists && !options.autoSfx
     },
 
     get circularHoldEffect() {

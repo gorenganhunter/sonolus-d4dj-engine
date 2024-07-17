@@ -77,25 +77,14 @@ export class SliderTickNote extends SliderNote {
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
-        if (options.sfxEnabled) switch (this.result.judgment) {
-            case Judgment.Perfect:
-                this.sfx.perfect.play(0.02)
-                break
-            case Judgment.Great:
-                this.sfx.great.play(0.02)
-                break
-            case Judgment.Good:
-                this.sfx.good.play(0.02)
-                break
-        }
-
+        this.playSFX()
         this.playEffect()
 
         this.despawn = true
     }
 
     // playEffect() {
-    //     particle.effects.slider.spawn(this.notePosition, 0.2, false)
+    //     particle.effects.slider.spawn(this.notePosition, (0.1 * options.noteSize), false)
     // }
 
     renderConnector() {
@@ -104,8 +93,8 @@ export class SliderTickNote extends SliderNote {
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ timeScaleChanges.at(this.targetTime).scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, time.scaled + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ this.next.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, time.scaled + note.duration),
+            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration),
         }
         
         const l = {
@@ -119,8 +108,8 @@ export class SliderTickNote extends SliderNote {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, time.scaled),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, time.scaled),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, options.backspinAssist ? time.now : time.scaled),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, options.backspinAssist ? time.now : time.scaled),
         }
 
         const layout = {
@@ -134,18 +123,18 @@ export class SliderTickNote extends SliderNote {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, 1)
+        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
     }
 
     getLane(time: number) {
-        return Math.remap(timeScaleChanges.at(this.targetTime).scaledTime, this.next.scaledTime, this.import.lane * 2.1, this.nextImport.lane * 2.1, time)
+        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1, this.nextImport.lane * 2.1, time)
     }
 
     getL(time: number) {
-        return Math.remap(timeScaleChanges.at(this.targetTime).scaledTime, this.next.scaledTime, this.import.lane * 2.1 - 0.2, this.nextImport.lane * 2.1 - 0.2, time)
+        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 - (0.125 * options.noteSize), this.nextImport.lane * 2.1 - (0.125 * options.noteSize), time)
     }
 
     getR(time: number) {
-        return Math.remap(timeScaleChanges.at(this.targetTime).scaledTime, this.next.scaledTime, this.import.lane * 2.1 + 0.2, this.nextImport.lane * 2.1 + 0.2, time)
+        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 + (0.125 * options.noteSize), this.nextImport.lane * 2.1 + (0.125 * options.noteSize), time)
     }
 }

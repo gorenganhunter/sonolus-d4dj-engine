@@ -2,7 +2,7 @@ import { EngineArchetypeDataName, SkinSpriteName } from '@sonolus/core'
 import { approach, perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
-import { effect } from '../../effect.js'
+import { effect, getScheduleSFXTime } from '../../effect.js'
 import { note } from '../../note.js'
 import { windows } from '../../windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
@@ -42,6 +42,8 @@ export abstract class Note extends Archetype {
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
     hitbox = this.entityMemory(Rect)
+    scheduleSFXTime = this.entityMemory(Number)
+    hasSFXScheduled = this.entityMemory(Boolean)
 
     playEffect() {
         if (options.noteEffectEnabled) this.effect.spawn(this.notePosition, 0.2, false)
@@ -70,12 +72,14 @@ export abstract class Note extends Archetype {
     preprocess() {
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = (this.import.lane === -3 || this.import.lane === 3) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
+    
+        this.visualTime.max = ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
 
         // const timescale = timeScaleChanges.at(this.targetTime)
 
-        this.visualTime.min = (this.import.lane === -3 || this.import.lane === 3) ? (this.visualTime.max - note.duration /* (this.targetTime - timescale.startingTime) - */ /* (timescale.startingTime - timescale.startingScaledTime) */ ) : (this.visualTime.max - note.duration)
-        this.spawnTime = this.visualTime.min
+        this.visualTime.min = ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? (this.visualTime.max - note.duration /* (this.targetTime - timescale.startingTime) - */ /* (timescale.startingTime - timescale.startingScaledTime) */ ) : (this.visualTime.max - note.duration)
+        this.spawnTime = Math.min(this.visualTime.min, ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? this.scheduleSFXTime : timeScaleChanges.at(this.scheduleSFXTime).scaledTime)
 
         // debug.log(this.spawnTime)
     }
@@ -101,28 +105,60 @@ export abstract class Note extends Archetype {
     }
 
     spawnOrder() {
-        return 1000 + ((this.import.lane === -3 || this.import.lane === 3) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
+        return 1000 + (((this.import.lane === -3 || this.import.lane === 3) && !options.backspinAssist) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
     }
 
     shouldSpawn() {
-        return ((this.import.lane === -3 || this.import.lane === 3) ? time.now : time.scaled) >= this.spawnTime
+        return (((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) >= this.spawnTime
     }
 
     incomplete(hitTime: number) {
         this.export('accuracyDiff', hitTime - this.result.accuracy - this.targetTime)
         this.despawn = true
     }
+    
+    get shouldScheduleSFX() {
+        return options.sfxEnabled && options.autoSfx
+    }
+
+    get shouldPlaySFX() {
+        return options.sfxEnabled && !options.autoSfx
+    }
+
+    scheduleSFX() {
+        this.hasSFXScheduled = true
+        this.sfx.perfect.schedule(this.targetTime, 0.02)
+    }
+
+    playSFX() {
+        if (!this.shouldPlaySFX) return
+
+        switch (this.result.judgment) {
+            case Judgment.Perfect:
+                this.sfx.perfect.play(0.02)
+                break
+            case Judgment.Great:
+                this.sfx.great.play(0.02)
+                break
+            case Judgment.Good:
+                this.sfx.good.play(0.02)
+                break
+        }
+    }
 
     updateParallel() {
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
 
+        if (this.shouldScheduleSFX && !this.hasSFXScheduled && time.now >= this.scheduleSFXTime) this.scheduleSFX()
         // debug.log(this.import.beat)
 
-        this.y = approach(this.visualTime.min, this.visualTime.max, (this.import.lane === -3 || this.import.lane === 3) ? time.now : time.scaled)
+        if ((((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min) return
 
-        const l = this.import.lane * 2.1 - 1.05 - 0.25
-        const r = this.import.lane * 2.1 + 1.05 + 0.25
+        this.y = approach(this.visualTime.min, this.visualTime.max, ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled)
+
+        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
+        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
 
         perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
 

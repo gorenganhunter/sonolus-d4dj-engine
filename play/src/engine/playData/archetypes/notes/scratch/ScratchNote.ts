@@ -60,6 +60,7 @@ export class ScratchNote extends Note {
                 if(isUsed(touch)) continue
                 if(isClaimed(touch)) continue
 
+                // claim(touch)
                 // debug.log(touch.id)
 
                 this.activatedTouchId = touch.id
@@ -82,18 +83,8 @@ export class ScratchNote extends Note {
 
         if (!this.result.judgment || time.now <= this.targetTime) return
 // debug.log(this.result.judgment)
-        if (options.sfxEnabled) switch (this.result.judgment) {
-            case Judgment.Perfect:
-                this.sfx.perfect.play(0.02)
-                break
-            case Judgment.Great:
-                this.sfx.great.play(0.02)
-                break
-            case Judgment.Good:
-                this.sfx.good.play(0.02)
-                break
-        }
-        
+
+        this.playSFX()
         this.playEffect()
 
         this.despawn = true
