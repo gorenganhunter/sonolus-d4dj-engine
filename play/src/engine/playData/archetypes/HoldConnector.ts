@@ -218,7 +218,7 @@ export class HoldConnector extends Archetype {
             y4: y.min,
         }
 
-        skin.sprites.draw(this.sprite.connector, layout, this.connector.z, /* options.connectorAlpha */1)
+        skin.sprites.draw(this.sprite.connector, layout, this.connector.z, options.connectorAlpha)
     }
 
     renderSlide() {

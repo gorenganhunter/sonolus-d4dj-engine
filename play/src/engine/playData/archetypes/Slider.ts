@@ -114,7 +114,7 @@ export class Slider extends SpawnableArchetype({}) {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, 1)
+        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
     }
 
     getLane(time2: number) {

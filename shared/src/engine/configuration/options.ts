@@ -89,6 +89,16 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
+    connectorAlpha: {
+        name: Text.ConnectorAlpha,
+        type: "slider",
+        scope: "d4dj",
+        def: 0.9,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     sfxEnabled: {
         name: Text.Effect,
         type: "toggle",

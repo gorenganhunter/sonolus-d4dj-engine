@@ -121,8 +121,8 @@ export abstract class Note extends Archetype {
 
         this.y = approach(this.visualTime.min, this.visualTime.max, ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled)
 
-        const l = this.import.lane * 2.1 - 1.05 - 0.25
-        const r = this.import.lane * 2.1 + 1.05 + 0.25
+        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
+        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
 
         perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
 

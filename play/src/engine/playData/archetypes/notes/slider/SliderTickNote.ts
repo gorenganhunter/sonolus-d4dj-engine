@@ -134,7 +134,7 @@ export class SliderTickNote extends SliderNote {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, 1)
+        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
     }
 
     getLane(time: number) {
