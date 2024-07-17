@@ -6,8 +6,8 @@ Unfinished.
 
 Todo list:
 
-- [ ] Finish writing play mode
-- [ ] Make it customizable
+- [x] Finish writing play mode
+- [x] Make it customizable
 - [ ] Finish writing tutorial mode
 - [ ] Finish writing preview mode
 - [ ] Finish writing watch mode
