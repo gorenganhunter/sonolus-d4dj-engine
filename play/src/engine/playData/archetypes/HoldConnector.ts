@@ -86,7 +86,7 @@ export class HoldConnector extends Archetype {
     }
 
     initialize() {
-        const w = 1.05
+        const w = 0.7 * options.noteSize
         const h = note.radius
 
         this.head.lane = this.headImport.lane * 2.1
@@ -225,8 +225,8 @@ export class HoldConnector extends Archetype {
         skin.sprites.draw(
             this.sprite.slide,
             perspectiveLayout({
-                l: this.getL(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) - 0.25,
-                r: this.getR(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) + 0.25,
+                l: this.getL(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) - (0.3 * options.noteSize),
+                r: this.getR(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) + (0.3 * options.noteSize),
                 b: this.slide.b,
                 t: this.slide.t,
             }),

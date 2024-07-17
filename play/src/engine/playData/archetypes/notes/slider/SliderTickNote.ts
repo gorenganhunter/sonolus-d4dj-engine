@@ -84,7 +84,7 @@ export class SliderTickNote extends SliderNote {
     }
 
     // playEffect() {
-    //     particle.effects.slider.spawn(this.notePosition, 0.2, false)
+    //     particle.effects.slider.spawn(this.notePosition, (0.1 * options.noteSize), false)
     // }
 
     renderConnector() {
@@ -131,10 +131,10 @@ export class SliderTickNote extends SliderNote {
     }
 
     getL(time: number) {
-        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 - 0.2, this.nextImport.lane * 2.1 - 0.2, time)
+        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 - (0.125 * options.noteSize), this.nextImport.lane * 2.1 - (0.125 * options.noteSize), time)
     }
 
     getR(time: number) {
-        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 + 0.2, this.nextImport.lane * 2.1 + 0.2, time)
+        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 + (0.125 * options.noteSize), this.nextImport.lane * 2.1 + (0.125 * options.noteSize), time)
     }
 }

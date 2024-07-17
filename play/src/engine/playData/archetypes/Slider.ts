@@ -122,10 +122,10 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     getL(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position - 0.2, slider.next.lane * 2.1 - 0.2, time2)
+        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
     }
 
     getR(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + 0.2, slider.next.lane * 2.1 + 0.2, time2)
+        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
     }
 }

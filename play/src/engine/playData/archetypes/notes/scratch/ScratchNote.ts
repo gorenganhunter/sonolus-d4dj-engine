@@ -60,7 +60,7 @@ export class ScratchNote extends Note {
                 if(isUsed(touch)) continue
                 if(isClaimed(touch)) continue
 
-                claim(touch)
+                // claim(touch)
                 // debug.log(touch.id)
 
                 this.activatedTouchId = touch.id

@@ -29,10 +29,13 @@ export class Initialization extends Archetype {
         note.duration = (12 - options.noteSpeed) / 3
         slider.isUsed = false
         slider.next.beat = 99999999
+        
+        const gap = 0.05
+        const uiRect = screen.rect.shrink(gap, gap)
 
         ui.menu.set({
-            anchor: screen.rect.lt.add(new Vec(0.05, -0.05)),
-            pivot: { x: 0, y: 1 },
+            anchor: uiRect.rt,
+            pivot: { x: 1, y: 1 },
             size: new Vec(0.15, 0.15).mul(ui.configuration.menu.scale),
             rotation: 0,
             alpha: ui.configuration.menu.alpha,
@@ -40,10 +43,55 @@ export class Initialization extends Archetype {
             background: true,
         })
 
+        ui.metric.primary.bar.set({
+            anchor: uiRect.lt,
+            pivot: { x: 0, y: 1 },
+            size: new Vec(0.75, 0.15).mul(ui.configuration.metric.primary.scale),
+            rotation: 0,
+            alpha: ui.configuration.metric.primary.alpha,
+            horizontalAlign: HorizontalAlign.Left,
+            background: true,
+        })
+        ui.metric.primary.value.set({
+            anchor: uiRect.lt.add(
+                    new Vec(0.715, -0.035).mul(ui.configuration.metric.primary.scale),
+                ),
+            pivot: { x: 1, y: 1 },
+            size: new Vec(0, 0.08).mul(ui.configuration.metric.primary.scale),
+            rotation: 0,
+            alpha: ui.configuration.metric.primary.alpha,
+            horizontalAlign: HorizontalAlign.Right,
+            background: false,
+        })
+
+        ui.metric.secondary.bar.set({
+            anchor: uiRect.rt
+                .sub(new Vec(gap, 0))
+                .sub(new Vec(0.15, 0).mul(ui.configuration.menu.scale)),
+            pivot: { x: 1, y: 1 },
+            size: new Vec(0.55, 0.15).mul(ui.configuration.metric.secondary.scale),
+            rotation: 0,
+            alpha: ui.configuration.metric.secondary.alpha,
+            horizontalAlign: HorizontalAlign.Left,
+            background: true,
+        })
+        ui.metric.secondary.value.set({
+            anchor: uiRect.rt
+                .sub(new Vec(gap, 0))
+                .sub(new Vec(0.15, 0).mul(ui.configuration.menu.scale))
+                .sub(new Vec(0.035, 0.035).mul(ui.configuration.metric.secondary.scale)),
+            pivot: { x: 1, y: 1 },
+            size: new Vec(0, 0.08).mul(ui.configuration.metric.secondary.scale),
+            rotation: 0,
+            alpha: ui.configuration.metric.secondary.alpha,
+            horizontalAlign: HorizontalAlign.Right,
+            background: false,
+        })
+        
         ui.judgment.set({
-            anchor: { x: 0, y: -0.4 },
+            anchor: { x: 0, y: -0.1 },
             pivot: { x: 0.5, y: 0 },
-            size: new Vec(0, 0.15).mul(ui.configuration.judgment.scale),
+            size: new Vec(0, 0.1).mul(ui.configuration.judgment.scale),
             rotation: 0,
             alpha: ui.configuration.judgment.alpha,
             horizontalAlign: HorizontalAlign.Center,
@@ -67,55 +115,6 @@ export class Initialization extends Archetype {
             rotation: 0,
             alpha: ui.configuration.combo.alpha,
             horizontalAlign: HorizontalAlign.Center,
-            background: false,
-        })
-
-        ui.metric.primary.bar.set({
-            anchor: screen.rect.rt.sub(new Vec(0.05, 0.05)),
-            pivot: { x: 1, y: 1 },
-            size: new Vec(0.75, 0.15).mul(ui.configuration.metric.primary.scale),
-            rotation: 0,
-            alpha: ui.configuration.metric.primary.alpha,
-            horizontalAlign: HorizontalAlign.Left,
-            background: true,
-        })
-
-        ui.metric.primary.value.set({
-            anchor: screen.rect.rt
-                .sub(new Vec(0.05, 0.05))
-                .sub(new Vec(0.035, 0.035).mul(ui.configuration.metric.primary.scale)),
-            pivot: { x: 1, y: 1 },
-            size: new Vec(0, 0.08).mul(ui.configuration.metric.primary.scale),
-            rotation: 0,
-            alpha: ui.configuration.metric.primary.alpha,
-            horizontalAlign: HorizontalAlign.Right,
-            background: false,
-        })
-
-        ui.metric.secondary.bar.set({
-            anchor: screen.rect.rt
-                .sub(new Vec(0.05, 0.05))
-                .sub(new Vec(0, 0.15).mul(ui.configuration.metric.primary.scale))
-                .sub(new Vec(0, 0.05)),
-            pivot: { x: 1, y: 1 },
-            size: new Vec(0.75, 0.15).mul(ui.configuration.metric.secondary.scale),
-            rotation: 0,
-            alpha: ui.configuration.metric.secondary.alpha,
-            horizontalAlign: HorizontalAlign.Left,
-            background: true,
-        })
-
-        ui.metric.secondary.value.set({
-            anchor: screen.rect.rt
-                .sub(new Vec(0.05, 0.05))
-                .sub(new Vec(0, 0.15).mul(ui.configuration.metric.primary.scale))
-                .sub(new Vec(0, 0.05))
-                .sub(new Vec(0.035, 0.035).mul(ui.configuration.metric.secondary.scale)),
-            pivot: { x: 1, y: 1 },
-            size: new Vec(0, 0.08).mul(ui.configuration.metric.secondary.scale),
-            rotation: 0,
-            alpha: ui.configuration.metric.secondary.alpha,
-            horizontalAlign: HorizontalAlign.Right,
             background: false,
         })
 

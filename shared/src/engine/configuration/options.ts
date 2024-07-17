@@ -93,7 +93,7 @@ export const optionsDefinition = {
         name: Text.ConnectorAlpha,
         type: "slider",
         scope: "d4dj",
-        def: 0.9,
+        def: 1,
         min: 0,
         max: 1,
         step: 0.01,
