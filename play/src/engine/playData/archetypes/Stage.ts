@@ -19,7 +19,7 @@ export class Stage extends Archetype {
     touch() {
         for (const touch of touches) {
             const lane = this.getLane(touch)
-            const t = 1 - note.radius * 2
+            const t = 1 - note.radius
             const b = 1 + note.radius
 
             if (isUsed(touch)) continue
@@ -35,7 +35,10 @@ export class Stage extends Archetype {
             // const t = 1 - note.radius * 2
             // const b = 1 + note.radius
 
-            if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
+            if (options.sfxEnabled) {
+                if (lane < 3 && lane > -3) effect.clips.tapEmpty.play(0.02)
+                else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
+            }
             if (options.noteEffectEnabled) particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
 
             return

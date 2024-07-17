@@ -1,6 +1,6 @@
 import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
-import { effect } from '../effect.js'
+import { effect, getScheduleSFXTime } from '../effect.js'
 import { note } from '../note.js'
 import { particle } from '../particle.js'
 import { getZ, skin } from '../skin.js'
@@ -62,7 +62,7 @@ export class HoldConnector extends Archetype {
         this.head.time = bpmChanges.at(this.headImport.beat).time
         this.head.scaledTime = /* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.head.time : */ timeScaleChanges.at(this.head.time).scaledTime
 
-        this.scheduleSFXTime = ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.head.time : this.head.scaledTime) - 0.5
+        this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
         this.visualTime.min = ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.head.time : this.head.scaledTime) - note.duration
         
@@ -73,7 +73,7 @@ export class HoldConnector extends Archetype {
 
         // debug.log(this.tail.scaledTime)
 
-        this.spawnTime = Math.min(this.visualTime.min, this.scheduleSFXTime)
+        this.spawnTime = Math.min(this.visualTime.min, (this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.scheduleSFXTime : timeScaleChanges.at(this.scheduleSFXTime).scaledTime)
         // debug.log(this.spawnTime)
     }
 
@@ -156,7 +156,7 @@ export class HoldConnector extends Archetype {
     }
 
     get shouldScheduleSFX() {
-        return options.sfxEnabled && effect.clips.longLoop.exists /* && options.autoSFX */
+        return options.sfxEnabled && effect.clips.longLoop.exists && options.autoSfx
     }
 
     get shouldUpdateCircularEffect() {
@@ -167,12 +167,12 @@ export class HoldConnector extends Archetype {
         return options.noteEffectEnabled && particle.effects.holdLinear.exists
     }
 
-    // scheduleSFX() {
-    //     this.sfxId = effect.clips.hold.scheduleLoop(this.head.time)
-    //     effect.clips.scheduleStopLoop(this.sfxId, this.tail.time)
+    scheduleSFX() {
+        this.sfxId = effect.clips.longLoop.scheduleLoop(this.head.time)
+        effect.clips.scheduleStopLoop(this.sfxId, this.tail.time)
 
-    //     this.hasSFXScheduled = true
-    // }
+        this.hasSFXScheduled = true
+    }
 
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return

@@ -137,20 +137,9 @@ export class SliderFlickNote extends SliderNote {
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
+        this.playSFX()
         this.playEffect()
         
-        if (options.sfxEnabled) switch (this.result.judgment) {
-            case Judgment.Perfect:
-                this.sfx.perfect.play(0.02)
-                break
-            case Judgment.Great:
-                this.sfx.great.play(0.02)
-                break
-            case Judgment.Good:
-                this.sfx.good.play(0.02)
-                break
-        }
-
         this.despawn = true
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction

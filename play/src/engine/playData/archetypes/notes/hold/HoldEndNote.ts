@@ -64,22 +64,11 @@ export class HoldEndNote extends HoldNote {
     complete(hitTime: number) {
         this.result.judgment = input.judge(hitTime, this.targetTime, windows)
         this.result.accuracy = hitTime - this.targetTime
-        
-        if (options.sfxEnabled) switch (this.result.judgment) {
-            case Judgment.Perfect:
-                this.sfx.perfect.play(0.02)
-                break
-            case Judgment.Great:
-                this.sfx.great.play(0.02)
-                break
-            case Judgment.Good:
-                this.sfx.good.play(0.02)
-                break
-        }
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
+        this.playSFX()
         this.playEffect()
 
         this.despawn = true

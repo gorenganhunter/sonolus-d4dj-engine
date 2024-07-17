@@ -105,6 +105,12 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 1
     },
+    autoSfx: {
+        name: Text.EffectAuto,
+        type: "toggle",
+        scope: "d4dj",
+        def: 0
+    },
     noteEffectEnabled: {
         name: Text.NoteEffect,
         type: "toggle",
