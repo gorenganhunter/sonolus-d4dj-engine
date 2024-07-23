@@ -11,7 +11,10 @@ import { particle } from '../../particle.js'
 
 export abstract class Note extends Archetype {
     abstract sprite: SkinSprite
-    abstract effect: ParticleEffect
+    abstract effect: {
+        linear: ParticleEffect,
+        circular: ParticleEffect
+    }
     abstract sfx: {
         perfect: EffectClip,
         great: EffectClip,
@@ -46,7 +49,10 @@ export abstract class Note extends Archetype {
     hasSFXScheduled = this.entityMemory(Boolean)
 
     playEffect() {
-        if (options.noteEffectEnabled) this.effect.spawn(this.notePosition, 0.2, false)
+        if (!options.noteEffectEnabled) return
+
+        this.effect.linear.spawn(this.notePosition, 0.2, false)
+        this.effect.circular.spawn(this.notePosition, 0.2, false)
         // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     }
 

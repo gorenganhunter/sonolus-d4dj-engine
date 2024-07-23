@@ -3,21 +3,43 @@ import { perspectiveLayout } from '../../../../shared/src/engine/data/utils.js'
 
 export const particle = defineParticle({
     effects: {
-        darkTapNote: ParticleEffectName.NoteLinearTapBlue,
-        lightTapNote: ParticleEffectName.NoteLinearTapCyan,
-        holdNote: ParticleEffectName.NoteLinearHoldYellow,
-        stopNote: ParticleEffectName.NoteLinearHoldRed,
-        lane: ParticleEffectName.LaneLinear,
-        slot: ParticleEffectName.SlotLinear,
+        emptyTap: ParticleEffectName.NoteCircularTapNeutral,
+
+        darkTapNoteLinear: ParticleEffectName.NoteLinearTapBlue,
+        darkTapNoteCircular: ParticleEffectName.NoteCircularTapBlue,
+
+        lightTapNoteLinear: ParticleEffectName.NoteLinearTapCyan,
+        lightTapNoteCircular: ParticleEffectName.NoteCircularTapCyan,
+
+        holdNoteLinear: ParticleEffectName.NoteLinearTapYellow,
+        holdNoteCircular: ParticleEffectName.NoteCircularTapYellow,
+
+        stopNoteLinear: ParticleEffectName.NoteLinearTapRed,
+        stopNoteCircular: ParticleEffectName.NoteCircularTapRed,
+
+        laneLinear: ParticleEffectName.LaneLinear,
+        laneCircular: ParticleEffectName.LaneCircular,
+
+        slotLinear: ParticleEffectName.SlotLinear,
+        slotCircular: ParticleEffectName.SlotCircular,
+
         holdLinear: ParticleEffectName.NoteLinearHoldYellow,
         holdCircular: ParticleEffectName.NoteCircularHoldYellow,
+
+        stopLinear: ParticleEffectName.NoteCircularHoldRed,
         stopCircular: ParticleEffectName.NoteCircularHoldRed,
-        scratch: ParticleEffectName.NoteLinearTapGreen,
-        slider: ParticleEffectName.NoteLinearTapPurple
+
+        scratchNoteLinear: ParticleEffectName.NoteLinearTapGreen,
+        scratchNoteCircular: ParticleEffectName.NoteCircularTapGreen,
+
+        sliderNoteLinear: ParticleEffectName.NoteLinearTapPurple,
+        sliderNoteCircular: ParticleEffectName.NoteCircularTapPurple,
+
+        sliderFlick: "DJ Slider Flick Effect"
     },
 })
 
-export const circularEffectLayout = ({ lane, w, h }: { lane: number, w: number, h: number }) => {
+export const effectLayout = ({ lane, w, h }: { lane: number, w: number, h: number }) => {
     return perspectiveLayout({
         l: lane - w,
         r: lane + w,
@@ -26,14 +48,14 @@ export const circularEffectLayout = ({ lane, w, h }: { lane: number, w: number, 
     })
 }
 
-export const linearEffectLayout = ({ lane, size }: { lane: number, size: number }) => {
-    const w = size
-    const h = size
+// export const linearEffectLayout = ({ lane, size }: { lane: number, size: number }) => {
+//     const w = size
+//     const h = size
 
-    return perspectiveLayout({
-        l: lane - w,
-        r: lane + w,
-        t: 1 - h,
-        b: 1 + h,
-    })
-}
+//     return perspectiveLayout({
+//         l: lane - w,
+//         r: lane + w,
+//         t: 1 - h,
+//         b: 1 + h,
+//     })
+// }

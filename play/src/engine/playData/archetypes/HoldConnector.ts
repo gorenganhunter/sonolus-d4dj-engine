@@ -65,7 +65,9 @@ export class HoldConnector extends Archetype {
         this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
         this.visualTime.min = ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.head.time : this.head.scaledTime) - note.duration
-        
+    
+        // debug.log(this.visualTime.min)
+        // debug.log(timeScaleChanges.at(this.visualTime.min).scaledTime)
         // debug.log(this.visualTime.min)
         // debug.log(note.duration)
         // this.tail.time = bpmChanges.at(this.tailImport.beat).time
@@ -119,6 +121,7 @@ export class HoldConnector extends Archetype {
                 !this.startSharedMemory.activatedTouchId) ||
             this.endInfo.state === EntityState.Despawned
         ) {
+            // debug.log(time.now)
             this.despawn = true
             return
         }

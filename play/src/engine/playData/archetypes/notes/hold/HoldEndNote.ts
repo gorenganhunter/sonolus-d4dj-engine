@@ -8,9 +8,7 @@ import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'
 
 export class HoldEndNote extends HoldNote {
-
     sprite = skin.sprites.holdTail
-    effect = particle.effects.holdNote
     bucket = buckets.holdEndNote
 
     preprocess() {

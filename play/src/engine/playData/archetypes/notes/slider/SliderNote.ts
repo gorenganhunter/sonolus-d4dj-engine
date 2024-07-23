@@ -9,7 +9,10 @@ import { effect } from "../../../effect.js";
 
 export abstract class SliderNote extends Note {
     sprite: SkinSprite = skin.sprites.sliderNote
-    effect: ParticleEffect = particle.effects.slider
+    effect = {
+        linear: particle.effects.sliderNoteLinear,
+        circular: particle.effects.sliderNoteCircular
+    }
 
     sliderImport = this.defineImport({
         prev: { name: "prev", type: Number },

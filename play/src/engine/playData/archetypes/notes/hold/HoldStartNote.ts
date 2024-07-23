@@ -10,7 +10,6 @@ import { options } from '../../../../configuration/options.js'
 
 export class HoldStartNote extends HoldNote {
     sprite = skin.sprites.holdHead
-    effect = particle.effects.holdNote
     bucket = buckets.holdStartNote
 
     // playEffect() {

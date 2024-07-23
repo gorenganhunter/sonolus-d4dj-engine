@@ -1,4 +1,5 @@
 import { effect } from "../../../effect.js";
+import { particle } from "../../../particle.js";
 import { Note } from "../Note.js";
 
 export abstract class HoldNote extends Note {
@@ -6,6 +7,10 @@ export abstract class HoldNote extends Note {
         perfect: effect.clips.longPerfect,
         great: effect.clips.longGreat,
         good: effect.clips.longGood
+    }
+    effect = {
+        linear: particle.effects.holdNoteLinear,
+        circular: particle.effects.holdNoteCircular,
     }
 
     holdImport = this.defineImport({
