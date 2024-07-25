@@ -6,7 +6,10 @@ import { HoldStartNote } from "../hold/HoldStartNote.js";
 
 export class StopStartNote extends HoldStartNote {
     sprite = skin.sprites.stopHead
-    effect = particle.effects.stopNote
+    effect = {
+        linear: particle.effects.stopNoteLinear,
+        circular: particle.effects.stopNoteCircular
+    }
     bucket = buckets.stopStartNote
 
     drawNote() {

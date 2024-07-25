@@ -1,7 +1,7 @@
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
-import { circularEffectLayout, linearEffectLayout, particle } from '../particle.js'
+import { effectLayout, particle } from '../particle.js'
 
 const Hold = {
     clipInstanceId: LoopedEffectClipInstanceId,
@@ -94,9 +94,9 @@ const spawnLinearHoldEffect = () => {
 const moveCircularHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
     if (!shouldPlay.circularHoldEffect) return
 
-    const layout = circularEffectLayout({
+    const layout = effectLayout({
         lane,
-        w: 0.16,
+        w: 1.05,
         h: note.radius,
     })
 
@@ -106,9 +106,10 @@ const moveCircularHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
 const moveLinearHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
     if (!shouldPlay.linearHoldEffect) return
 
-    const layout = linearEffectLayout({
+    const layout = effectLayout({
         lane,
-        size: 0.16,
+        w: 1.05,
+        h: note.radius
     })
 
     particle.effects.move(id, layout)

@@ -10,7 +10,10 @@ import { TapNote } from './TapNote.js'
 
 export class DarkTapNote extends TapNote {
     sprite: SkinSprite = skin.sprites.darkTapNote
-    effect: ParticleEffect = particle.effects.darkTapNote
+    effect: { linear: ParticleEffect, circular: ParticleEffect } = {
+        linear: particle.effects.darkTapNoteLinear,
+        circular: particle.effects.darkTapNoteCircular
+    }
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
         perfect: effect.clips.tap1Perfect,
         great: effect.clips.tap1Great,

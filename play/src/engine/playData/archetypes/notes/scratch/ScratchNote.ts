@@ -13,7 +13,10 @@ import { options } from '../../../../configuration/options.js'
 
 export class ScratchNote extends Note {
     sprite: SkinSprite = skin.sprites.scratch
-    effect: ParticleEffect = particle.effects.scratch
+    effect = {
+        linear: particle.effects.scratchNoteLinear,
+        circular: particle.effects.scratchNoteCircular,
+    }
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
         perfect: effect.clips.scratchPerfect,
         great: effect.clips.scratchGreat,

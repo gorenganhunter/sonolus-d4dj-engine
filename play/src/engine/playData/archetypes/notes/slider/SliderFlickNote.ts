@@ -114,8 +114,17 @@ export class SliderFlickNote extends SliderNote {
     }
 
     playEffect() {
-        if (options.noteEffectEnabled) particle.effects.scratch.spawn(this.notePosition, 0.2, false)
-        // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
+        super.playEffect()
+        if (!options.noteEffectEnabled) return
+
+        const layout = perspectiveLayout({
+            t: 1.5,
+            b: 0,
+            l: this.import.lane * 2.1,
+            r: (this.import.lane + this.sliderImport.direction) * 2.1
+        })
+
+        particle.effects.sliderFlick.spawn(layout, 0.2, false)
     }
 
     updateSequential() {

@@ -43,16 +43,15 @@ export class SliderTickNote extends SliderNote {
         super.updateSequential()
         if(this.sliderImport.next) this.renderConnector()
         if (time.now < this.targetTime - sliderWindows.good.max) return
-        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
+        if (time.now > this.targetTime + sliderWindows.good.max) return this.incomplete(time.now)
 
+        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
                 this.used = true
             } else {
-                this.complete(this.targetTime)
+                this.complete(time.now)
             }
-        } else if (this.used) {
-            this.complete(time.now)
-        } else if (time.now > this.targetTime + sliderWindows.good.max) this.incomplete(time.now)
+        } else if (this.used) this.complete(time.now)
     }
     
     incomplete(hitTime: number) {
