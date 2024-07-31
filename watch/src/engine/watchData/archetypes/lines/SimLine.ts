@@ -41,7 +41,7 @@ export class SimLine extends Archetype {
         this.visualTime.min.r = this.visualTime.max.r - note.duration
 
         this.spawn = Math.min(l === -3 || options.backspinAssist ? this.visualTime.min.l : getSpawnTime(this.targetTime), r === 3 || options.backspinAssist ? this.visualTime.min.r : getSpawnTime(this.targetTime))
-        debug.log(this.spawn)
+        // debug.log(this.spawn)
     }
 
     spawnTime() {
