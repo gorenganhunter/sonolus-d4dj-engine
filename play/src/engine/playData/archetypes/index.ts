@@ -27,7 +27,7 @@ export const archetypes = defineArchetypes({
 
     DarkTapNote,
     LightTapNote,
-    
+
     HoldStartNote,
     HoldEndNote,
     HoldConnector,

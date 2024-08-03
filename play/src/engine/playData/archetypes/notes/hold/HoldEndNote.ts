@@ -11,14 +11,14 @@ export class HoldEndNote extends HoldNote {
     sprite = skin.sprites.holdTail
     bucket = buckets.holdEndNote
 
-    preprocess() {
-        super.preprocess()
+    // preprocess() {
+    //     super.preprocess()
 
-        // const minPrevInputTime =
-        //     bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
+    //     // const minPrevInputTime =
+    //     //     bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
 
-        // this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
-    }
+    //     // this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
+    // }
     
     touch() {
         const id = this.prevSingleSharedMemory.activatedTouchId
@@ -27,7 +27,7 @@ export class HoldEndNote extends HoldNote {
                 if (touch.id !== id) continue
 
                 if (!touch.ended) {
-                    if (time.now >= (this.targetTime + windows.perfect.max)) return this.complete(this.targetTime + windows.perfect.max - 0.0001)
+                    if (time.now > this.targetTime) return this.complete(this.targetTime)
                     else return queueHold(this.holdImport.prevRef)
                 }
 

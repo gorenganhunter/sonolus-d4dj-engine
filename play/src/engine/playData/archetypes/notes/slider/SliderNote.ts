@@ -14,6 +14,8 @@ export abstract class SliderNote extends Note {
         circular: particle.effects.sliderNoteCircular
     }
 
+    touchOrder = 2
+
     sliderImport = this.defineImport({
         prev: { name: "prev", type: Number },
         next: { name: "next", type: Number },

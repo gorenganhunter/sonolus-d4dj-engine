@@ -72,7 +72,7 @@ export abstract class Note extends Archetype {
 
         this.result.accuracy = windows.good.max
 
-        new Rect({ l: this.import.lane === -3 ? -11.15 : this.import.lane * 2.1 - 1.05 - 0.25, r: this.import.lane === 3 ? 11.15 : this.import.lane * 2.1 + 1.05 + 0.25, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
+        new Rect({ l: this.import.lane === -3 ? -15 : this.import.lane * 2.1 - 2.1, r: this.import.lane === 3 ? 15 : this.import.lane * 2.1 + 2.1, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
     }
 
     preprocess() {

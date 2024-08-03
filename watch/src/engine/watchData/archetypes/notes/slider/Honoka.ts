@@ -2,6 +2,15 @@ import { slider } from "../../../slider.js"
 
 export class Honoka extends SpawnableArchetype({ start: Number, startLane: Number, end: Number, endLane: Number, flick: Boolean }) {
     updated = this.entityMemory(Boolean)
+    scaledTime = this.entityMemory({
+        start: Number,
+        end: Number
+    })
+
+    initialize() {
+        this.scaledTime.start = timeScaleChanges.at(this.spawnData.start).scaledTime
+        this.scaledTime.end = timeScaleChanges.at(this.spawnData.end).scaledTime
+    }
 
     spawnTime() {
         return this.spawnData.start
@@ -12,7 +21,7 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
     }
 
     updateSequential() {
-        slider.position = Math.remap(this.spawnData.start, this.spawnData.end, this.spawnData.startLane, this.spawnData.endLane, time.now) * 2.1
+        slider.position = Math.min(Math.max(this.spawnData.startLane, this.spawnData.endLane), Math.max(Math.min(this.spawnData.startLane, this.spawnData.endLane), Math.remap(this.scaledTime.start, this.scaledTime.end, this.spawnData.startLane, this.spawnData.endLane, time.scaled))) * 2.1
 
         if (this.updated || this.spawnData.flick) return
 

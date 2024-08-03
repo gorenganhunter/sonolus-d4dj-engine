@@ -83,7 +83,7 @@ export class SliderFlickNote extends SliderNote {
 
                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
 
-                if(p > 0) this.complete(time.now)
+                if(p > 0.2) this.complete(time.now)
                 else if(touch.ended) this.incomplete(touch.t)
                 else if (this.hitbox.contains(touch.position)) {
                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
@@ -99,7 +99,7 @@ export class SliderFlickNote extends SliderNote {
                 if(!this.hitbox.contains(touch.position)) continue
 
                 markAsUsed(touch)
-                slider.isUsed = true
+                slider.isUsed = false
                 slider.touch = touch.id
 
                 slider.position = touch.position.x
@@ -134,7 +134,7 @@ export class SliderFlickNote extends SliderNote {
 
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
-        
+        // debug.log(hitTime - this.targetTime)
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }
@@ -142,6 +142,8 @@ export class SliderFlickNote extends SliderNote {
     complete(hitTime: number) {
         this.result.judgment = input.judge(hitTime, this.targetTime, sliderWindows)
         this.result.accuracy = hitTime - this.targetTime
+
+        // debug.log(this.result.accuracy)
 
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000

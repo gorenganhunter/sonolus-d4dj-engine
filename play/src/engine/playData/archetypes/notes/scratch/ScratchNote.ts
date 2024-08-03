@@ -84,17 +84,17 @@ export class ScratchNote extends Note {
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime) return
-// debug.log(this.result.judgment)
+//         if (!this.result.judgment || time.now <= this.targetTime) return
+// // debug.log(this.result.judgment)
 
-        this.playSFX()
-        this.playEffect()
+//         this.playSFX()
+//         this.playEffect()
 
-        this.despawn = true
+//         this.despawn = true
     }
 
     complete(touch: Touch) {
-        this.result.judgment = input.judge(Math.min(Math.max(touch.t, this.targetTime + windows.perfect.min + 0.00001), this.targetTime + windows.perfect.max - 0.00001), this.targetTime, windows)
+        this.result.judgment = input.judge(touch.t, this.targetTime, windows)
         this.result.accuracy = touch.t - this.targetTime
         
         // if (options.sfxEnabled) switch (this.result.judgment) {
@@ -112,10 +112,11 @@ export class ScratchNote extends Note {
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
-        // this.playEffect()
+        this.playSFX()
+        this.playEffect()
 
         claim(touch)
 
-        // this.despawn = true
+        this.despawn = true
     }
 }

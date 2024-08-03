@@ -15,7 +15,7 @@
 // })
 
 
-const minScratchV = 0.05 * screen.w
+// const minScratchV = 0.05 * screen.w
 const minScratchVr = 2
 
 export class ScratchManager extends SpawnableArchetype({}) {
@@ -98,10 +98,13 @@ export const isClaimed = (touch: Touch): boolean => {
     const old = claimed.getValue(id)
     // if (!old.isUsed) return false
 
-    if (touch.position.sub(old.pos).length < minScratchV) return true
+    const v = touch.position.sub(old.pos).length
+    
+    if (v < 0.02 * screen.w) return true
+    // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minScratchVr) return true
-    
+    // 
     if (touch.t - old.t < minScratchDistance) return true
 
     // const { position: pos, dx, dy, vr } = touch
