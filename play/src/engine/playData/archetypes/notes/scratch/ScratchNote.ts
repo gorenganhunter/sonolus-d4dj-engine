@@ -8,7 +8,7 @@ import { Note } from "../Note.js";
 import { effect } from "../../../effect.js";
 import { buckets } from "../../../buckets.js";
 import { windows } from "../../../windows.js";
-import { claim, isClaimed } from "../../ScratchManager.js";
+import { startClaim, claim, isClaimed } from "../../ScratchManager.js";
 import { options } from '../../../../configuration/options.js'
 
 export class ScratchNote extends Note {
@@ -63,7 +63,7 @@ export class ScratchNote extends Note {
                 if(isUsed(touch)) continue
                 if(isClaimed(touch)) continue
 
-                // claim(touch)
+                if (touch.started) startClaim(touch)
                 // debug.log(touch.id)
 
                 this.activatedTouchId = touch.id

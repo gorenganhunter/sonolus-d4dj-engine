@@ -10,6 +10,7 @@ import { sliderWindows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
+import { claim, isClaimed } from "../../Slider.js"
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -76,14 +77,15 @@ export class SliderFlickNote extends SliderNote {
 
         if(this.activatedTouch.id) {
             for (const touch of touches) {
-                if(touch.id !== this.activatedTouch.id) continue
                 if(time.now > this.inputTime.max) return this.incomplete(touch.t)
+                if(touch.id !== this.activatedTouch.id) continue
+                if(isClaimed(touch)) return
 
-                slider.position = touch.position.x
+                // slider.position = touch.position.x
 
                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
-
-                if(p > 0.2) this.complete(time.now)
+//debug.log(p)
+                if(p > 0.2) this.complete(touch)
                 else if(touch.ended) this.incomplete(touch.t)
                 else if (this.hitbox.contains(touch.position)) {
                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
@@ -97,12 +99,12 @@ export class SliderFlickNote extends SliderNote {
                 if(time.now > this.inputTime.max) return this.incomplete(touch.t)
                 if(slider.touch !== touch.id && isUsed(touch)) continue
                 if(!this.hitbox.contains(touch.position)) continue
-
+//debug.log(touch.id)
                 markAsUsed(touch)
                 slider.isUsed = false
                 slider.touch = touch.id
 
-                slider.position = touch.position.x
+                // slider.position = touch.position.x
 
                 this.activatedTouch.id = touch.id
                 touch.position.copyTo(this.activatedTouch.right)
@@ -139,9 +141,9 @@ export class SliderFlickNote extends SliderNote {
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }
 
-    complete(hitTime: number) {
-        this.result.judgment = input.judge(hitTime, this.targetTime, sliderWindows)
-        this.result.accuracy = hitTime - this.targetTime
+    complete(touch: Touch) {
+        this.result.judgment = input.judge(touch.t, this.targetTime, sliderWindows)
+        this.result.accuracy = touch.t - this.targetTime
 
         // debug.log(this.result.accuracy)
 
@@ -150,6 +152,8 @@ export class SliderFlickNote extends SliderNote {
 
         this.playSFX()
         this.playEffect()
+
+        claim(touch)
         
         this.despawn = true
         slider.isUsed = false

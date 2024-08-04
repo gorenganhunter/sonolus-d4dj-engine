@@ -84,6 +84,10 @@ const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i
 
 const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
+export const startClaim = (touch: Touch) => {
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: touch.t })
+}
+
 export const claim = (touch: Touch) => {
     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
 }
@@ -91,6 +95,8 @@ export const claim = (touch: Touch) => {
 const minScratchDistance = 0.1
 
 export const isClaimed = (touch: Touch): boolean => {
+//    debug.log(touch.id)
+    
     const id = claimed.indexOf(touch.id)
 // debug.log(id)
     if (id === -1) return false
@@ -99,18 +105,18 @@ export const isClaimed = (touch: Touch): boolean => {
     // if (!old.isUsed) return false
 
     const v = touch.position.sub(old.pos).length
-    
+//    debug.log(v)
     if (v < 0.02 * screen.w) return true
     // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minScratchVr) return true
     // 
-    if (touch.t - old.t < minScratchDistance) return true
+    if (old.isUsed && touch.t - old.t < minScratchDistance) return true
 
     // const { position: pos, dx, dy, vr } = touch
     // claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
 // debug.log(touch.vr)
-    return vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90
+    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
 }
 
 // export const isUsed = (touch: Touch) => usedTouchIds.has(touch.id)
