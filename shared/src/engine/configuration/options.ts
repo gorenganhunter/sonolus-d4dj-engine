@@ -37,16 +37,16 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit,
     },
-    // laneLength: {
-    //     name: Text.Length,
-    //     type: "slider",
-    //     scope: "d4dj",
-    //     def: 1,
-    //     min: 0,
-    //     max: 1,
-    //     step: 0.01,
-    //     unit: Text.PercentageUnit
-    // },
+    laneLength: {
+        name: Text.Length,
+        type: "slider",
+        scope: "d4dj",
+        def: 1,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     width: {
         name: "Width",
         type: "slider",

@@ -42,6 +42,8 @@ export class BarLine extends Archetype {
         if ((options.backspinAssist ? time.now : time.scaled) > this.visualTime.max) this.despawn = true
         if (this.despawn) return
 
+        if ((options.backspinAssist ? time.now : time.scaled) < this.visualTime.min + ((1 - options.laneLength) * note.duration)) return
+
         const y = approach(this.visualTime.min, this.visualTime.max, (options.backspinAssist ? time.now : time.scaled))
 
         skin.sprites.simLine.draw(perspectiveLayout({ l: -5.25, r: 5.25, t: 0.99, b: 1.01 }).mul(y), 999 - this.targetTime, 1)

@@ -24,7 +24,9 @@ export class Stage extends Archetype {
     updateParallel() {
         // debug.log(time.scaled)
         
-        const t = 0 + note.radius
+        const hidden = approach(0, 1, 1 - options.laneLength)
+
+        const t = 0 + hidden
         const b = 1
 
         skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
@@ -92,7 +94,7 @@ export class Stage extends Archetype {
 
         const visibleTime = {
             min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? time.now : time.scaled /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
         }
 
         const l = {

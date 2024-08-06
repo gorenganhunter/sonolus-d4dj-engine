@@ -159,7 +159,7 @@ export abstract class Note extends Archetype {
         if (this.shouldScheduleSFX && !this.hasSFXScheduled && time.now >= this.scheduleSFXTime) this.scheduleSFX()
         // debug.log(this.import.beat)
 
-        if ((((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min) return
+        if ((((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < (this.visualTime.min + ((1 - options.laneLength) * note.duration))) return
 
         this.y = approach(this.visualTime.min, this.visualTime.max, ((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled)
 

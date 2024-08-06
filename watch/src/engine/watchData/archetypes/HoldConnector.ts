@@ -136,6 +136,8 @@ export class HoldConnector extends Archetype {
     }
 
     updateParallel() {
+        if ((((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min + (1 - options.laneLength) * note.duration) return
+
         this.renderConnector()
         // if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* (this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : */ time.scaled) >= this.scheduleSFXTime) this.scheduleSFX()
 
@@ -220,7 +222,7 @@ export class HoldConnector extends Archetype {
 
         const visibleTime = {
             min: Math.max((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + note.duration),
+            max: Math.min((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + note.duration * options.laneLength),
         }
 
         // debug.log(visibleTime.min)
