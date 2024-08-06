@@ -90,6 +90,8 @@ export class SimLine extends Archetype {
         let r = this.bImport.lane
         if (l > r) [l, r] = [r, l]
 
+        if ((((l === -3 || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min.l + (1 - options.laneLength) * note.duration) && (((r === 3 || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min.r + (1 - options.laneLength) * note.duration)) return
+
         const y = {
             l: approach(this.visualTime.min.l, this.visualTime.max.l, (l === -3 || l === 3 || options.backspinAssist) ? time.now : time.scaled),
             r: approach(this.visualTime.min.r, this.visualTime.max.r, (r === -3 || r === 3 || options.backspinAssist) ? time.now : time.scaled)

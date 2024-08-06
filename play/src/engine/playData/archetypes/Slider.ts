@@ -85,7 +85,7 @@ export class Slider extends SpawnableArchetype({}) {
 
         const visibleTime = {
             min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ (options.backspinAssist ? time.now : time.scaled) /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
         }
 
         const l = {
@@ -128,4 +128,20 @@ export class Slider extends SpawnableArchetype({}) {
     getR(time2: number) {
         return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
     }
+}
+
+const minSliderFlickDistance = 0.1
+
+const claimed = levelMemory(Dictionary(16, TouchId, { t: Number }))
+
+export const claim = (touch: Touch) => claimed.set(touch.id, { t: touch.t })
+
+export const isClaimed = (touch: Touch) => {
+    const id = claimed.indexOf(touch.id)
+    
+    if (id === -1) return false
+
+    const old = claimed.getValue(id)
+
+    return touch.t - old.t < minSliderFlickDistance ? true : false
 }

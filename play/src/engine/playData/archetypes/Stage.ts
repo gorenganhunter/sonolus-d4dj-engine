@@ -1,4 +1,4 @@
-import { perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
+import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
@@ -62,7 +62,9 @@ export class Stage extends Archetype {
         //     b: 1 + note.radius / 4,
         // })
 
-        const t = 0 + note.radius
+        const hidden = approach(0, 1, 1 - options.laneLength)
+
+        const t = 0 + hidden
         const b = 1
 
         skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)

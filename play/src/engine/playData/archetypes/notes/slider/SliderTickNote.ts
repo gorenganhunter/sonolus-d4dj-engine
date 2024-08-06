@@ -8,6 +8,7 @@ import { slider } from "../../../slider.js";
 import { sliderWindows, windows } from "../../../windows.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
+import { isUsed, markAsUsed } from "../../InputManager.js";
 
 export class SliderTickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -27,7 +28,7 @@ export class SliderTickNote extends SliderNote {
 
     initialize() {
         super.initialize()
-        new Rect({ l: this.import.lane * 2.1 - 2.11, r: this.import.lane * 2.1 + 2.11, b: 1 + (sliderWindows.good.max / note.duration), t: 1 - (sliderWindows.good.max / note.duration) }).transform(skin.transform).copyTo(this.hitbox)
+        new Rect({ l: this.import.lane * 2.1 - 2.1, r: this.import.lane * 2.1 + 2.1, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.used = false
         
         if(this.sliderImport.next) {
@@ -37,11 +38,33 @@ export class SliderTickNote extends SliderNote {
         }
     }
 
-    touch() {}
+    touch() {
+        if (time.now < this.targetTime - sliderWindows.good.max) return
+        if (time.now > this.targetTime + sliderWindows.good.max) return
+
+        for (const touch of touches) {
+            if (isUsed(touch)) continue
+            if (!this.hitbox.contains(touch)) continue
+
+            markAsUsed(touch)
+            slider.touch = touch.id
+
+            // const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
+            // const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
+            // 
+            // slider.position = sliderPos
+
+            // debug.log(touch.id)
+
+            // const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
+            // const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
+
+            // slider.position = sliderPos
+        }
+    }
 
     updateSequential() {
         super.updateSequential()
-        if(this.sliderImport.next) this.renderConnector()
         if (time.now < this.targetTime - sliderWindows.good.max) return
         if (time.now > this.targetTime + sliderWindows.good.max) return this.incomplete(time.now)
 
@@ -49,9 +72,16 @@ export class SliderTickNote extends SliderNote {
             if (time.now < this.targetTime) {
                 this.used = true
             } else {
-                this.complete(time.now)
+                this.complete(this.targetTime)
             }
         } else if (this.used) this.complete(time.now)
+    }
+
+    updateParallel() {
+        super.updateParallel()
+
+        if (((options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min + (1 - options.laneLength) * note.duration) return
+        if(this.sliderImport.next) this.renderConnector()
     }
     
     incomplete(hitTime: number) {
@@ -93,7 +123,7 @@ export class SliderTickNote extends SliderNote {
 
         const visibleTime = {
             min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
         }
         
         const l = {
