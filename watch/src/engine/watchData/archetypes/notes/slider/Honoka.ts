@@ -1,3 +1,4 @@
+import { options } from "../../../../configuration/options.js"
 import { slider } from "../../../slider.js"
 
 export class Honoka extends SpawnableArchetype({ start: Number, startLane: Number, end: Number, endLane: Number, flick: Boolean }) {
@@ -8,6 +9,8 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
     })
 
     initialize() {
+        if (options.mirror && !this.spawnData.flick) this.spawnData.endLane *= -1
+
         this.scaledTime.start = timeScaleChanges.at(this.spawnData.start).scaledTime
         this.scaledTime.end = timeScaleChanges.at(this.spawnData.end).scaledTime
     }

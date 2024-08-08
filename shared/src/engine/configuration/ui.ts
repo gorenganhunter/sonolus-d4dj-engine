@@ -1,6 +1,7 @@
 import { EngineConfigurationUI } from '@sonolus/core'
 
 export const ui: EngineConfigurationUI = {
+    scope: "d4dj",
     primaryMetric: 'arcade',
     secondaryMetric: 'life',
     menuVisibility: {
@@ -40,30 +41,30 @@ export const ui: EngineConfigurationUI = {
             from: 1,
             to: 1,
             duration: 0,
-            ease: 'none',
+            ease: 'linear',
         },
         alpha: {
             from: 1,
-            to: 1,
-            duration: 0,
-            ease: 'none',
+            to: 0,
+            duration: 0.2,
+            ease: 'inQuart',
         },
     },
     comboAnimation: {
         scale: {
-            from: 1,
+            from: 1.2,
             to: 1,
-            duration: 0,
-            ease: 'none',
+            duration: 0.2,
+            ease: 'inBack',
         },
         alpha: {
             from: 1,
             to: 1,
             duration: 0,
-            ease: 'none',
+            ease: 'linear',
         },
     },
-    judgmentErrorStyle: 'none',
+    judgmentErrorStyle: 'arrowDown',
     judgmentErrorPlacement: 'both',
-    judgmentErrorMin: 0,
+    judgmentErrorMin: 25,
 }

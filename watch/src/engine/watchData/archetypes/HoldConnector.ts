@@ -221,7 +221,7 @@ export class HoldConnector extends Archetype {
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + hiddenDuration),
+            min: Math.max((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : time.now > this.head.time ? time.scaled : this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + hiddenDuration),
             max: Math.min((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + note.duration * options.laneLength),
         }
 
@@ -268,8 +268,8 @@ export class HoldConnector extends Archetype {
         skin.sprites.draw(
             this.sprite.slide,
             perspectiveLayout({
-                l: this.getL(time.now) - 0.25,
-                r: this.getR(time.now) + 0.25,
+                l: this.getLane(((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled)) - 1.05 * options.noteSize,
+                r: this.getLane(((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled)) + 1.05 * options.noteSize,
                 b: this.slide.b,
                 t: this.slide.t,
             }),
@@ -283,14 +283,14 @@ export class HoldConnector extends Archetype {
     }
 
     getLane(time: number) {
-        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.lane, this.tail.lane, time)
+        return Math.min(Math.max(this.head.lane, this.tail.lane), Math.max(Math.min(this.head.lane, this.tail.lane), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.lane, this.tail.lane, time)))
     }
 
     getL(time: number) {
-        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.l, this.tail.l, time)
+        return Math.min(Math.max(this.head.l, this.tail.l), Math.max(Math.min(this.head.l, this.tail.l), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.l, this.tail.l, time)))
     }
 
     getR(time: number) {
-        return Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.r, this.tail.r, time)
+        return Math.min(Math.max(this.head.r, this.tail.r), Math.max(Math.min(this.head.r, this.tail.r), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.r, this.tail.r, time)))
     }
 }

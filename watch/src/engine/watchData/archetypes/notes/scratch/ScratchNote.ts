@@ -27,16 +27,26 @@ export class ScratchNote extends Note {
     // activatedTouchId = this.entityMemory(TouchId)
     touchPos = this.entityMemory(Vec)
     arrowPosition = this.entityMemory(Quad)
+    sprites = this.entityMemory({
+        note: SkinSpriteId,
+        arrow: SkinSpriteId
+    })
     
     // playEffect() {
     //     particle.effects.scratch.spawn(this.notePosition, 0.2, false)
     //     particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     // }
 
+    preprocess() {
+        super.preprocess()
+
+        this.sprites.note = skin.sprites.scratch.exists ? skin.sprites.scratch.id : skin.sprites.scratchFallback.id
+        this.sprites.arrow = skin.sprites.scratchArrow.exists ? skin.sprites.scratchArrow.id : skin.sprites.scratchArrowFallback.id
+    }
+
     drawNote() {
-        // this.y = approach(this.visualTime.min, this.visualTime.max, time.now - this.targetTime + this.visualTime.max)
-        super.drawNote()
-        skin.sprites.scratchArrow.draw(this.arrowPosition.mul(this.y), this.z + 1, 1)
+        skin.sprites.draw(this.sprites.note, this.notePosition.mul(this.y), this.z, 1)
+        skin.sprites.draw(this.sprites.arrow, this.arrowPosition.mul(this.y), this.z + 1, 1)
     }
 
     // touch() {

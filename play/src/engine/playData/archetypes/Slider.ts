@@ -16,6 +16,11 @@ export class Slider extends SpawnableArchetype({}) {
         scaledTime: Number
     })
 
+    sprites = this.entityMemory({
+        slider: SkinSpriteId,
+        sliderBar: SkinSpriteId
+    })
+
     touch() {
         for (const touch of touches) {
             if (isUsed(touch) && (slider.touch !== touch.id)) continue
@@ -39,8 +44,8 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     updateParallel() {
-        skin.sprites.sliderBar.draw(perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-        skin.sprites.slider.draw(perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
         if(slider.isUsed) this.renderSlider()
     }
 
@@ -68,15 +73,11 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     initialize() {
+        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
+        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
         new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
     }
 
-    // preprocess() {
-    //     slider.next.beat = 999999
-    //     slider.isUsed = false
-    //     slider.next.lane = -2
-    // }
-    
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
         this.next.time = bpmChanges.at(slider.next.beat).time

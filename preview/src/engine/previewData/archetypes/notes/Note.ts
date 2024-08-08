@@ -17,7 +17,7 @@ export abstract class Note extends Archetype {
         chart.beats = Math.max(chart.beats, this.import.beat)
         chart.duration = Math.max(chart.duration, bpmChanges.at(this.import.beat).time)
 
-        // if (options.mirror) this.import.lane *= -1
+        if (options.mirror) this.import.lane *= -1
     }
 
     render() {

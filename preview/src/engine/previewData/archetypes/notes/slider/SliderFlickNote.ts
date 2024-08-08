@@ -8,6 +8,12 @@ export class SliderFlickNote extends SliderNote {
         direction: { name: "direction", type: Number }
     })
 
+    preprocess() {
+        super.preprocess()
+
+        if (options.mirror) this.sliderImport.direction *= -1
+    }
+
     render() {
         const { time, pos } = super.render()
         

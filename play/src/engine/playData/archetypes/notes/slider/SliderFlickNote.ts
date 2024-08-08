@@ -31,6 +31,12 @@ export class SliderFlickNote extends SliderNote {
         left: Vec
     })
 
+    preprocess() {
+        super.preprocess()
+
+        if (options.mirror) this.sliderImport.direction *= -1
+    }
+
     initialize() {
         super.initialize()
 

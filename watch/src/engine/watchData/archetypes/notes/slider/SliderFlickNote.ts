@@ -32,6 +32,12 @@ export class SliderFlickNote extends SliderNote {
 
     used = this.entityMemory(Boolean)
 
+    preprocess() {
+        if (options.mirror) this.sliderImport.direction *= -1
+        
+        super.preprocess()
+    }
+
     initialize() {
         super.initialize()
 
@@ -120,8 +126,8 @@ export class SliderFlickNote extends SliderNote {
     //     // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     // }
 
-    updateSequential() {
-        super.updateSequential()
+    // updateSequential() {
+    //     super.updateSequential()
         // if (time.now < this.targetTime/*  - sliderWindows.good.max */) return
         // if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
 
@@ -130,7 +136,7 @@ export class SliderFlickNote extends SliderNote {
 
         // this.used = true
         // this.complete()
-    }
+    // }
 
     // incomplete(hitTime: number) {
     //     super.incomplete(hitTime)

@@ -78,6 +78,8 @@ export abstract class Note extends Archetype {
     }
 
     preprocess() {
+        if (options.mirror) this.import.lane *= -1
+
         this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.visualTime.max = (this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
