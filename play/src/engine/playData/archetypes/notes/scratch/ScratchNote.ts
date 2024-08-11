@@ -94,7 +94,7 @@ export class ScratchNote extends Note {
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime) return
+        if (!this.result.judgment || time.now <= this.targetTime + windows.perfect.min) return
 // // debug.log(this.result.judgment)
 
         this.playSFX()

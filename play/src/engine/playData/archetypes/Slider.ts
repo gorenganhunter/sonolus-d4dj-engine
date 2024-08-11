@@ -131,11 +131,20 @@ export class Slider extends SpawnableArchetype({}) {
     }
 }
 
+const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
+
 const minSliderFlickDistance = 0.1
+const minSliderFlickVr = 2
 
-const claimed = levelMemory(Dictionary(16, TouchId, { t: Number }))
+const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
-export const claim = (touch: Touch) => claimed.set(touch.id, { t: touch.t })
+export const startClaim = (touch: Touch) => {
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: touch.t })
+}
+
+export const claim = (touch: Touch) => {
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
+}
 
 export const isClaimed = (touch: Touch) => {
     const id = claimed.indexOf(touch.id)
@@ -144,5 +153,14 @@ export const isClaimed = (touch: Touch) => {
 
     const old = claimed.getValue(id)
 
-    return touch.t - old.t < minSliderFlickDistance ? true : false
+    const v = touch.position.sub(old.pos).length
+//    debug.log(v)
+    if (v < 0.02 * screen.w) return true
+    // if ((v || 0) < minScratchV) return true
+
+    if (touch.vr < minSliderFlickVr) return true
+
+    if (old.isUsed && touch.t - old.t < minSliderFlickDistance) return true
+    
+    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
 }
