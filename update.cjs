@@ -1,7 +1,7 @@
 const hash = require("@sonolus/core")
 const fs = require("fs")
 
-const package = require("./package.json")
+const pkg = require("./package.json")
 
 const engine = {
     name: 'd4dj',
@@ -12,7 +12,7 @@ const engine = {
     tags: [],
     description: {
         en: 'A recreation of D4DJ Groovy Mix engine in Sonolus.\n' +
-            `Version: ${package.version}\n` +
+            `Version: ${pkg.version}\n` +
             '\n' +
             'Github Repository\n' +
             'https://github.com/gorenganhunter/sonolus-d4dj-engine'
