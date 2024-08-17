@@ -1,0 +1,58 @@
+name: Sync Engine Build
+
+on: [workflow_dispatch, push]
+
+jobs:
+  master:
+    name: Update Master
+
+    runs-on: ubuntu-20.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone D4DJ Private Data
+        env:
+          TOKEN: ${{ secrets.GH_TOKEN }}
+        run: git clone "https://gorenganhunter:$TOKEN@github.com/gorenganhunter/d4dj-private-data.git"
+       
+      - name: Clone D4DJ Server
+        env:
+          TOKEN: ${{ secrets.GH_TOKEN }}
+        run: git clone "https://gorenganhunter:$TOKEN@github.com/gorenganhunter/d4dj-server.git"
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build engine
+        run: npm run build
+
+      - name: Update build
+        run: node update.cjs
+
+      - name: Preparing Git
+        run: |
+          git config --global user.name "gorenganhunter"
+          git config --global user.email "gorengandev@gmail.com"
+
+      - name: Push Data
+        run: |
+          cd d4dj-private-data
+          git add .
+          git commit -m "Auto Update"
+          git push
+      
+      - name: Push Server
+        run: |
+          cd d4dj-server
+          git add .
+          git commit -m "Auto Update"
+          git push
