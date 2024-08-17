@@ -16,6 +16,11 @@ export class Slider extends SpawnableArchetype({}) {
         scaledTime: Number
     })
 
+    sprites = this.entityMemory({
+        slider: SkinSpriteId,
+        sliderBar: SkinSpriteId
+    })
+
     touch() {
         for (const touch of touches) {
             if (isUsed(touch) && (slider.touch !== touch.id)) continue
@@ -39,8 +44,8 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     updateParallel() {
-        skin.sprites.sliderBar.draw(perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-        skin.sprites.slider.draw(perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
         if(slider.isUsed) this.renderSlider()
     }
 
@@ -68,15 +73,11 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     initialize() {
+        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
+        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
         new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
     }
 
-    // preprocess() {
-    //     slider.next.beat = 999999
-    //     slider.isUsed = false
-    //     slider.next.lane = -2
-    // }
-    
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
         this.next.time = bpmChanges.at(slider.next.beat).time
@@ -130,11 +131,20 @@ export class Slider extends SpawnableArchetype({}) {
     }
 }
 
+const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
+
 const minSliderFlickDistance = 0.1
+const minSliderFlickVr = 2
 
-const claimed = levelMemory(Dictionary(16, TouchId, { t: Number }))
+const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
-export const claim = (touch: Touch) => claimed.set(touch.id, { t: touch.t })
+export const startClaim = (touch: Touch) => {
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: touch.t })
+}
+
+export const claim = (touch: Touch) => {
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
+}
 
 export const isClaimed = (touch: Touch) => {
     const id = claimed.indexOf(touch.id)
@@ -143,5 +153,14 @@ export const isClaimed = (touch: Touch) => {
 
     const old = claimed.getValue(id)
 
-    return touch.t - old.t < minSliderFlickDistance ? true : false
+    const v = touch.position.sub(old.pos).length
+//    debug.log(v)
+    if (v < 0.02 * screen.w) return true
+    // if ((v || 0) < minScratchV) return true
+
+    if (touch.vr < minSliderFlickVr) return true
+
+    if (old.isUsed && touch.t - old.t < minSliderFlickDistance) return true
+    
+    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
 }

@@ -6,6 +6,7 @@ import { layer, line, skin } from '../skin.js'
 
 export class Stage extends Archetype {
     preprocessOrder = 1
+    
     preprocess() {
         canvas.set({
             scroll: Scroll.LeftToRight,
@@ -25,13 +26,15 @@ export class Stage extends Archetype {
     }
 
     renderPanels() {
+        const line = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.lineFallback.id
         for (let i = 0; i < panel.count; i++) {
             const x = i * panel.w
 
             const b = 0
             const t = panel.h
 
-            skin.sprites.line.draw(
+            skin.sprites.draw(
+                line,
                 new Rect({
                     l: x - 3.55,
                     r: x - 3.45,
@@ -41,7 +44,8 @@ export class Stage extends Archetype {
                 layer.stage + 1,
                 1,
             )
-            skin.sprites.line.draw(
+            skin.sprites.draw(
+                line,
                 new Rect({
                     l: x + 3.45,
                     r: x + 3.55,
@@ -70,7 +74,7 @@ export class Stage extends Archetype {
                     t,
                 })
 
-                skin.sprites.line.draw(layout, layer.stage + 1, 1)
+                skin.sprites.draw(line, layout, layer.stage + 1, 1)
             }
         }
     }

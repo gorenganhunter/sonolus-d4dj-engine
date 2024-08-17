@@ -10,6 +10,14 @@ import { claim, isClaimed } from './ScratchManager.js'
 export class Stage extends Archetype {
     touchOrder = 3
 
+    sprites = this.entityMemory({
+        line: SkinSpriteId,
+    })
+    
+    preprocess() {
+        this.sprites.line = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.lineFallback.id
+    }
+
     getLane(touch: Touch) {
         const x = touch.position.x
         const l = x / screen.h * 10.75 / options.width / 2.1
@@ -67,12 +75,13 @@ export class Stage extends Archetype {
         const t = 0 + hidden
         const b = 1
 
-        skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
-        skin.sprites.line.draw(perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.line, perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.line, perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
         skin.sprites.borderBottom.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1.01, t: 0.99 }), 2, 1)
 
         for (let i = -3; i <= 3; i++) {
-            if (i < 3) skin.sprites.line.draw(
+            if (i < 3) skin.sprites.draw(
+                this.sprites.line,
                 perspectiveLayout({ l: i * 2.1 + 1.05 - 0.08, r: i * 2.1 + 1.05 + 0.08, b, t }),
                 2,
                 options.lineOpacity,

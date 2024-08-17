@@ -28,7 +28,7 @@ export class SliderTickNote extends SliderNote {
 
     initialize() {
         super.initialize()
-        new Rect({ l: this.import.lane * 2.1 - 2.1, r: this.import.lane * 2.1 + 2.1, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
+        new Rect({ l: this.import.lane * 2.1 - 2.2, r: this.import.lane * 2.1 + 2.2, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.used = false
         
         if(this.sliderImport.next) {

@@ -6,11 +6,11 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { getZ, skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { sliderWindows } from "../../../windows.js";
+import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
-import { claim, isClaimed } from "../../Slider.js"
+import { claim, isClaimed, startClaim } from "../../Slider.js"
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -30,6 +30,12 @@ export class SliderFlickNote extends SliderNote {
         right: Vec,
         left: Vec
     })
+
+    preprocess() {
+        super.preprocess()
+
+        if (options.mirror) this.sliderImport.direction *= -1
+    }
 
     initialize() {
         super.initialize()
@@ -99,8 +105,11 @@ export class SliderFlickNote extends SliderNote {
                 if(time.now > this.inputTime.max) return this.incomplete(touch.t)
                 if(slider.touch !== touch.id && isUsed(touch)) continue
                 if(!this.hitbox.contains(touch.position)) continue
+                if(isClaimed(touch)) continue
 //debug.log(touch.id)
                 markAsUsed(touch)
+                startClaim(touch)
+                
                 slider.isUsed = false
                 slider.touch = touch.id
 
@@ -133,6 +142,18 @@ export class SliderFlickNote extends SliderNote {
         super.updateSequential()
         if (time.now > this.inputTime.max) this.incomplete(time.now)
     }
+    
+    updateParallel() {
+        super.updateParallel()
+
+        if (!this.result.judgment || time.now <= this.targetTime + windows.perfect.min) return
+// // debug.log(this.result.judgment)
+
+        this.playSFX()
+        this.playEffect()
+
+        this.despawn = true
+    }
 
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
@@ -142,7 +163,7 @@ export class SliderFlickNote extends SliderNote {
     }
 
     complete(touch: Touch) {
-        this.result.judgment = input.judge(touch.t, this.targetTime, sliderWindows)
+        this.result.judgment = input.judge(Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max), this.targetTime + windows.perfect.min), this.targetTime, windows)
         this.result.accuracy = touch.t - this.targetTime
 
         // debug.log(this.result.accuracy)
@@ -150,12 +171,11 @@ export class SliderFlickNote extends SliderNote {
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
-        this.playSFX()
-        this.playEffect()
+        // this.playSFX()
+        // this.playEffect()
 
         claim(touch)
         
-        this.despawn = true
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }

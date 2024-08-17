@@ -10,7 +10,7 @@ export class Initialization extends Archetype {
         const noteRadius = 0.05 * options.noteSize
         const judgeLineY = -0.5
 
-        const t = screen.t * 7 / 9 + noteRadius
+        const t = screen.t * 4 / 5
         const b = judgeLineY
         const h = t - b
 
@@ -26,7 +26,7 @@ export class Initialization extends Archetype {
         })
 
         note.radius = noteRadius / h
-        note.duration = (12 - options.noteSpeed) / 3
+        note.duration = (12.5 - options.noteSpeed) / 3
         slider.isUsed = false
         slider.next.beat = 99999999
 

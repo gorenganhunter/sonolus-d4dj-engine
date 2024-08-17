@@ -13,12 +13,24 @@ export class Stage extends Archetype {
         scaledTime: Number
     })
 
+    sprites = this.entityMemory({
+        line: SkinSpriteId,
+        slider: SkinSpriteId,
+        sliderBar: SkinSpriteId
+    })
+
     spawnTime() {
         return -999999
     }
 
     despawnTime() {
         return 999999
+    }
+
+    preprocess() {
+        this.sprites.line = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.lineFallback.id
+        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
+        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
     }
 
     updateParallel() {
@@ -29,12 +41,13 @@ export class Stage extends Archetype {
         const t = 0 + hidden
         const b = 1
 
-        skin.sprites.line.draw(perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
-        skin.sprites.line.draw(perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.line, perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.line, perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
         skin.sprites.borderBottom.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1.01, t: 0.99 }), 2, 1)
 
         for (let i = -3; i <= 3; i++) {
-            if (i < 3) skin.sprites.line.draw(
+            if (i < 3) skin.sprites.draw(
+                this.sprites.line,
                 perspectiveLayout({ l: i * 2.1 + 1.05 - 0.08, r: i * 2.1 + 1.05 + 0.08, b, t }),
                 2,
                 options.lineOpacity,
@@ -54,8 +67,8 @@ export class Stage extends Archetype {
 
         skin.sprites.lane.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1, t }), 0, options.opacity)
         
-        skin.sprites.sliderBar.draw(perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-        skin.sprites.slider.draw(perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
         
         if(slider.isUsed) this.renderSlider()
     }

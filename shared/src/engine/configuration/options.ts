@@ -18,6 +18,11 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 0
     },
+    mirror: {
+        name: Text.Mirror,
+        type: 'toggle',
+        def: 0,
+    },
     noteSpeed: {
         name: Text.NoteSpeed,
         type: "slider",

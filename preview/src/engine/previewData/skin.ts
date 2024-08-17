@@ -7,6 +7,7 @@ export const skin = defineSkin({
         lane: SkinSpriteName.Lane,
         slot: SkinSpriteName.NoteSlot,
         line: "DJ Line",
+        lineFallback: SkinSpriteName.SimultaneousConnectionNeutral,
         simLine: SkinSpriteName.SimultaneousConnectionNeutral,
 
         borderBottom: SkinSpriteName.StageBottomBorder,
@@ -20,6 +21,8 @@ export const skin = defineSkin({
 
         scratch: "DJ Scratch Note",
         scratchArrow: "DJ Scratch Arrow",
+        scratchFallback: SkinSpriteName.NoteHeadGreen,
+        scratchArrowFallback: SkinSpriteName.DirectionalMarkerGreen,
 
         stopHead: SkinSpriteName.NoteHeadRed,
         stopTail: SkinSpriteName.NoteTailRed,
@@ -29,7 +32,9 @@ export const skin = defineSkin({
         sliderConnector: SkinSpriteName.NoteConnectionPurple,
         sliderArrow: SkinSpriteName.DirectionalMarkerPurple,
         slider: "DJ Slider",
-        sliderBar: "DJ Slider Bar"
+        sliderBar: "DJ Slider Bar",
+        sliderFallback: SkinSpriteName.NoteHeadNeutral,
+        sliderBarFallback: SkinSpriteName.GridNeutral
     },
 })
 

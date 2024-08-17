@@ -76,6 +76,8 @@ export abstract class Note extends Archetype {
     }
 
     preprocess() {
+        if (options.mirror) this.import.lane *= -1
+
         this.targetTime = bpmChanges.at(this.import.beat).time
 
         this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
