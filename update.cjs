@@ -1,4 +1,4 @@
-const hash = require("@sonolus/core")
+const { hash } = require("@sonolus/core")
 const fs = require("fs")
 
 const pkg = require("./package.json")
