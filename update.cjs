@@ -55,7 +55,7 @@ const files = {
     configuration: "./dist/EngineConfiguration"
 }
 
-for await (const file of Object.keys(files)) {
+for (const file of Object.keys(files)) {
     const path = files[file]
     const buffer = fs.readFileSync(path)
     const hashed = hash(buffer)
