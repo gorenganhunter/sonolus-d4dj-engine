@@ -126,7 +126,7 @@ export class HoldConnector extends Archetype {
             return
         }
 
-        // if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : */ time.scaled) >= this.scheduleSFXTime) this.scheduleSFX()
+        if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : */ time.now) >= this.scheduleSFXTime) this.scheduleSFX()
 
         if ((((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min + (1 - options.laneLength) * note.duration) return
 

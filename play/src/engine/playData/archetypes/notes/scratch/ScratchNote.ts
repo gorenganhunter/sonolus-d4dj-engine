@@ -70,10 +70,12 @@ export class ScratchNote extends Note {
             for (const touch of touches) {
                 if(!this.hitbox.contains(touch.position)) continue
                 if(!this.hitbox.contains(touch.startPosition)) continue
-                if(isUsed(touch)) continue
-                if(isClaimed(touch)) continue
+                if(isUsed(touch) && isClaimed(touch)) continue
 
-                if (touch.started) startClaim(touch)
+                if (touch.started) {
+                    startClaim(touch)
+                    markAsUsed(touch)
+                }
                 // debug.log(touch.id)
 
                 this.activatedTouchId = touch.id
@@ -104,8 +106,9 @@ export class ScratchNote extends Note {
     }
 
     complete(touch: Touch) {
-        this.result.judgment = input.judge(Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max), this.targetTime + windows.perfect.min), this.targetTime, windows)
-        this.result.accuracy = touch.t - this.targetTime
+        const t = Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max / 2), this.targetTime + windows.perfect.min / 2)
+        this.result.judgment = input.judge(t, this.targetTime, windows)
+        this.result.accuracy = t - this.targetTime
         
         // if (options.sfxEnabled) switch (this.result.judgment) {
         //     case Judgment.Perfect:

@@ -4,8 +4,8 @@ import { effect } from '../effect.js'
 import { note } from '../note.js'
 import { particle } from '../particle.js'
 import { skin } from '../skin.js'
-import { isUsed } from './InputManager.js'
-import { claim, isClaimed } from './ScratchManager.js'
+import { isUsed, markAsUsed } from './InputManager.js'
+import { claim, isClaimed, startClaim } from './ScratchManager.js'
 
 export class Stage extends Archetype {
     touchOrder = 3
@@ -29,26 +29,38 @@ export class Stage extends Archetype {
             const lane = this.getLane(touch)
             const t = 1 - note.radius
             const b = 1 + note.radius
+                
+            // if (!(isUsed(touch) && isClaimed(touch)) && (lane === 3 || lane === -3) && (startLane === 3 || startLane === -3)) {
+            //     // particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+            //     if (touch.started) {
+            //         startClaim(touch)
+            //         markAsUsed(touch)
+            //     }
+            //     else {
+            //         claim(touch)
+            //         if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
+            //         if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+            //         debug.log(time.scaled)
+            //     }
+            //     return
+            // }
 
             if (isUsed(touch)) continue
 
             if (!touch.started) continue
-                // if (!isClaimed(touch) && (lane === 3 || lane === -3)) {
-                //     effect.clips.scratchEmpty.play(0.02)
-                //     particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
-                //     claim(touch)
-                // }
 
             // const lane = this.getLane(touch)
             // const t = 1 - note.radius * 2
             // const b = 1 + note.radius
 
-            if (options.sfxEnabled) {
-                if (lane < 3 && lane > -3) effect.clips.tapEmpty.play(0.02)
+            
+            if (lane < 3 && lane > -3) {
+                if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
                 // else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
+            } else {
+                if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
             }
             if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
-
             return
         }
     }

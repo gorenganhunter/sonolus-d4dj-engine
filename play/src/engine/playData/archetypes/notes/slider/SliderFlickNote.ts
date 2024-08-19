@@ -163,8 +163,9 @@ export class SliderFlickNote extends SliderNote {
     }
 
     complete(touch: Touch) {
-        this.result.judgment = input.judge(Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max), this.targetTime + windows.perfect.min), this.targetTime, windows)
-        this.result.accuracy = touch.t - this.targetTime
+        const t = Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max / 2), this.targetTime + windows.perfect.min / 2)
+        this.result.judgment = input.judge(t, this.targetTime, windows)
+        this.result.accuracy = t - this.targetTime
 
         // debug.log(this.result.accuracy)
 
