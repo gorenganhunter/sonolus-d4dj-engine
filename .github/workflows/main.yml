@@ -4,7 +4,7 @@ on: [workflow_dispatch, push]
 
 jobs:
   master:
-    name: Update Master
+    name: Update Build
 
     runs-on: ubuntu-20.04
 

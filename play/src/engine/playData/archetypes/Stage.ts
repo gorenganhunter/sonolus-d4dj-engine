@@ -57,10 +57,11 @@ export class Stage extends Archetype {
             if (lane < 3 && lane > -3) {
                 if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
                 // else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
-            } else {
+                if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+            } else if (!isClaimed(touch)) {
                 if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
+                if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
             }
-            if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
             return
         }
     }

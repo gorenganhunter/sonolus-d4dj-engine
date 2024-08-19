@@ -4,6 +4,7 @@ import { skin } from "../skin.js";
 import { slider } from "../slider.js";
 import { isUsed, markAsUsed } from "./InputManager.js";
 import { options } from '../../configuration/options.js'
+import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
 
 export class Slider extends SpawnableArchetype({}) {
     sliderBox = this.entityMemory(Rect)
@@ -23,7 +24,7 @@ export class Slider extends SpawnableArchetype({}) {
 
     touch() {
         for (const touch of touches) {
-            if (isUsed(touch) && (slider.touch !== touch.id)) continue
+            if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) continue
 // debug.log(isUsed(touch))
             
             if ((slider.touch !== touch.id) && !this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) continue

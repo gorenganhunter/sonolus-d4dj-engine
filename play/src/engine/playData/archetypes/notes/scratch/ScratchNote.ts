@@ -70,11 +70,12 @@ export class ScratchNote extends Note {
             for (const touch of touches) {
                 if(!this.hitbox.contains(touch.position)) continue
                 if(!this.hitbox.contains(touch.startPosition)) continue
-                if(isUsed(touch) && isClaimed(touch)) continue
+                if(isUsed(touch)) continue
+                if(isClaimed(touch)) continue
 
                 if (touch.started) {
                     startClaim(touch)
-                    markAsUsed(touch)
+                    // markAsUsed(touch)
                 }
                 // debug.log(touch.id)
 
