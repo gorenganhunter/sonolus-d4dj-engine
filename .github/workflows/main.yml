@@ -1,6 +1,10 @@
 name: Sync Engine Build
 
-on: [workflow_dispatch, push]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   master:

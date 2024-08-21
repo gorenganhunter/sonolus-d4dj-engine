@@ -55,10 +55,13 @@ const files = {
     configuration: "./dist/EngineConfiguration"
 }
 
+const db = require("./d4dj-server/pack/db.json")
+
 for (const file of Object.keys(files)) {
     const path = files[file]
     const buffer = fs.readFileSync(path)
     const hashed = hash(buffer)
+    fs.rmSync(`./d4dj-private-data/${db.engines[0][file].hash}`)
     fs.writeFileSync(`./d4dj-private-data/${hashed}`, buffer)
     engine[file] = {
         hash: hashed,
@@ -72,12 +75,8 @@ const version = {
 
 fs.writeFileSync("./d4dj-private-data/version.json", JSON.stringify(version))
 
-const db = require("./d4dj-server/pack/db.json")
-
 db.engines[0] = engine
 
 fs.writeFileSync("./d4dj-server/pack/db.json", JSON.stringify(db))
-
-version.last_updated = new Date().toISOString()
 
 fs.writeFileSync("./d4dj-server/version.json", JSON.stringify(version))
