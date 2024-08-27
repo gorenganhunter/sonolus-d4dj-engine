@@ -1,7 +1,8 @@
 import { options } from "../../../../configuration/options.js"
 import { slider } from "../../../slider.js"
+import { timeToScaledTime } from "../../timeScale.js"
 
-export class Honoka extends SpawnableArchetype({ start: Number, startLane: Number, end: Number, endLane: Number, flick: Boolean }) {
+export class Honoka extends SpawnableArchetype({ start: Number, startLane: Number, startTSG: Number, end: Number, endLane: Number, endTSG: Number, flick: Boolean }) {
     updated = this.entityMemory(Boolean)
     scaledTime = this.entityMemory({
         start: Number,
@@ -11,8 +12,8 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
     initialize() {
         if (options.mirror && !this.spawnData.flick) this.spawnData.endLane *= -1
 
-        this.scaledTime.start = timeScaleChanges.at(this.spawnData.start).scaledTime
-        this.scaledTime.end = timeScaleChanges.at(this.spawnData.end).scaledTime
+        this.scaledTime.start = options.backspinAssist ? this.spawnData.start : timeToScaledTime(this.spawnData.start, this.spawnData.startTSG)
+        this.scaledTime.end = options.backspinAssist ? this.spawnData.end : timeToScaledTime(this.spawnData.end, this.spawnData.endTSG)
     }
 
     spawnTime() {
@@ -24,7 +25,8 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
     }
 
     updateSequential() {
-        slider.position = Math.min(Math.max(this.spawnData.startLane, this.spawnData.endLane), Math.max(Math.min(this.spawnData.startLane, this.spawnData.endLane), Math.remap(this.scaledTime.start, this.scaledTime.end, this.spawnData.startLane, this.spawnData.endLane, time.scaled))) * 2.1
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.spawnData.startTSG)
+        slider.position = Math.min(Math.max(this.spawnData.startLane, this.spawnData.endLane), Math.max(Math.min(this.spawnData.startLane, this.spawnData.endLane), Math.remap(this.scaledTime.start, this.scaledTime.end, this.spawnData.startLane, this.spawnData.endLane, scaledTime))) * 2.1
 
         if (this.updated || this.spawnData.flick) return
 

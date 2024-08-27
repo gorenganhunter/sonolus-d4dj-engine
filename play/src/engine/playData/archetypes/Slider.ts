@@ -5,6 +5,7 @@ import { slider } from "../slider.js";
 import { isUsed, markAsUsed } from "./InputManager.js";
 import { options } from '../../configuration/options.js'
 import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
+import { timeToScaledTime } from "./utils.js";
 
 export class Slider extends SpawnableArchetype({}) {
     sliderBox = this.entityMemory(Rect)
@@ -58,19 +59,8 @@ export class Slider extends SpawnableArchetype({}) {
     }
 
     renderSlider() {
-        // const visibleTimeMax = Math.min(timeScaleChanges.at(slider.next.beat).scaledTime, time.scaled + note.duration)
-        // debug.log(visibleTimeMax)
-        // const y = approach(visibleTimeMax - note.duration, visibleTimeMax, time.scaled)
-        // const nextPos = new Vec({ x: slider.next.lane * 24 / 100, y })
-        // const layout = new Quad({
-        //     p1: new Vec({ x: slider.position - 0.025, y: 1 }),
-        //     p2: new Vec({ x: slider.position + 0.025, y: 1 }),
-        //     p3: nextPos.translate(0.025, 0),
-        //     p4: nextPos.translate(-0.025, 0)
-        // })
         skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 0.95 + note.radius * 4, t: 1 - note.radius * 2 }), 105, 1)
         this.renderConnector()
-        // skin.sprites.sliderConnector.draw(layout, 104, 1)
     }
 
     initialize() {
@@ -81,13 +71,16 @@ export class Slider extends SpawnableArchetype({}) {
 
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        
         this.next.time = bpmChanges.at(slider.next.beat).time
-        this.next.scaledTime = timeScaleChanges.at(this.next.time).scaledTime
+        this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
+
         const hiddenDuration = 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ (options.backspinAssist ? time.now : time.scaled) /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
+            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, scaledTime + hiddenDuration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, scaledTime + note.duration * options.laneLength),
         }
 
         const l = {
@@ -101,8 +94,8 @@ export class Slider extends SpawnableArchetype({}) {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, options.backspinAssist ? time.now : time.scaled),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, options.backspinAssist ? time.now : time.scaled),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
 
         const layout = {
@@ -116,19 +109,22 @@ export class Slider extends SpawnableArchetype({}) {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
+        skin.sprites.sliderConnector.draw(layout, 90, options.connectorAlpha)
     }
 
     getLane(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
     }
 
     getL(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
     }
 
     getR(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
     }
 }
 

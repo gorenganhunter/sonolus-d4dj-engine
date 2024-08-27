@@ -9,6 +9,7 @@ import { sliderWindows, windows } from "../../../windows.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
 import { archetypes } from "../../index.js";
+import { timeToScaledTime } from "../../timeScale.js";
 
 export class SliderTickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
@@ -33,7 +34,7 @@ export class SliderTickNote extends SliderNote {
         
         if(this.sliderImport.next) {
             this.next.time = bpmChanges.at(this.nextImport.beat).time
-            this.next.scaledTime = timeScaleChanges.at(this.next.time).scaledTime
+            this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, this.nextImport.timescaleGroup)
             this.next.lane = this.nextImport.lane * 24 / 100
         }
     }
@@ -43,7 +44,9 @@ export class SliderTickNote extends SliderNote {
     updateParallel() {
         super.updateParallel()
 
-        if (((options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min + (1 - options.laneLength) * note.duration) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
+        if (scaledTime < this.visualTime.min + (1 - options.laneLength) * note.duration) return
+
         if(this.sliderImport.next) this.renderConnector()
         // if (time.now < this.targetTime/*  - sliderWindows.good.max */) return
         // if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
@@ -72,6 +75,7 @@ export class SliderTickNote extends SliderNote {
         if (this.sliderImport.next) {
             slider.next.beat = this.nextImport.beat
             slider.next.lane = this.nextImport.lane
+            slider.next.timescaleGroup = this.nextImport.timescaleGroup
             slider.isUsed = true
         } else {
             slider.isUsed = false
@@ -109,11 +113,13 @@ export class SliderTickNote extends SliderNote {
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
 
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
+
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? this.next.time : this.next.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
+            min: Math.max(this.visualTime.max, scaledTime + hiddenDuration),
+            max: Math.min(this.next.scaledTime, scaledTime + note.duration * options.laneLength),
         }
         
         const l = {
@@ -127,8 +133,8 @@ export class SliderTickNote extends SliderNote {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, options.backspinAssist ? time.now : time.scaled),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, options.backspinAssist ? time.now : time.scaled),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
 
         const layout = {
@@ -142,18 +148,18 @@ export class SliderTickNote extends SliderNote {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
+        skin.sprites.sliderConnector.draw(layout, this.z - 5, options.connectorAlpha)
     }
 
     getLane(time: number) {
-        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1, this.nextImport.lane * 2.1, time)
+        return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1, this.nextImport.lane * 2.1, time)
     }
 
     getL(time: number) {
-        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 - 0.2, this.nextImport.lane * 2.1 - 0.2, time)
+        return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 - (0.125 * options.noteSize), this.nextImport.lane * 2.1 - (0.125 * options.noteSize), time)
     }
 
     getR(time: number) {
-        return Math.remap(options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime, options.backspinAssist ? this.next.time : this.next.scaledTime, this.import.lane * 2.1 + 0.2, this.nextImport.lane * 2.1 + 0.2, time)
+        return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 + (0.125 * options.noteSize), this.nextImport.lane * 2.1 + (0.125 * options.noteSize), time)
     }
 }

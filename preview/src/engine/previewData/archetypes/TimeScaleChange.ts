@@ -5,7 +5,7 @@ import { line, skin } from '../skin.js'
 export class TimeScaleChange extends Archetype {
     import = this.defineImport({
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
-        timeScale: { name: EngineArchetypeDataName.TimeScale, type: Number },
+        timeScale: { name: "timeScale", type: Number },
     })
 
     render() {

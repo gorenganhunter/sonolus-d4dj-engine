@@ -4,6 +4,7 @@ export const slider = levelMemory({
     touch: TouchId,
     next: {
         beat: Number,
-        lane: Number
+        lane: Number,
+        timescaleGroup: Number
     }
 })

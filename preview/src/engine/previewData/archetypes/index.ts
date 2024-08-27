@@ -38,5 +38,5 @@ export const archetypes = defineArchetypes({
     BarLine,
     SimLine,
 
-    [EngineArchetypeName.TimeScaleChange]: TimeScaleChange
+    TimeScaleChange
 })

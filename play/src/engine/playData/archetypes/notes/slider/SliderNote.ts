@@ -37,7 +37,7 @@ export abstract class SliderNote extends Note {
         if (this.import.beat < slider.next.beat) {
             slider.next.beat = this.import.beat
             slider.next.lane = this.import.lane
-            // debug.log(slider.next.lane)
+            slider.next.timescaleGroup = this.import.timescaleGroup
         }
     }
 

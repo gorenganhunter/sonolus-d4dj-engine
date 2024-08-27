@@ -3,10 +3,12 @@ export const slider = levelMemory({
     isUsed: Boolean,
     prev: {
         beat: Number,
-        lane: Number
+        lane: Number,
+        timescaleGroup: Number
     },
     next: {
         beat: Number,
-        lane: Number
+        lane: Number,
+        timescaleGroup: Number
     }
 })

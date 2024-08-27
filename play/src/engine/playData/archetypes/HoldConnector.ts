@@ -6,6 +6,7 @@ import { particle } from '../particle.js'
 import { getZ, skin } from '../skin.js'
 import { moveHold } from './HoldManager.js'
 import { archetypes } from './index.js'
+import { scaledTimeToEarliestTime, timeToScaledTime } from './utils.js'
 
 export class HoldConnector extends Archetype {
     import = this.defineImport({
@@ -60,31 +61,29 @@ export class HoldConnector extends Archetype {
 
     preprocess() {
         this.head.time = bpmChanges.at(this.headImport.beat).time
-        this.head.scaledTime = /* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.head.time : */ timeScaleChanges.at(this.head.time).scaledTime
+        this.head.scaledTime = timeToScaledTime(this.head.time, this.headImport.timescaleGroup)
 
         this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
-        this.visualTime.min = ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.head.time : this.head.scaledTime) - note.duration
+        this.visualTime.min = (options.backspinAssist ? this.head.time : this.head.scaledTime) - note.duration
     
-        // debug.log(this.visualTime.min)
-        // debug.log(timeScaleChanges.at(this.visualTime.min).scaledTime)
-        // debug.log(this.visualTime.min)
-        // debug.log(note.duration)
-        // this.tail.time = bpmChanges.at(this.tailImport.beat).time
-        // this.tail.scaledTime = /* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.tail.time : */ timeScaleChanges.at(this.tail.time).scaledTime
+        const spawnTime = Math.min(
+            this.visualTime.min,
+            timeToScaledTime(this.scheduleSFXTime, this.headImport.timescaleGroup)
+        )
 
-        // debug.log(this.tail.scaledTime)
-
-        this.spawnTime = Math.min(this.visualTime.min, (this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? this.scheduleSFXTime : timeScaleChanges.at(this.scheduleSFXTime).scaledTime)
-        // debug.log(this.spawnTime)
+        this.spawnTime = options.backspinAssist ? this.visualTime.min : Math.min(
+            scaledTimeToEarliestTime(spawnTime, this.headImport.timescaleGroup),
+            scaledTimeToEarliestTime(spawnTime, this.tailImport.timescaleGroup)
+        )
     }
 
     spawnOrder(): number {
-        return 1000 + (((this.headImport.lane === -3 || this.headImport.lane === 3) && !options.backspinAssist) ? timeScaleChanges.at(this.spawnTime).scaledTime : this.spawnTime)
+        return 1000 + this.spawnTime
     }
 
     shouldSpawn(): boolean {
-        return ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) >= this.spawnTime
+        return time.now >= this.spawnTime
     }
 
     initialize() {
@@ -96,7 +95,7 @@ export class HoldConnector extends Archetype {
         this.head.r = this.head.lane + w
 
         this.tail.time = bpmChanges.at(this.tailImport.beat).time
-        this.tail.scaledTime = timeScaleChanges.at(this.tail.time).scaledTime
+        this.tail.scaledTime = timeToScaledTime(this.tail.time, this.tailImport.timescaleGroup)
 
         this.tail.lane = this.tailImport.lane * 2.1
         this.tail.l = this.tail.lane - w
@@ -104,8 +103,6 @@ export class HoldConnector extends Archetype {
 
         this.sprite.connector = (this.headImport.lane === -3 || this.headImport.lane === 3) ? skin.sprites.stopConnector.id : skin.sprites.holdConnector.id
         this.sprite.slide = (this.headImport.lane === -3 || this.headImport.lane === 3) ? skin.sprites.stopHead.id : skin.sprites.holdHead.id
-        // if (options.hidden > 0)
-        //     this.visualTime.hidden = this.tail.time - note.duration * options.hidden
 
         this.connector.z = getZ(98/* layer.note.connector */, this.head.time, this.headImport.lane)
 
@@ -128,11 +125,13 @@ export class HoldConnector extends Archetype {
 
         if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : */ time.now) >= this.scheduleSFXTime) this.scheduleSFX()
 
-        if ((((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min + (1 - options.laneLength) * note.duration) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
+
+        if (scaledTime < this.visualTime.min + (1 - options.laneLength) * note.duration) return
 
         this.renderConnector()
 
-        if ((((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < (((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.head.time : this.head.scaledTime)) return
+        if (scaledTime < (options.backspinAssist ? this.head.time : this.head.scaledTime)) return
 
         this.renderSlide()
         this.updateEffects()
@@ -179,16 +178,14 @@ export class HoldConnector extends Archetype {
 
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
 
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : time.now > this.head.time ? time.scaled : this.head.scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, ((this.headImport.lane === -3 || this.headImport.lane === 3 || options.backspinAssist) ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? this.tail.time : this.tail.scaledTime /* : timeScaleChanges.at(this.tail.time).scaledTime */, (((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) + note.duration * options.laneLength),
+            min: Math.max(options.backspinAssist ? this.head.time : time.now > this.head.time ? scaledTime : this.head.scaledTime, scaledTime + hiddenDuration),
+            max: Math.min(options.backspinAssist ? this.tail.time : this.tail.scaledTime, scaledTime + note.duration * options.laneLength),
         }
-
-        // debug.log(visibleTime.min)
-        // debug.log(visibleTime.max)
 
         const l = {
             min: this.getL(visibleTime.min),
@@ -201,14 +198,9 @@ export class HoldConnector extends Archetype {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, (((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled)),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, (((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled)),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
-
-        // debug.log(l.min)
-        // debug.log(r.min)
-        // debug.log(y.min)
-        // debug.log(y.max)
 
         const layout = {
             x1: l.min * y.min,
@@ -225,11 +217,12 @@ export class HoldConnector extends Archetype {
     }
 
     renderSlide() {
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
         skin.sprites.draw(
             this.sprite.slide,
             perspectiveLayout({
-                l: this.getLane(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) - (1.05 * options.noteSize),
-                r: this.getLane(((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled) + (1.05 * options.noteSize),
+                l: this.getLane(scaledTime) - (1.05 * options.noteSize),
+                r: this.getLane(scaledTime) + (1.05 * options.noteSize),
                 b: this.slide.b,
                 t: this.slide.t,
             }),
@@ -239,18 +232,19 @@ export class HoldConnector extends Archetype {
     }
 
     updateEffects() {
-        moveHold(this.import.headRef, this.getLane((((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : time.scaled)))
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
+        moveHold(this.import.headRef, this.getLane(scaledTime))
     }
 
     getLane(time: number) {
-        return Math.min(Math.max(this.head.lane, this.tail.lane), Math.max(Math.min(this.head.lane, this.tail.lane), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.lane, this.tail.lane, time)))
+        return Math.min(Math.max(this.head.lane, this.tail.lane), Math.max(Math.min(this.head.lane, this.tail.lane), Math.remap(options.backspinAssist ? this.head.time : this.head.scaledTime, options.backspinAssist ? this.tail.time : this.tail.scaledTime, this.head.lane, this.tail.lane, time)))
     }
 
     getL(time: number) {
-        return Math.min(Math.max(this.head.l, this.tail.l), Math.max(Math.min(this.head.l, this.tail.l), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.l, this.tail.l, time)))
+        return Math.min(Math.max(this.head.l, this.tail.l), Math.max(Math.min(this.head.l, this.tail.l), Math.remap(options.backspinAssist ? this.head.time : this.head.scaledTime, options.backspinAssist ? this.tail.time : this.tail.scaledTime, this.head.l, this.tail.l, time)))
     }
 
     getR(time: number) {
-        return Math.min(Math.max(this.head.r, this.tail.r), Math.max(Math.min(this.head.r, this.tail.r), Math.remap((this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.head.time : this.head.scaledTime, (this.headImport.lane === 3 || this.headImport.lane === -3 || options.backspinAssist) ? this.tail.time : this.tail.scaledTime, this.head.r, this.tail.r, time)))
+        return Math.min(Math.max(this.head.r, this.tail.r), Math.max(Math.min(this.head.r, this.tail.r), Math.remap(options.backspinAssist ? this.head.time : this.head.scaledTime, options.backspinAssist ? this.tail.time : this.tail.scaledTime, this.head.r, this.tail.r, time)))
     }
 }

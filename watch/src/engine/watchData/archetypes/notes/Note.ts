@@ -8,6 +8,7 @@ import { windows } from '../../windows.js'
 // import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
+import { scaledTimeToEarliestTime, timeToScaledTime } from '../timeScale.js'
 
 export abstract class Note extends Archetype {
     abstract sprite: SkinSprite
@@ -25,6 +26,7 @@ export abstract class Note extends Archetype {
     import = this.defineImport({
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
         lane: { name: 'lane', type: Number },
+        timescaleGroup: { name: 'timeScaleGroup', type: Number },
         judgment: { name: EngineArchetypeDataName.Judgment, type: DataType<Judgment> },
         accuracy: { name: EngineArchetypeDataName.Accuracy, type: Number },
     })
@@ -41,17 +43,27 @@ export abstract class Note extends Archetype {
     sharedMemory = this.defineSharedMemory({
         despawnTime: Number
     })
+    
+    get hitTime() {
+        return this.targetTime + this.import.accuracy
+    }
 
     spawnTime() {
-        const spawn: number = (this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? this.visualTime.min : getSpawnTime(this.targetTime)
-        // debug.log(spawn)
-        return spawn
+        return options.backspinAssist ? this.visualTime.min : Math.min(
+            replay.isReplay ? this.hitTime : this.targetTime,
+            scaledTimeToEarliestTime(
+                Math.min(
+                    this.visualTime.min,
+                    this.visualTime.max,
+                    timeToScaledTime(this.targetTime, this.import.timescaleGroup)
+                ),
+                this.import.timescaleGroup
+            )
+        )
     }
 
     despawnTime() {
-        return replay.isReplay
-            ? this.targetTime + this.import.accuracy
-            : this.targetTime
+        return replay.isReplay ? this.hitTime : this.targetTime
     }
 
     playEffect() {
@@ -82,28 +94,24 @@ export abstract class Note extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = (this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
 
-        // const timescale = timeScaleChanges.at(this.targetTime)
-
-        this.visualTime.min = (this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? (this.visualTime.max - note.duration /* (this.targetTime - timescale.startingTime) - */ /* (timescale.startingTime - timescale.startingScaledTime) */ ) : (this.visualTime.max - note.duration)
+        this.visualTime.min = this.visualTime.max - note.duration
 
         this.sharedMemory.despawnTime = this.targetTime
 
         this.result.time = this.targetTime
 
         if (replay.isReplay) {
-            const hitTime = this.targetTime + this.import.accuracy
-
             switch (this.import.judgment) {
                 case Judgment.Perfect:
-                    this.sfx.perfect.schedule(hitTime, 0.02)
+                    this.sfx.perfect.schedule(this.hitTime, 0.02)
                     break
                 case Judgment.Great:
-                    this.sfx.great.schedule(hitTime, 0.02)
+                    this.sfx.great.schedule(this.hitTime, 0.02)
                     break
                 case Judgment.Good:
-                    this.sfx.good.schedule(hitTime, 0.02)
+                    this.sfx.good.schedule(this.hitTime, 0.02)
                     break
             }
         } else {
@@ -144,9 +152,10 @@ export abstract class Note extends Archetype {
         // if (this.visualTime.min > ((this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? time.now : time.scaled)) return
         // debug.log(this.import.beat)
 
-        if ((((this.import.lane === -3 || this.import.lane === 3) || options.backspinAssist) ? time.now : time.scaled) < (this.visualTime.min + ((1 - options.laneLength) * note.duration))) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
+        if (scaledTime < (this.visualTime.min + ((1 - options.laneLength) * note.duration))) return
 
-        this.y = approach(this.visualTime.min, this.visualTime.max, (this.import.lane === -3 || this.import.lane === 3 || options.backspinAssist) ? time.now : time.scaled)
+        this.y = approach(this.visualTime.min, this.visualTime.max, scaledTime)
 
         const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
         const r = this.import.lane * 2.1 + (1.05 * options.noteSize)

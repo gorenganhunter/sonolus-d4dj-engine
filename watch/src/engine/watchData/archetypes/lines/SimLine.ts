@@ -3,6 +3,7 @@ import { note, getSpawnTime } from "../../note.js"
 import { skin } from "../../skin.js"
 import { archetypes } from "../index.js"
 import { options } from '../../../configuration/options.js'
+import { scaledTimeToEarliestTime, timeToScaledTime } from "../timeScale.js"
 
 export class SimLine extends Archetype {
     import = this.defineImport({
@@ -12,15 +13,19 @@ export class SimLine extends Archetype {
 
     targetTime = this.entityMemory(Number)
     spawn = this.entityMemory(Number)
-    visualTime = this.entityMemory({
-        min: {
-            l: Number,
-            r: Number
-        },
-        max: {
-            l: Number,
-            r: Number
-        },
+
+    left = this.entityMemory({
+        min: Number,
+        max: Number,
+        lane: Number,
+        timescaleGroup: Number
+    })
+
+    right = this.entityMemory({
+        min: Number,
+        max: Number,
+        lane: Number,
+        timescaleGroup: Number
     })
 
     // spriteLayout = this.entityMemory([Quad])
@@ -35,12 +40,30 @@ export class SimLine extends Archetype {
         let r = this.bImport.lane
         if (l > r) [l, r] = [r, l]
 
-        this.visualTime.max.l = (l === -3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
-        this.visualTime.max.r = (r === 3 || options.backspinAssist) ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
-        this.visualTime.min.l = this.visualTime.max.l - note.duration
-        this.visualTime.min.r = this.visualTime.max.r - note.duration
+        if (this.aImport.lane < this.bImport.lane) {
+            this.left.lane = this.aImport.lane
+            this.left.timescaleGroup = this.aImport.timescaleGroup
+            this.right.lane = this.bImport.lane
+            this.right.timescaleGroup = this.bImport.timescaleGroup
+        } else {
+            this.left.lane = this.bImport.lane
+            this.left.timescaleGroup = this.bImport.timescaleGroup
+            this.right.lane = this.aImport.lane
+            this.right.timescaleGroup = this.aImport.timescaleGroup
+        }
 
-        this.spawn = Math.min(l === -3 || options.backspinAssist ? this.visualTime.min.l : getSpawnTime(this.targetTime), r === 3 || options.backspinAssist ? this.visualTime.min.r : getSpawnTime(this.targetTime))
+        this.left.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.left.timescaleGroup)
+        this.right.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.right.timescaleGroup)
+        this.left.min = this.left.max - note.duration
+        this.right.min = this.right.max - note.duration
+
+        this.spawn = options.backspinAssist ? Math.min(
+            this.left.min,
+            this.right.min
+        ) : Math.min(
+            scaledTimeToEarliestTime(this.left.min, this.left.timescaleGroup),
+            scaledTimeToEarliestTime(this.right.min, this.right.timescaleGroup),
+        )
         // debug.log(this.spawn)
     }
 
@@ -86,19 +109,21 @@ export class SimLine extends Archetype {
     }
 
     renderConnector() {
-        let l = this.aImport.lane
-        let r = this.bImport.lane
-        if (l > r) [l, r] = [r, l]
+        let l = this.left.lane
+        let r = this.right.lane
 
-        if ((((l === -3 || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min.l + (1 - options.laneLength) * note.duration) && (((r === 3 || options.backspinAssist) ? time.now : time.scaled) < this.visualTime.min.r + (1 - options.laneLength) * note.duration)) return
+        const leftScaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.left.timescaleGroup)
+        const rightScaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.right.timescaleGroup)
+
+        if ((leftScaledTime < this.left.min + (1 - options.laneLength) * note.duration) && (rightScaledTime < this.right.min + (1 - options.laneLength) * note.duration)) return
 
         const y = {
-            l: approach(this.visualTime.min.l, this.visualTime.max.l, (l === -3 || l === 3 || options.backspinAssist) ? time.now : time.scaled),
-            r: approach(this.visualTime.min.r, this.visualTime.max.r, (r === -3 || r === 3 || options.backspinAssist) ? time.now : time.scaled)
+            l: approach(this.left.min, this.left.max, leftScaledTime),
+            r: approach(this.right.min, this.right.max, rightScaledTime)
         }
 
-        l *= 2.1
-        r *= 2.1
+        l = l * 2.1
+        r = r * 2.1
 
         // debug.log(y.l)
         // debug.log(y.r)

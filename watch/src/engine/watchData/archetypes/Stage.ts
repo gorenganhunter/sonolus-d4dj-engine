@@ -6,6 +6,7 @@ import { particle } from '../particle.js'
 import { skin } from '../skin.js'
 import { archetypes } from './index.js'
 import { slider } from "../slider.js";
+import { timeToScaledTime } from './timeScale.js'
 
 export class Stage extends Archetype {
     next = this.entityMemory({
@@ -101,13 +102,16 @@ export class Stage extends Archetype {
     
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        
         this.next.time = bpmChanges.at(slider.next.beat).time
-        this.next.scaledTime = timeScaleChanges.at(this.next.time).scaledTime
+        this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
+
         const hiddenDuration = 0
 
         const visibleTime = {
-            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ options.backspinAssist ? time.now : time.scaled /* : timeScaleChanges.at(this.head.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + hiddenDuration),
-            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */options.backspinAssist ? this.next.time : this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, (options.backspinAssist ? time.now : time.scaled) + note.duration * options.laneLength),
+            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, scaledTime + hiddenDuration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, scaledTime + note.duration * options.laneLength),
         }
 
         const l = {
@@ -121,8 +125,8 @@ export class Stage extends Archetype {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, options.backspinAssist ? time.now : time.scaled),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, options.backspinAssist ? time.now : time.scaled),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
 
         const layout = {
@@ -136,18 +140,21 @@ export class Stage extends Archetype {
             y4: y.min,
         }
 
-        skin.sprites.sliderConnector.draw(layout, 104, options.connectorAlpha)
+        skin.sprites.sliderConnector.draw(layout, 90, options.connectorAlpha)
     }
 
     getLane(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
     }
 
     getL(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position - 0.2, slider.next.lane * 2.1 - 0.2, time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
     }
 
     getR(time2: number) {
-        return Math.remap(options.backspinAssist ? time.now : time.scaled, options.backspinAssist ? this.next.time : this.next.scaledTime, slider.position + 0.2, slider.next.lane * 2.1 + 0.2, time2)
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
     }
 }

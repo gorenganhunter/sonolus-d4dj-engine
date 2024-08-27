@@ -16,6 +16,8 @@ import { StopEndNote } from './notes/stop/StopEndNote.js'
 import { StopStartNote } from './notes/stop/StopStartNote.js'
 import { DarkTapNote } from './notes/tap/DarkTapNote.js'
 import { LightTapNote } from './notes/tap/LightTapNote.js'
+import { TimeScaleChange } from './timescale/TimeScaleChange.js'
+import { TimeScaleGroup } from './timescale/TimeScaleGroup.js'
 
 export const archetypes = defineArchetypes({
     Initialization,
@@ -41,5 +43,8 @@ export const archetypes = defineArchetypes({
     SliderFlickNote,
 
     BarLine,
-    SimLine
+    SimLine,
+
+    TimeScaleChange,
+    TimeScaleGroup
 })

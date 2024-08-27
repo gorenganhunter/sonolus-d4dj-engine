@@ -3,10 +3,12 @@ import { note, getSpawnTime } from "../../note.js"
 import { approach, leftRotated, perspectiveLayout } from "../../../../../../shared/src/engine/data/utils.js"
 import { skin } from "../../skin.js"
 import { options } from '../../../configuration/options.js'
+import { scaledTimeToEarliestTime, timeToScaledTime } from "../timeScale.js"
 
 export class BarLine extends Archetype {
     import = this.defineImport({
-        beat: { name: EngineArchetypeDataName.Beat, type: Number }
+        beat: { name: EngineArchetypeDataName.Beat, type: Number },
+        timescaleGroup: { name: "timeScaleGroup", type: Number }
     })
 
     visualTime = this.entityMemory({
@@ -22,14 +24,20 @@ export class BarLine extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = options.backspinAssist ? this.targetTime : timeScaleChanges.at(this.targetTime).scaledTime
+        this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
         this.visualTime.min = this.visualTime.max - note.duration
 
         // this.spawnTime = this.visualTime.min
     }
 
     spawnTime() {
-        return options.backspinAssist ? this.visualTime.min : getSpawnTime(this.targetTime)
+        return options.backspinAssist ? this.visualTime.min : scaledTimeToEarliestTime(
+            Math.min(
+                this.visualTime.min,
+                this.visualTime.max
+            ),
+            this.import.timescaleGroup
+        )
     }
 
     despawnTime() {
@@ -47,12 +55,11 @@ export class BarLine extends Archetype {
     // }
 
     updateParallel() {
-        // if (time.scaled > this.visualTime.max) this.despawn = true
-        // if (this.despawn) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
 
-        if ((options.backspinAssist ? time.now : time.scaled) < this.visualTime.min + ((1 - options.laneLength) * note.duration)) return
+        if (scaledTime < this.visualTime.min + ((1 - options.laneLength) * note.duration)) return
 
-        const y = approach(this.visualTime.min, this.visualTime.max, options.backspinAssist ? time.now : time.scaled)
+        const y = approach(this.visualTime.min, this.visualTime.max, scaledTime)
 
         skin.sprites.simLine.draw(perspectiveLayout({ l: -5.25, r: 5.25, t: 0.99, b: 1.01 }).mul(y), 999 - this.targetTime, 1)
     }
