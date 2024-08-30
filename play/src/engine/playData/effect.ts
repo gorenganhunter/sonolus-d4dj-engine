@@ -36,6 +36,3 @@ export const effect = defineEffect({
         tap2Perfect: "DJ Tap 2 Perfect",
     },
 })
-
-export const getScheduleSFXTime = (targetTime: number) =>
-    targetTime - 0.5 - Math.max(audio.offset, 0)
