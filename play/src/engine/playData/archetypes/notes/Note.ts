@@ -2,7 +2,7 @@ import { EngineArchetypeDataName, SkinSpriteName } from '@sonolus/core'
 import { approach, perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
-import { effect } from '../../effect.js'
+import { effect, getScheduleSFXTime } from '../../effect.js'
 import { note } from '../../note.js'
 import { windows } from '../../windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
@@ -47,6 +47,8 @@ export abstract class Note extends Archetype {
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
     hitbox = this.entityMemory(Rect)
+    scheduleSFXTime = this.entityMemory(Number)
+    hasSFXScheduled = this.entityMemory(Boolean)
 
     playEffect() {
         if (!options.noteEffectEnabled) return
@@ -79,6 +81,8 @@ export abstract class Note extends Archetype {
         if (options.mirror) this.import.lane *= -1
 
         this.targetTime = bpmChanges.at(this.import.beat).time
+
+        this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
     
         this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
 
@@ -86,12 +90,13 @@ export abstract class Note extends Archetype {
         this.spawnTime = options.backspinAssist ? this.visualTime.min : scaledTimeToEarliestTime(
             Math.min(
                 this.visualTime.min,
-                this.visualTime.max
+                this.visualTime.max,
+                timeToScaledTime(this.scheduleSFXTime, this.import.timescaleGroup)
             ),
             this.import.timescaleGroup
         )
 
-        if (this.shouldScheduleSFX) this.scheduleSFX()
+        // debug.log(this.spawnTime)
     }
 
     globalPreprocess() {
@@ -136,6 +141,7 @@ export abstract class Note extends Archetype {
     }
 
     scheduleSFX() {
+        this.hasSFXScheduled = true
         this.sfx.perfect.schedule(this.targetTime, 0.02)
     }
 
@@ -159,6 +165,7 @@ export abstract class Note extends Archetype {
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
 
+        if (this.shouldScheduleSFX && !this.hasSFXScheduled && time.now >= this.scheduleSFXTime) this.scheduleSFX()
         // debug.log(this.import.beat)
 
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)

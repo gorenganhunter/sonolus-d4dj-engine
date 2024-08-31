@@ -1,6 +1,6 @@
 import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
-import { effect } from '../effect.js'
+import { effect, getScheduleSFXTime } from '../effect.js'
 import { note } from '../note.js'
 import { particle } from '../particle.js'
 import { getZ, skin } from '../skin.js'
@@ -36,12 +36,16 @@ export class HoldConnector extends Archetype {
         r: Number,
     })
 
+    scheduleSFXTime = this.entityMemory(Number)
+
     visualTime = this.entityMemory({
         min: Number,
         hidden: Number,
     })
 
     spawnTime = this.entityMemory(Number)
+
+    hasSFXScheduled = this.entityMemory(Boolean)
 
     connector = this.entityMemory({
         z: Number,
@@ -59,19 +63,19 @@ export class HoldConnector extends Archetype {
         this.head.time = bpmChanges.at(this.headImport.beat).time
         this.head.scaledTime = timeToScaledTime(this.head.time, this.headImport.timescaleGroup)
 
-        this.tail.time = bpmChanges.at(this.tailImport.beat).time
-        this.tail.scaledTime = timeToScaledTime(this.tail.time, this.tailImport.timescaleGroup)
+        this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
         this.visualTime.min = (options.backspinAssist ? this.head.time : this.head.scaledTime) - note.duration
     
-        const spawnTime = this.visualTime.min
+        const spawnTime = Math.min(
+            this.visualTime.min,
+            timeToScaledTime(this.scheduleSFXTime, this.headImport.timescaleGroup)
+        )
 
         this.spawnTime = options.backspinAssist ? this.visualTime.min : Math.min(
             scaledTimeToEarliestTime(spawnTime, this.headImport.timescaleGroup),
             scaledTimeToEarliestTime(spawnTime, this.tailImport.timescaleGroup)
         )
-
-        if (this.shouldScheduleSFX) this.scheduleSFX()
     }
 
     spawnOrder(): number {
@@ -89,6 +93,9 @@ export class HoldConnector extends Archetype {
         this.head.lane = this.headImport.lane * 2.1
         this.head.l = this.head.lane - w
         this.head.r = this.head.lane + w
+
+        this.tail.time = bpmChanges.at(this.tailImport.beat).time
+        this.tail.scaledTime = timeToScaledTime(this.tail.time, this.tailImport.timescaleGroup)
 
         this.tail.lane = this.tailImport.lane * 2.1
         this.tail.l = this.tail.lane - w
@@ -115,6 +122,8 @@ export class HoldConnector extends Archetype {
             this.despawn = true
             return
         }
+
+        if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* ((this.headImport.lane === -3 || this.headImport.lane === 3) || options.backspinAssist) ? time.now : */ time.now) >= this.scheduleSFXTime) this.scheduleSFX()
 
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
 
@@ -163,6 +172,8 @@ export class HoldConnector extends Archetype {
     scheduleSFX() {
         this.sfxId = effect.clips.longLoop.scheduleLoop(this.head.time)
         effect.clips.scheduleStopLoop(this.sfxId, this.tail.time)
+
+        this.hasSFXScheduled = true
     }
 
     renderConnector() {
