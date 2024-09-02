@@ -26,7 +26,7 @@ export class Initialization extends Archetype {
         })
 
         note.radius = noteRadius / h
-        note.duration = (12.5 - options.noteSpeed) / 3
+        note.duration = 0.5 + (12 - options.noteSpeed) * 0.4
         slider.isUsed = false
         slider.next.beat = 99999999
 
