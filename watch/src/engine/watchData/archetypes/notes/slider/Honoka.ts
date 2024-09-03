@@ -26,7 +26,7 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
 
     updateSequential() {
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.spawnData.startTSG)
-        slider.position = Math.min(Math.max(this.spawnData.startLane, this.spawnData.endLane), Math.max(Math.min(this.spawnData.startLane, this.spawnData.endLane), Math.remap(this.scaledTime.start, this.scaledTime.end, this.spawnData.startLane, this.spawnData.endLane, scaledTime))) * 2.1
+        slider.position = (this.spawnData.flick ? Math.remap(this.spawnData.start, this.spawnData.end, this.spawnData.startLane, this.spawnData.endLane, time.now) : Math.min(Math.max(this.spawnData.startLane, this.spawnData.endLane), Math.max(Math.min(this.spawnData.startLane, this.spawnData.endLane), Math.remap(this.scaledTime.start, this.scaledTime.end, this.spawnData.startLane, this.spawnData.endLane, scaledTime)))) * 2.1
 
         if (this.updated || this.spawnData.flick) return
 

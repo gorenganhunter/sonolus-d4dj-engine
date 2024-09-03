@@ -1,3 +1,10 @@
 export const segment = tutorialMemory({
-    time: Number,
+    current: Number,
+    next: Number,
+
+    time: {
+        start: Number,
+        now: Number,
+        end: Number,
+    },
 })

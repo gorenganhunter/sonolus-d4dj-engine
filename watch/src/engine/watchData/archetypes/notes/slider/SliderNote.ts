@@ -35,8 +35,12 @@ export abstract class SliderNote extends Note {
         super.preprocess()
 
         // HELP ME HONOKAAAAAAAAAA.........!!!!!!!
-        if (this.sliderImport.next) archetypes.Honoka.spawn({ start: this.targetTime, startLane: this.import.lane, startTSG: this.import.timescaleGroup, end: bpmChanges.at(this.nextImport.beat).time, endLane: this.nextImport.lane, endTSG: this.nextImport.timescaleGroup, flick: false })
-        if (this.sliderImport.direction) archetypes.Honoka.spawn({ start: this.targetTime, startLane: this.import.lane, startTSG: this.import.timescaleGroup, end: this.targetTime + 0.05 * Math.abs(this.sliderImport.direction), endLane: this.import.lane + this.sliderImport.direction, endTSG: this.import.timescaleGroup, flick: true })
+        if (this.sliderImport.next) {
+            archetypes.Honoka.spawn({ start: this.targetTime, startLane: this.import.lane, startTSG: this.import.timescaleGroup, end: bpmChanges.at(this.nextImport.beat).time, endLane: this.nextImport.lane, endTSG: this.nextImport.timescaleGroup, flick: false })
+        }
+        if (this.sliderImport.direction) {
+            archetypes.Honoka.spawn({ start: this.targetTime, startLane: this.import.lane, startTSG: this.import.timescaleGroup, end: this.targetTime + 0.05 * Math.abs(this.sliderImport.direction), endLane: this.import.lane + this.sliderImport.direction, endTSG: this.import.timescaleGroup, flick: true })
+        }
 
         if (this.import.beat < slider.next.beat) {
             slider.next.beat = this.import.beat

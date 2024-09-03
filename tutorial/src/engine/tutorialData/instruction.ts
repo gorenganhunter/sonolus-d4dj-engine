@@ -1,4 +1,31 @@
+import { InstructionIconName, Text } from '@sonolus/core'
+import { hand } from './hand.js'
+import { skin } from './skin.js'
+
 export const instruction = defineInstruction({
-    texts: {},
-    icons: {},
+    texts: {
+        tap: Text.Tap,
+        tapAndFlick: Text.TapFlick,
+        tapAndHold: Text.TapHold,
+        release: Text.Release,
+        flick: Text.Flick,
+        slider: Text.TapSlide
+    },
+
+    icons: {
+        hand: InstructionIconName.Hand,
+    },
 })
+
+export const drawHand = (angle: number, x: number, y: number, a: number) =>
+    instruction.icons.hand.paint(
+        new Vec(0, 1)
+            .rotate(angle)
+            .mul(0.25 * ui.configuration.instruction.scale)
+            .add(hand.position)
+            .translate(x, y),
+        0.25 * ui.configuration.instruction.scale,
+        (180 * angle) / Math.PI,
+        0,
+        a * ui.configuration.instruction.alpha,
+    )
