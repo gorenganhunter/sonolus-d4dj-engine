@@ -14,8 +14,8 @@ const effectInstanceIds = tutorialMemory({
 export const holdEndNoteFall = {
     enter() {
         noteDisplay.showFall('holdEndNote')
-        slide.show()
-        connector.showFallOut()
+        slide.show("hold")
+        connector.showFallOut("hold")
 
         sfxInstanceId = effect.clips.longLoop.loop()
         effectInstanceIds.circular = spawnCircularHoldEffect()

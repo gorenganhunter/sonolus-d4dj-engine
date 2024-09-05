@@ -17,7 +17,7 @@ export class TimeScaleChange extends Archetype {
             PrintFormat.TimeScale,
             'auto',
             PrintColor.Yellow,
-            'right',
+            'left',
         )
     }
 }

@@ -6,9 +6,9 @@ import { segment } from '../../segment.js'
 export const sliderTickFrozen = {
     enter() {
         noteDisplay.showFrozen('sliderNote')
-        connector.showFrozen()
+        connector.showFrozen("slider")
 
-        instruction.texts.tapAndHold.show()
+        instruction.texts.slider.show()
     },
 
     update() {

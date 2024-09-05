@@ -8,7 +8,7 @@ Todo list:
 
 - [x] Finish writing play mode
 - [x] Make it customizable
-- [ ] Finish writing tutorial mode
+- [x] Finish writing tutorial mode
 - [x] Finish writing preview mode
 - [x] Finish writing watch mode
 - [ ] Designed particle effect for D4DJ

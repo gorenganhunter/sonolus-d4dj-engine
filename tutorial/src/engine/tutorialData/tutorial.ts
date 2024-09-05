@@ -37,7 +37,7 @@ const segments = [
     holdStartNoteIntro, holdStartNoteFall, holdStartNoteFrozen, holdStartNoteHit,
     holdEndNoteIntro, holdEndNoteFall, holdEndNoteFrozen, holdEndNoteHit,
     scratchNoteIntro, scratchNoteFall, scratchNoteFrozen, scratchNoteHit,
-    // sliderTickIntro, sliderTickFall, sliderTickFrozen, sliderTickHit,
+    sliderTickIntro, sliderTickFall, sliderTickFrozen, sliderTickHit,
     sliderFlickIntro, sliderFlickFall, sliderFlickFrozen, sliderFlickHit
 ] as const
 

@@ -4,7 +4,7 @@ import { noteDisplay } from '../../components/noteDisplay.js'
 export const holdStartNoteIntro = {
     enter() {
         noteDisplay.showOverlay('holdNote')
-        connector.showOverlayIn()
+        connector.showOverlayIn("hold")
     },
 
     exit() {

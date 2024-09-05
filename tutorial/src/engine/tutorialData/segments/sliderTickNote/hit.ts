@@ -18,8 +18,8 @@ const effectInstanceIds = tutorialMemory({
 
 export const sliderTickHit = {
     enter() {
-        // slide.show()
-        // connector.showFrozen()
+        slide.show("slider")
+        connector.showFrozen("slider")
 
         // effect.clips.longPerfect.play(0)
 
@@ -32,12 +32,12 @@ export const sliderTickHit = {
     },
 
     update() {
-        drawHand(Math.PI / 3, 0, 0, 1)
+        // drawHand(Math.PI / 3, 0, 0, 1)
     },
 
     exit() {
-        // slide.clear()
-        // connector.clear()
+        slide.clear()
+        connector.clear()
 
         // effect.clips.stopLoop(sfxInstanceId)
         // particle.effects.destroy(effectInstanceIds.circular)

@@ -6,7 +6,7 @@ import { segment } from '../../segment.js'
 export const holdStartNoteFrozen = {
     enter() {
         noteDisplay.showFrozen('holdNote')
-        connector.showFrozen()
+        connector.showFrozen("hold")
 
         instruction.texts.tapAndHold.show()
     },

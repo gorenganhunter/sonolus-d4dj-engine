@@ -4,7 +4,7 @@ import { noteDisplay } from '../../components/noteDisplay.js'
 export const sliderTickIntro = {
     enter() {
         noteDisplay.showOverlay('sliderNote')
-        connector.showOverlayIn()
+        connector.showOverlayIn("slider")
     },
 
     exit() {

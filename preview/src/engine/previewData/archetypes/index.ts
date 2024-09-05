@@ -14,6 +14,7 @@ import { SimLine } from './lines/SimLine.js'
 import { EngineArchetypeName } from '@sonolus/core'
 import { TimeScaleChange } from './TimeScaleChange.js'
 import { HoldConnector } from './HoldConnector.js'
+import { BpmChange } from './BpmChange.js'
 
 export const archetypes = defineArchetypes({
     Initialization,
@@ -38,5 +39,6 @@ export const archetypes = defineArchetypes({
     BarLine,
     SimLine,
 
-    TimeScaleChange
+    TimeScaleChange,
+    [EngineArchetypeName.BpmChange]: BpmChange
 })

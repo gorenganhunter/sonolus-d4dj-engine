@@ -4,11 +4,11 @@ import { noteDisplay } from '../../components/noteDisplay.js'
 export const sliderTickFall = {
     enter() {
         noteDisplay.showFall('sliderNote')
-        // connector.showFallIn()
+        connector.showFallIn("slider")
     },
 
     exit() {
         noteDisplay.clear()
-        // connector.clear()
+        connector.clear()
     },
 }

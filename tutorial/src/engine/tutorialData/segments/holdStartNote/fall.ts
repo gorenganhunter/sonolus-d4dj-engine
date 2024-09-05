@@ -4,7 +4,7 @@ import { noteDisplay } from '../../components/noteDisplay.js'
 export const holdStartNoteFall = {
     enter() {
         noteDisplay.showFall('holdNote')
-        connector.showFallIn()
+        connector.showFallIn("hold")
     },
 
     exit() {

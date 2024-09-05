@@ -18,8 +18,8 @@ const effectInstanceIds = tutorialMemory({
 
 export const holdStartNoteHit = {
     enter() {
-        slide.show()
-        connector.showFrozen()
+        slide.show("hold")
+        connector.showFrozen("hold")
 
         effect.clips.longPerfect.play(0)
 
