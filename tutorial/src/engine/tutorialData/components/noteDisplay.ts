@@ -10,6 +10,7 @@ const noteSprites = {
     },
     scratchNote: {
         note: skin.sprites.scratch,
+        fallback: skin.sprites.scratchFallback
     },
     holdNote: {
         note: skin.sprites.holdHead
@@ -50,8 +51,8 @@ export const noteDisplay = {
         } else {
             const y = mode === Mode.Fall ? approach(0, 2, segment.time.now) : 1
 
-            const l = -1.05 * 1.5 * (id === noteSprites.sliderNote.note.id ? 0.33 : 1) + (id === noteSprites.scratchNote.note.id ? 6.3 : 0)
-            const r = 1.05 * 1.5 * (id === noteSprites.sliderNote.note.id ? 0.33 : 1) + (id === noteSprites.scratchNote.note.id ? 6.3 : 0)
+            const l = -1.05 * 1.5 * (id === noteSprites.sliderNote.note.id ? 0.33 : 1) + (id === noteSprites.scratchNote.fallback.id || id === noteSprites.scratchNote.note.id ? 6.3 : 0)
+            const r = 1.05 * 1.5 * (id === noteSprites.sliderNote.note.id ? 0.33 : 1) + (id === noteSprites.scratchNote.fallback.id || id === noteSprites.scratchNote.note.id ? 6.3 : 0)
 
             const t = 1 - note.radius * (id === noteSprites.sliderNote.note.id ? 2 : 1)
             const b = 1 + note.radius * (id === noteSprites.sliderNote.note.id ? 2 : 1)
@@ -86,11 +87,11 @@ export const noteDisplay = {
         for (const [key, sprites] of Object.entries(noteSprites)) {
             if (key !== type) continue
 
-            // if ('fallback' in sprites && !sprites.note.exists) {
-            //     id = sprites.fallback.id
-            // } else {
+            if ('fallback' in sprites && !sprites.note.exists) {
+                id = sprites.fallback.id
+            } else {
                 id = sprites.note.id
-            // }
+            }
         }
     },
 }

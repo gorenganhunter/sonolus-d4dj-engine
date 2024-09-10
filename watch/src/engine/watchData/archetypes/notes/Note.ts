@@ -20,6 +20,11 @@ export abstract class Note extends Archetype {
         perfect: EffectClip,
         great: EffectClip,
         good: EffectClip,
+        fallback: {
+            perfect: EffectClip,
+            great: EffectClip,
+            good: EffectClip,
+        }
     }
     abstract bucket: Bucket
     
@@ -87,6 +92,11 @@ export abstract class Note extends Archetype {
         this.initialized = true
 
         this.z = 1000 - this.targetTime
+
+        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
+        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
+
+        perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
     }
 
     preprocess() {
@@ -105,17 +115,17 @@ export abstract class Note extends Archetype {
         if (replay.isReplay) {
             switch (this.import.judgment) {
                 case Judgment.Perfect:
-                    this.sfx.perfect.schedule(this.hitTime, 0.02)
+                    this.sfx.perfect.exists ? this.sfx.perfect.schedule(this.hitTime, 0.02) : this.sfx.fallback.perfect.schedule(this.hitTime, 0.02)
                     break
                 case Judgment.Great:
-                    this.sfx.great.schedule(this.hitTime, 0.02)
+                    this.sfx.great.exists ? this.sfx.great.schedule(this.hitTime, 0.02) : this.sfx.fallback.great.schedule(this.hitTime, 0.02)
                     break
                 case Judgment.Good:
-                    this.sfx.good.schedule(this.hitTime, 0.02)
+                    this.sfx.good.exists ? this.sfx.good.schedule(this.hitTime, 0.02) : this.sfx.fallback.good.schedule(this.hitTime, 0.02)
                     break
             }
         } else {
-            this.sfx.perfect.schedule(this.targetTime, 0.02)
+            this.sfx.perfect.exists ? this.sfx.perfect.schedule(this.targetTime, 0.02) : this.sfx.fallback.perfect.schedule(this.targetTime, 0.02)
         }
         // debug.log(this.spawnTime)
     }
@@ -156,11 +166,6 @@ export abstract class Note extends Archetype {
         if (scaledTime < (this.visualTime.min + ((1 - options.laneLength) * note.duration))) return
 
         this.y = approach(this.visualTime.min, this.visualTime.max, scaledTime)
-
-        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
-        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
-
-        perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
 
         this.drawNote()
     }

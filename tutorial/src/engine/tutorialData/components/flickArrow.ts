@@ -6,6 +6,7 @@ import { layer, skin } from '../skin.js'
 const arrowSprites = {
     scratch: {
         note: skin.sprites.scratchArrow,
+        fallback: skin.sprites.scratchArrowFallback
     },
     slider: {
         note: skin.sprites.sliderArrow,
@@ -71,11 +72,11 @@ export const flickArrow = {
         for (const [key, sprites] of Object.entries(arrowSprites)) {
             if (key !== type) continue
 
-            // if ('fallback' in sprites && !sprites.note.exists) {
-            //     id = sprites.fallback.id
-            // } else {
+            if ('fallback' in sprites && !sprites.note.exists) {
+                id = sprites.fallback.id
+            } else {
                 id = sprites.note.id
-            // }
+            }
         }
     },
 

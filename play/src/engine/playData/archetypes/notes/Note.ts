@@ -20,6 +20,11 @@ export abstract class Note extends Archetype {
         perfect: EffectClip,
         great: EffectClip,
         good: EffectClip,
+        fallback: {
+            perfect: EffectClip,
+            great: EffectClip,
+            good: EffectClip,
+        }
     }
     abstract bucket: Bucket
     
@@ -75,6 +80,11 @@ export abstract class Note extends Archetype {
         this.result.accuracy = windows.good.max
 
         new Rect({ l: this.import.lane === -3 ? -15 : this.import.lane * 2.1 - 2.1, r: this.import.lane === 3 ? 15 : this.import.lane * 2.1 + 2.1, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
+
+        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
+        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
+
+        perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
     }
 
     preprocess() {
@@ -142,7 +152,7 @@ export abstract class Note extends Archetype {
 
     scheduleSFX() {
         this.hasSFXScheduled = true
-        this.sfx.perfect.schedule(this.targetTime, 0.02)
+        this.sfx.perfect.exists ? this.sfx.perfect.schedule(this.targetTime, 0.02) : this.sfx.fallback.perfect.schedule(this.targetTime, 0.02)
     }
 
     playSFX() {
@@ -150,13 +160,13 @@ export abstract class Note extends Archetype {
 
         switch (this.result.judgment) {
             case Judgment.Perfect:
-                this.sfx.perfect.play(0.02)
+                this.sfx.perfect.exists ? this.sfx.perfect.play(0.02) : this.sfx.fallback.perfect.play(0.02)
                 break
             case Judgment.Great:
-                this.sfx.great.play(0.02)
+                this.sfx.great.exists ? this.sfx.great.play(0.02) : this.sfx.fallback.great.play(0.02)
                 break
             case Judgment.Good:
-                this.sfx.good.play(0.02)
+                this.sfx.good.exists ? this.sfx.good.play(0.02) : this.sfx.fallback.good.play(0.02)
                 break
         }
     }
@@ -172,11 +182,6 @@ export abstract class Note extends Archetype {
         if (scaledTime < this.visualTime.min + ((1 - options.laneLength) * note.duration)) return
 
         this.y = approach(this.visualTime.min, this.visualTime.max, scaledTime)
-
-        const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
-        const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
-
-        perspectiveLayout({ l, r, b: 1 + note.radius, t: 1 - note.radius }).copyTo(this.notePosition)
 
         this.drawNote()
     }

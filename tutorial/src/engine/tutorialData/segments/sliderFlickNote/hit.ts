@@ -3,7 +3,7 @@ import { particle, playCircularNoteEffect, playLaneEffects, playLeftRotatedLinea
 
 export const sliderFlickHit = {
     enter() {
-        effect.clips.sliderFlickPerfect.play(0)
+        effect.clips.sliderFlickPerfect.exists ? effect.clips.sliderFlickPerfect.play(0) : effect.clips.perfectAlt.play(0)
 
         playLeftRotatedLinearNoteEffect(particle.effects.sliderNoteLinear)
         playCircularNoteEffect(particle.effects.sliderNoteCircular)

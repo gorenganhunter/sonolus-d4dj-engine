@@ -17,10 +17,15 @@ export class ScratchNote extends Note {
         linear: particle.effects.scratchNoteLinear,
         circular: particle.effects.scratchNoteCircular,
     }
-    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.scratchPerfect,
-        great: effect.clips.scratchGreat,
-        good: effect.clips.scratchGood
+        great: effect.clips.scratchPerfect,
+        good: effect.clips.scratchPerfect,
+        fallback: {
+            perfect: effect.clips.perfectAlt,
+            great: effect.clips.greatAlt,
+            good: effect.clips.goodAlt
+        }
     }
     bucket: Bucket = buckets.scratchNote
 

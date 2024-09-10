@@ -3,10 +3,15 @@ import { particle } from "../../../particle.js";
 import { Note } from "../Note.js";
 
 export abstract class HoldNote extends Note {
-    sfx = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.longPerfect,
         great: effect.clips.longGreat,
-        good: effect.clips.longGood
+        good: effect.clips.longGood,
+        fallback: {
+            perfect: effect.clips.perfect,
+            great: effect.clips.great,
+            good: effect.clips.good
+        }
     }
     effect = {
         linear: particle.effects.holdNoteLinear,

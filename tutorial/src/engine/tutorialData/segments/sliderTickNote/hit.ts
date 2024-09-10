@@ -21,7 +21,7 @@ export const sliderTickHit = {
         slide.show("slider")
         connector.showFrozen("slider")
 
-        // effect.clips.longPerfect.play(0)
+        effect.clips.sliderPerfect.exists ? effect.clips.sliderPerfect.play(0) : effect.clips.perfect.play(0)
 
         playLinearNoteEffect(particle.effects.sliderNoteLinear)
         playCircularNoteEffect(particle.effects.sliderNoteCircular)

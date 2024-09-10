@@ -17,10 +17,15 @@ export class ScratchNote extends Note {
         linear: particle.effects.scratchNoteLinear,
         circular: particle.effects.scratchNoteCircular,
     }
-    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.scratchPerfect,
-        great: effect.clips.scratchGreat,
-        good: effect.clips.scratchGood
+        great: effect.clips.scratchPerfect,
+        good: effect.clips.scratchPerfect,
+        fallback: {
+            perfect: effect.clips.perfectAlt,
+            great: effect.clips.greatAlt,
+            good: effect.clips.goodAlt
+        }
     }
     bucket: Bucket = buckets.scratchNote
 
@@ -40,7 +45,7 @@ export class ScratchNote extends Note {
     preprocess() {
         super.preprocess()
 
-        this.sprites.note = skin.sprites.scratch.exists ? skin.sprites.scratch.id : skin.sprites.scratchFallback.id
+        this.sprites.note = this.sprite.exists ? this.sprite.id : skin.sprites.scratchFallback.id
         this.sprites.arrow = skin.sprites.scratchArrow.exists ? skin.sprites.scratchArrow.id : skin.sprites.scratchArrowFallback.id
     }
 

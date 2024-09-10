@@ -3,12 +3,16 @@ import { SkinSpriteName } from '@sonolus/core'
 export const skin = defineSkin({
     sprites: {
         judgeLine: SkinSpriteName.JudgmentLine,
+        djStage: "DJ Stage",
         lane: SkinSpriteName.Lane,
+        laneAlt: SkinSpriteName.LaneAlternative,
         slot: SkinSpriteName.NoteSlot,
         line: "DJ Line",
-        lineFallback: SkinSpriteName.SimultaneousConnectionNeutral,
         simLine: SkinSpriteName.SimultaneousConnectionNeutral,
+        splitLine: SkinSpriteName.GridNeutral,
 
+        borderRight: SkinSpriteName.StageRightBorder,
+        borderLeft: SkinSpriteName.StageLeftBorder,
         borderBottom: SkinSpriteName.StageBottomBorder,
 
         darkTapNote: SkinSpriteName.NoteHeadBlue,

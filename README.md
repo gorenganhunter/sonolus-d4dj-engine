@@ -24,6 +24,7 @@ Todo list:
 
 | Name                                          |
 | --------------------------------------------- |
+| `DJ Stage`                                    |
 | `DJ Scratch Note`                             |
 | `DJ Scratch Arrow`                            |
 | `DJ Slider`                                   |
@@ -35,17 +36,13 @@ Todo list:
 | Name                                          |
 | --------------------------------------------- |
 | `DJ Scratch Empty`                            |
-| `DJ Scratch Good`                             |
-| `DJ Scratch Great`                            |
 | `DJ Scratch Perfect`                          |
-| `DJ Tap Empty`                                |
 | `DJ Tap 1 Good`                               |
 | `DJ Tap 1 Great`                              |
 | `DJ Tap 1 Perfect`                            |
 | `DJ Tap 2 Good`                               |
 | `DJ Tap 2 Great`                              |
 | `DJ Tap 2 Perfect`                            |
-| `DJ Long Loop`                                |
 | `DJ Long Good`                                |
 | `DJ Long Great`                               |
 | `DJ Long Perfect`                             |

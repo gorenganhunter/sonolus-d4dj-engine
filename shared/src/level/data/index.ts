@@ -1,6 +1,6 @@
 import { EngineArchetypeDataName, EngineArchetypeName, LevelData } from '@sonolus/core'
 
-export { default as data } from "./chart.json"
+export { default as data } from "./game.json"
 
 export const dat: LevelData = {
     bgmOffset: 0,

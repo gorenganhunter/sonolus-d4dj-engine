@@ -3,11 +3,16 @@ import { SkinSpriteName } from '@sonolus/core'
 export const skin = defineSkin({
     sprites: {
         judgeLine: SkinSpriteName.JudgmentLine,
+        djStage: "DJ Stage",
         lane: SkinSpriteName.Lane,
+        laneAlt: SkinSpriteName.LaneAlternative,
         slot: SkinSpriteName.NoteSlot,
         line: "DJ Line",
         simLine: SkinSpriteName.SimultaneousConnectionNeutral,
+        splitLine: SkinSpriteName.GridNeutral,
 
+        borderRight: SkinSpriteName.StageRightBorder,
+        borderLeft: SkinSpriteName.StageLeftBorder,
         borderBottom: SkinSpriteName.StageBottomBorder,
 
         darkTapNote: SkinSpriteName.NoteHeadBlue,
@@ -19,6 +24,8 @@ export const skin = defineSkin({
 
         scratch: "DJ Scratch Note",
         scratchArrow: "DJ Scratch Arrow",
+        scratchFallback: SkinSpriteName.NoteHeadGreen,
+        scratchArrowFallback: SkinSpriteName.DirectionalMarkerGreen,
 
         stopHead: SkinSpriteName.NoteHeadRed,
         stopTail: SkinSpriteName.NoteTailRed,
@@ -28,7 +35,9 @@ export const skin = defineSkin({
         sliderConnector: SkinSpriteName.NoteConnectionPurple,
         sliderArrow: SkinSpriteName.DirectionalMarkerPurple,
         slider: "DJ Slider",
-        sliderBar: "DJ Slider Bar"
+        sliderBar: "DJ Slider Bar",
+        sliderFallback: SkinSpriteName.NoteHeadNeutral,
+        sliderBarFallback: SkinSpriteName.GridNeutral
     },
 })
 

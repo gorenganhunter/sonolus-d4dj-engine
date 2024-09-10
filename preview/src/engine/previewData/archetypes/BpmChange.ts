@@ -9,7 +9,7 @@ export class BpmChange extends Archetype {
     })
 
     render() {
-        line(skin.sprites.sliderConnector, this.data.beat, 0.5)
+        line(skin.sprites.bpmLine, this.data.beat, 0.5)
 
         print(
             this.data.bpm,

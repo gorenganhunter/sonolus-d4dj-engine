@@ -11,9 +11,14 @@ export class LightTapNote extends TapNote {
         linear: particle.effects.lightTapNoteLinear,
         circular: particle.effects.lightTapNoteCircular
     }
-    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.tap2Perfect,
         great: effect.clips.tap2Great,
         good: effect.clips.tap2Good,
+        fallback: {
+            perfect: effect.clips.perfect,
+            great: effect.clips.great,
+            good: effect.clips.good
+        }
     }
 }

@@ -13,10 +13,15 @@ import { options } from '../../../../configuration/options.js'
 import { claim, isClaimed, startClaim } from "../../Slider.js"
 
 export class SliderFlickNote extends SliderNote {
-    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.sliderFlickPerfect,
         great: effect.clips.sliderFlickPerfect,
-        good: effect.clips.sliderFlickPerfect
+        good: effect.clips.sliderFlickPerfect,
+        fallback: {
+            perfect: effect.clips.perfectAlt,
+            great: effect.clips.greatAlt,
+            good: effect.clips.goodAlt
+        }
     }
     bucket = buckets.sliderFlickNote
 

@@ -9,7 +9,7 @@ export class TimeScaleChange extends Archetype {
     })
 
     render() {
-        line(skin.sprites.holdConnector, this.import.beat, 0.75)
+        line(skin.sprites.timescaleLine, this.import.beat, 0.75)
 
         print(
             this.import.timeScale,

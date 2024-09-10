@@ -21,7 +21,7 @@ export const holdStartNoteHit = {
         slide.show("hold")
         connector.showFrozen("hold")
 
-        effect.clips.longPerfect.play(0)
+        effect.clips.longPerfect.exists ? effect.clips.longPerfect.play(0) : effect.clips.perfect.play(0)
 
         playLinearNoteEffect(particle.effects.holdNoteLinear)
         playCircularNoteEffect(particle.effects.holdNoteCircular)

@@ -3,13 +3,15 @@ import { panel } from "./panel.js"
 
 export const skin = defineSkin({
     sprites: {
-        judgeLine: SkinSpriteName.JudgmentLine,
+        djStage: "DJ Stage",
         lane: SkinSpriteName.Lane,
-        slot: SkinSpriteName.NoteSlot,
+        laneAlt: SkinSpriteName.LaneAlternative,
         line: "DJ Line",
-        lineFallback: SkinSpriteName.SimultaneousConnectionNeutral,
         simLine: SkinSpriteName.SimultaneousConnectionNeutral,
+        splitLine: SkinSpriteName.GridNeutral,
 
+        borderRight: SkinSpriteName.StageRightBorder,
+        borderLeft: SkinSpriteName.StageLeftBorder,
         borderBottom: SkinSpriteName.StageBottomBorder,
 
         darkTapNote: SkinSpriteName.NoteHeadBlue,
@@ -31,10 +33,9 @@ export const skin = defineSkin({
         sliderNote: SkinSpriteName.NoteTickPurple,
         sliderConnector: SkinSpriteName.NoteConnectionPurple,
         sliderArrow: SkinSpriteName.DirectionalMarkerPurple,
-        slider: "DJ Slider",
-        sliderBar: "DJ Slider Bar",
-        sliderFallback: SkinSpriteName.NoteHeadNeutral,
-        sliderBarFallback: SkinSpriteName.GridNeutral
+
+        bpmLine: SkinSpriteName.GridPurple,
+        timescaleLine: SkinSpriteName.GridYellow
     },
 })
 

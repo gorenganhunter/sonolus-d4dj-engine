@@ -7,6 +7,10 @@ import { layer, line, skin } from '../skin.js'
 export class Stage extends Archetype {
     preprocessOrder = 1
     
+    get useFallbackStage() {
+        return !skin.sprites.djStage.exists
+    }
+
     preprocess() {
         canvas.set({
             scroll: Scroll.LeftToRight,
@@ -26,7 +30,10 @@ export class Stage extends Archetype {
     }
 
     renderPanels() {
-        const line = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.lineFallback.id
+        const splitLine = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.splitLine.id
+        const borderRight = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.borderRight.id
+        const borderLeft = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.borderLeft.id
+
         for (let i = 0; i < panel.count; i++) {
             const x = i * panel.w
 
@@ -34,7 +41,7 @@ export class Stage extends Archetype {
             const t = panel.h
 
             skin.sprites.draw(
-                line,
+                borderLeft,
                 new Rect({
                     l: x - 3.55,
                     r: x - 3.45,
@@ -45,7 +52,7 @@ export class Stage extends Archetype {
                 1,
             )
             skin.sprites.draw(
-                line,
+                borderRight,
                 new Rect({
                     l: x + 3.45,
                     r: x + 3.55,
@@ -55,7 +62,7 @@ export class Stage extends Archetype {
                 layer.stage + 1,
                 1,
             )
-            skin.sprites.lane.draw(
+            if (!this.useFallbackStage) skin.sprites.djStage.draw(
                 new Rect({
                     l: x - 3.5,
                     r: x + 3.5,
@@ -66,15 +73,29 @@ export class Stage extends Archetype {
                 options.opacity
             )
 
-            for (let j = 1; j < 6; j++) {
-                const layout = new Rect({
-                    l: x + (j - 2.45),
-                    r: x + (j - 2.55),
-                    b,
-                    t,
-                })
+            for (let j = 0; j <= 6; j++) {
+                if (j < 6) {
+                    const splitLineLayout = new Rect({
+                        l: x + (j - 2.45),
+                        r: x + (j - 2.55),
+                        b,
+                        t,
+                    })
 
-                skin.sprites.draw(line, layout, layer.stage + 1, 1)
+                    skin.sprites.draw(splitLine, splitLineLayout, layer.stage + 1, 1)
+                }
+
+                if (this.useFallbackStage) {
+                    const layout = new Rect({
+                        l: x + (j - 3.5),
+                        r: x + (j - 2.5),
+                        b,
+                        t
+                    })
+
+                    if ((j === 0 || j === 6) && skin.sprites.laneAlt.exists) skin.sprites.laneAlt.draw(layout, layer.stage, options.opacity)
+                    else skin.sprites.lane.draw(layout, layer.stage, options.opacity)
+                }
             }
         }
     }

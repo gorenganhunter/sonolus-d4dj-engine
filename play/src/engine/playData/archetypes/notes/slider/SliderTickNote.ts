@@ -12,10 +12,15 @@ import { isUsed, markAsUsed } from "../../InputManager.js";
 import { timeToScaledTime } from "../../utils.js";
 
 export class SliderTickNote extends SliderNote {
-    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; } = {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.sliderPerfect,
         great: effect.clips.sliderGreat,
-        good: effect.clips.sliderGood
+        good: effect.clips.sliderGood,
+        fallback: {
+            perfect: effect.clips.perfect,
+            great: effect.clips.great,
+            good: effect.clips.good
+        }
     }
     bucket: Bucket = buckets.sliderTickNote
 
