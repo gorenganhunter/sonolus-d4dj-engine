@@ -11,15 +11,25 @@ export class HoldEndNote extends HoldNote {
     sprite = skin.sprites.holdTail
     bucket = buckets.holdEndNote
 
-    // preprocess() {
-    //     super.preprocess()
+    preprocess() {
+        super.preprocess()
 
-    //     // const minPrevInputTime =
-    //     //     bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
+        const minPrevInputTime =
+            bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
 
-    //     // this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
-    // }
+        this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
+    }
     
+    updateParallel() {
+        if (
+            this.prevInfo.state === EntityState.Despawned &&
+            !this.prevSingleSharedMemory.activatedTouchId
+        )
+            this.despawn = true
+
+        super.updateParallel()
+    }
+
     touch() {
         const id = this.prevSingleSharedMemory.activatedTouchId
         if (id) {
