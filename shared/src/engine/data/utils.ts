@@ -11,7 +11,7 @@ export const perspectiveLayout = ({ l, r, b, t }: { l: number, r: number, b: num
     })
 
 export const approach = (fromTime: number, toTime: number, now: number) =>
-    1 / Math.remap(fromTime, toTime, 20, 1, now)
+    now <= toTime ? 1 / Math.remap(fromTime, toTime, 20, 1, now) : Math.min(1.5, Math.remap(toTime, toTime + (toTime - fromTime), 1, 20, now))
 
 export const leftRotated = ({ l, r, b, t }: RectLike) =>
     new Quad({
