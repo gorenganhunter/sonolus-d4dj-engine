@@ -125,7 +125,7 @@ export class SimLine extends Archetype {
         l = l * 2.1
         r = r * 2.1
 
-        const minY = approach(0, 1, 0)
+        const minY = approach(0, 1, 1 - options.laneLength)
 
         if (y.l < minY) {
             l = Math.remap(y.l, y.r, l, r, minY)
