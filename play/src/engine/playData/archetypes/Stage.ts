@@ -5,15 +5,26 @@ import { note } from '../note.js'
 import { particle } from '../particle.js'
 import { skin } from '../skin.js'
 import { isUsed, markAsUsed } from './InputManager.js'
-import { claim, isClaimed, startClaim } from './ScratchManager.js'
+import { slider } from "../slider.js";
+import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
+import { timeToScaledTime } from './utils.js'
 
 export class Stage extends Archetype {
-    touchOrder = 3
+    touchOrder = 2
+    
+    sliderBox = this.entityMemory(Rect)
 
     sprites = this.entityMemory({
         splitLine: SkinSpriteId,
         borderRight: SkinSpriteId,
-        borderLeft: SkinSpriteId
+        borderLeft: SkinSpriteId,
+        slider: SkinSpriteId,
+        sliderBar: SkinSpriteId
+    })
+    
+    next = this.entityMemory({
+        time: Number,
+        scaledTime: Number
     })
 
     get useFallbackStage() {
@@ -32,8 +43,30 @@ export class Stage extends Archetype {
         return l > 3 ? 3 : l < -3 ? -3 : Math.round(l)
     }
 
+    handleSlider(touch: Touch) {
+        if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) return false
+// debug.log(isUsed(touch))
+        
+        if ((slider.touch !== touch.id) && !this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
+
+        slider.touch = touch.id
+        
+        const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
+        const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
+        
+        if (!touch.ended) skin.sprites.sliderConnector.draw(perspectiveLayout({ l: sliderPos - 1.05, r: sliderPos + 1.05, b: 1 + note.radius, t: 1 - note.radius * 8 }), 101, 0.5)
+
+        // debug.log(sliderPos)
+        slider.position = sliderPos
+
+        if (!isUsed(touch)) markAsUsed(touch)
+        return true
+    }
+
     touch() {
         for (const touch of touches) {
+            if (this.handleSlider(touch)) continue
+
             const lane = this.getLane(touch)
             const t = 1 - note.radius
             const b = 1 + note.radius
@@ -66,7 +99,7 @@ export class Stage extends Archetype {
                 if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
                 // else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
                 if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
-            } else if (!isClaimed(touch)) {
+            } else if (!isScratchClaimed(touch)) {
                 if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
                 if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
             }
@@ -82,6 +115,77 @@ export class Stage extends Archetype {
         return entityInfos.get(0).state === EntityState.Despawned
     }
 
+    updateSequential() {
+        if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
+            slider.position = slider.next.lane * 2.1
+            // debug.log(slider.position)
+        }
+    }
+    
+    renderSlider() {
+        skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 0.95 + note.radius * 4, t: 1 - note.radius * 2 }), 105, 1)
+        this.renderConnector()
+    }
+    
+    renderConnector() {
+        // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        
+        this.next.time = bpmChanges.at(slider.next.beat).time
+        this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
+
+        const hiddenDuration = 0
+
+        const visibleTime = {
+            min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, scaledTime + hiddenDuration),
+            max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, scaledTime + note.duration * options.laneLength),
+        }
+
+        const l = {
+            min: this.getL(visibleTime.min),
+            max: this.getL(visibleTime.max),
+        }
+
+        const r = {
+            min: this.getR(visibleTime.min),
+            max: this.getR(visibleTime.max),
+        }
+
+        const y = {
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
+        }
+
+        const layout = {
+            x1: l.min * y.min,
+            x2: l.max * y.max,
+            x3: r.max * y.max,
+            x4: r.min * y.min,
+            y1: y.min,
+            y2: y.max,
+            y3: y.max,
+            y4: y.min,
+        }
+
+        skin.sprites.sliderConnector.draw(layout, 90, options.connectorAlpha)
+    }
+
+    getL(time2: number) {
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
+    }
+
+    getR(time2: number) {
+        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
+        return Math.remap(scaledTime, this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
+    }
+
+    initialize() {
+        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
+        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
+        new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
+    }
+
     updateParallel() {
         // debug.log(time.now - time.scaled)
         // const layout = new Rect({
@@ -90,6 +194,9 @@ export class Stage extends Archetype {
         //     t: 1 - note.radius / 4,
         //     b: 1 + note.radius / 4,
         // })
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        if(slider.isUsed) this.renderSlider()
 
         const hidden = approach(0, 1, 1 - options.laneLength)
 

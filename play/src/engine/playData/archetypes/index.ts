@@ -25,7 +25,7 @@ export const archetypes = defineArchetypes({
     InputManager,
     HoldManager,
     ScratchManager,
-    Slider,
+    // Slider,
 
     DarkTapNote,
     LightTapNote,
