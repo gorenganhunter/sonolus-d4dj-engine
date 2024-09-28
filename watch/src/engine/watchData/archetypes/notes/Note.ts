@@ -127,7 +127,13 @@ export abstract class Note extends Archetype {
         } else {
             this.sfx.perfect.exists ? this.sfx.perfect.schedule(this.targetTime, 0.02) : this.sfx.fallback.perfect.schedule(this.targetTime, 0.02)
         }
-        // debug.log(this.spawnTime)
+
+        if (!replay.isReplay) {
+            this.result.bucket.index = this.bucket.index
+        } else if (this.import.judgment) {
+            this.result.bucket.index = this.bucket.index
+            this.result.bucket.value = this.import.accuracy * 1000
+        }
     }
 
     terminate() {
