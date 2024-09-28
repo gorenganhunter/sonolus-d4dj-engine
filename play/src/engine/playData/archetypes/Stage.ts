@@ -12,8 +12,6 @@ import { timeToScaledTime } from './utils.js'
 export class Stage extends Archetype {
     touchOrder = 2
     
-    sliderBox = this.entityMemory(Rect)
-
     sprites = this.entityMemory({
         splitLine: SkinSpriteId,
         borderRight: SkinSpriteId,
@@ -47,7 +45,7 @@ export class Stage extends Archetype {
         if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) return false
 // debug.log(isUsed(touch))
         
-        if ((slider.touch !== touch.id) && !this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
+        if ((slider.touch !== touch.id) && !note.sliderBox.contains(touch.startPosition) && !(!options.judgmentMode && slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
 
         slider.touch = touch.id
         
@@ -183,7 +181,6 @@ export class Stage extends Archetype {
     initialize() {
         this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
         this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
-        new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
     }
 
     updateParallel() {

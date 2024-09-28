@@ -34,7 +34,7 @@ export class SliderTickNote extends SliderNote {
 
     initialize() {
         super.initialize()
-        new Rect({ l: this.import.lane * 2.1 - 2.2, r: this.import.lane * 2.1 + 2.2, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
+        new Rect({ l: this.import.lane * 2.1 - 2.2, r: this.import.lane * 2.1 + 2.2, b: options.judgmentMode ? (1.1 + note.radius * 4) : 2, t: options.judgmentMode ? (0.9 + note.radius * 4) : -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.used = false
         
         if(this.sliderImport.next) {
@@ -74,7 +74,7 @@ export class SliderTickNote extends SliderNote {
         if (time.now < this.targetTime - sliderWindows.good.max) return
         if (time.now > this.targetTime + sliderWindows.good.max) return this.incomplete(time.now)
 
-        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
+        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
                 this.used = true
             } else {

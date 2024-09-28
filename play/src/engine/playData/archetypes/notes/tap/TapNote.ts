@@ -3,6 +3,7 @@ import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { Note } from "../Note.js";
 import { options } from '../../../../configuration/options.js'
+import { note } from "../../../note.js";
 
 export abstract class TapNote extends Note {
     bucket: Bucket = buckets.tapNote
@@ -12,6 +13,7 @@ export abstract class TapNote extends Note {
 
         for (const touch of touches) {
             if (!this.hitbox.contains(touch.position)) continue
+            if (options.judgmentMode && note.sliderBox.contains(touch.position)) continue
             if (!touch.started) continue
             if (isUsed(touch)) continue
 

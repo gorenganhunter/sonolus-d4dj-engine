@@ -21,7 +21,6 @@ export const optionsDefinition = {
     },
     judgmentWidth: {
         name: "Judgement Width",
-        standard: true,
         advanced: true,
         type: "slider",
         scope: "d4dj",
@@ -31,13 +30,13 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
-    // judgmentMode: {
-    //     name: "Judgement Mode",
-    //     type: "select",
-    //     scope: "d4dj",
-    //     values: ["Combined", "Separated"],
-    //     def: 0
-    // },
+    judgmentMode: {
+        name: "Judgement Mode",
+        type: "select",
+        scope: "d4dj",
+        values: ["Combined", "Separated"],
+        def: 0
+    },
     // judgelineHeight: {
     //     name: "Judgement Line Height",
     //     type: "slider",

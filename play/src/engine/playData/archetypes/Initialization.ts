@@ -30,6 +30,8 @@ export class Initialization extends Archetype {
         slider.isUsed = false
         slider.next.beat = 99999999
         
+        new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(transform).copyTo(note.sliderBox)
+
         const gap = 0.05
         const uiRect = screen.rect.shrink(gap, gap)
 

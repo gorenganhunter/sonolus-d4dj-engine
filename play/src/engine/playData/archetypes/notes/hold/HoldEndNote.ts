@@ -6,6 +6,7 @@ import { windows } from "../../../windows.js";
 import { queueHold } from "../../HoldManager.js";
 import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'
+import { note } from "../../../note.js";
 
 export class HoldEndNote extends HoldNote {
     sprite = skin.sprites.holdTail
@@ -41,7 +42,7 @@ export class HoldEndNote extends HoldNote {
                     else return queueHold(this.holdImport.prevRef)
                 }
 
-                if (time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) {
+                if ((time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) && !(options.judgmentMode && note.sliderBox.contains(touch.position))) {
                     this.complete(touch.t)
                 } else {
                     this.incomplete(touch.t)

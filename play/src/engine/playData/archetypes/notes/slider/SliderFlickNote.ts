@@ -51,7 +51,7 @@ export class SliderFlickNote extends SliderNote {
         const l = (lane + (direction < 0 ? direction : 0)) * 2.1 - 1.05
         const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
 
-        new Rect({ l, r, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
+        new Rect({ l, r, b: options.judgmentMode ? (1.1 + note.radius * 4) : 2, t: options.judgmentMode ? (0.9 + note.radius * 4) : -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.arrow.z = getZ(103, this.targetTime, this.import.lane)
     }
 
