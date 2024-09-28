@@ -14,10 +14,39 @@ export const optionsDefinition = {
     },
     backspinAssist: {
         name: "Back-Spin Assist",
+        standard: true,
         type: "toggle",
         scope: "d4dj",
         def: 0
     },
+    judgmentWidth: {
+        name: "Judgement Width",
+        standard: true,
+        advanced: true,
+        type: "slider",
+        scope: "d4dj",
+        min: 0.5,
+        max: 1,
+        def: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
+    // judgmentMode: {
+    //     name: "Judgement Mode",
+    //     type: "select",
+    //     scope: "d4dj",
+    //     values: ["Combined", "Separated"],
+    //     def: 0
+    // },
+    // judgelineHeight: {
+    //     name: "Judgement Line Height",
+    //     type: "slider",
+    //     scope: "d4dj",
+    //     min: -10,
+    //     max: 10,
+    //     def: 0,
+    //     step: 1
+    // },
     mirror: {
         name: Text.Mirror,
         type: 'toggle',
@@ -121,5 +150,24 @@ export const optionsDefinition = {
         type: "toggle",
         scope: "d4dj",
         def: 1
-    }
+    },
+    // backspinBrightness: {
+    //     name: "BackSpin Brightness",
+    //     type: "slider",
+    //     scope: "d4dj",
+    //     def: 0.8,
+    //     min: 0,
+    //     max: 1,
+    //     step: 0.01,
+    //     unit: Text.PercentageUnit
+    // },
+    // scratchSensitivity: {
+    //     name: "Scratch Sensitivity",
+    //     type: "slider",
+    //     scope: "d4dj",
+    //     min: -2,
+    //     max: 2,
+    //     def: 0,
+    //     step: 1
+    // }
 } satisfies Record<string, EngineConfigurationOption>
