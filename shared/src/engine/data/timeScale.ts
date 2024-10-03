@@ -103,3 +103,43 @@ export const baseScaledTimeToEarliestTime = (
     }
     return time
 }
+
+export const baseBackspinTime = (
+    archetypes: Archetypes,
+    bpmChanges: BpmChanges,
+    time: number,
+    tsGroup: number
+): number => {
+    const tsGroupEntity = archetypes.TimeScaleGroup.data.get(tsGroup)
+    let nextRef = tsGroupEntity.firstRef
+    let bsTime = -100
+    let temp = -100
+    for (let i = 0; i < tsGroupEntity.length; i++) {
+        const tsChangeStart = archetypes.TimeScaleChange.data.get(nextRef)
+        const tsChangeStartTime = bpmChanges.at(tsChangeStart.beat).time
+        // if (i === 0) {
+        //     if (time < tsChangeStartTime) {
+        //         return bsTime
+        //     }
+        //     bsTime = tsChangeStartTime
+        // }
+        // if (i === tsGroupEntity.length - 1) {
+        //     return tsChangeStartTime + (time - currentTime) / tsChangeStart.timeScale
+        // }
+        if (time < tsChangeStartTime) return bsTime
+
+        bsTime = temp
+        temp = tsChangeStartTime
+
+        nextRef = tsChangeStart.nextRef
+        // const tsChangeEnd = archetypes.TimeScaleChange.data.get(nextRef)
+        // const tsChangeEndTime = bpmChanges.at(tsChangeEnd.beat).time
+
+        // const timeDiff = tsChangeEndTime - tsChangeStartTime
+        // if (time <= currentTime + timeDiff * tsChangeStart.timeScale) {
+        //     return tsChangeStartTime + (time - currentTime) / tsChangeStart.timeScale
+        // }
+        // currentTime += timeDiff * tsChangeStart.timeScale
+    }
+    return bsTime
+}

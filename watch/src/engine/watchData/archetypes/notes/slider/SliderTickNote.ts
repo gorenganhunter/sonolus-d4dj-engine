@@ -154,6 +154,7 @@ export class SliderTickNote extends SliderNote {
         }
 
         skin.sprites.sliderConnector.draw(layout, this.z - 5, options.connectorAlpha)
+        if (time.now < this.bsTime) skin.sprites.shadow.draw(layout, this.z - 4, (1 - options.backspinBrightness) * options.connectorAlpha)
     }
 
     getLane(time: number) {

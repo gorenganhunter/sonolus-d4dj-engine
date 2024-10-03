@@ -150,16 +150,16 @@ export const optionsDefinition = {
         scope: "d4dj",
         def: 1
     },
-    // backspinBrightness: {
-    //     name: "BackSpin Brightness",
-    //     type: "slider",
-    //     scope: "d4dj",
-    //     def: 0.8,
-    //     min: 0,
-    //     max: 1,
-    //     step: 0.01,
-    //     unit: Text.PercentageUnit
-    // },
+    backspinBrightness: {
+        name: "Backspin Brightness",
+        type: "slider",
+        scope: "d4dj",
+        def: 0.6,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        unit: Text.PercentageUnit
+    },
     // scratchSensitivity: {
     //     name: "Scratch Sensitivity",
     //     type: "slider",

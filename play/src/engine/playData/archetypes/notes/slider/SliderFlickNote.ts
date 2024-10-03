@@ -70,6 +70,7 @@ export class SliderFlickNote extends SliderNote {
                 t
             }
             skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
         }
         else for (let i = -1; i >= this.sliderImport.direction; i--) {
             const lane = (this.import.lane + i) * 2.1
@@ -80,6 +81,7 @@ export class SliderFlickNote extends SliderNote {
                 t
             }
             skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
         }
     }
     

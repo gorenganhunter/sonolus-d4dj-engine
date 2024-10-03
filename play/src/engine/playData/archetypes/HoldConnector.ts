@@ -1,7 +1,7 @@
 import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { effect, getScheduleSFXTime } from '../effect.js'
-import { note } from '../note.js'
+import { getBackspinTime, note } from '../note.js'
 import { particle } from '../particle.js'
 import { getZ, skin } from '../skin.js'
 import { moveHold } from './HoldManager.js'
@@ -59,6 +59,8 @@ export class HoldConnector extends Archetype {
         z: Number,
     })
 
+    bsTime = this.entityMemory(Number)
+
     preprocess() {
         this.head.time = bpmChanges.at(this.headImport.beat).time
         this.head.scaledTime = timeToScaledTime(this.head.time, this.headImport.timescaleGroup)
@@ -66,6 +68,8 @@ export class HoldConnector extends Archetype {
         this.scheduleSFXTime = getScheduleSFXTime(this.head.time)
 
         this.visualTime.min = (options.backspinAssist ? this.head.time : this.head.scaledTime) - note.duration
+
+        this.bsTime = getBackspinTime(this.head.time, this.headImport.timescaleGroup)
     
         const spawnTime = Math.min(
             this.visualTime.min,
@@ -214,6 +218,7 @@ export class HoldConnector extends Archetype {
         }
 
         skin.sprites.draw(this.sprite.connector, layout, this.connector.z, options.connectorAlpha)
+        if (time.now < this.bsTime) skin.sprites.shadow.draw(layout, this.connector.z + 1, (1 - options.backspinBrightness) * options.connectorAlpha)
     }
 
     renderSlide() {

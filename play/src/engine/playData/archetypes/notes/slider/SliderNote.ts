@@ -6,6 +6,7 @@ import { slider } from "../../../slider.js";
 import { Note } from "../Note.js";
 import { particle } from "../../../particle.js";
 import { effect } from "../../../effect.js";
+import { options } from "../../../../configuration/options.js";
 
 export abstract class SliderNote extends Note {
     sprite: SkinSprite = skin.sprites.sliderNote
@@ -13,6 +14,8 @@ export abstract class SliderNote extends Note {
         linear: particle.effects.sliderNoteLinear,
         circular: particle.effects.sliderNoteCircular
     }
+
+    shadow = skin.sprites.shadowSlider
 
     touchOrder = 2
 
@@ -29,7 +32,8 @@ export abstract class SliderNote extends Note {
 
         perspectiveLayout({ l, r, t: 1 - note.radius * 2, b: 1 + note.radius * 2 }).copyTo(this.notePosition)
 
-        skin.sprites.sliderNote.draw(this.notePosition.mul(this.y), 100, 1)
+        skin.sprites.sliderNote.draw(this.notePosition.mul(this.y), this.z, 1)
+        if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)
     }
 
     preprocess() {

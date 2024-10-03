@@ -3,7 +3,7 @@ import { approach, perspectiveLayout } from '../../../../../../shared/src/engine
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect, getScheduleSFXTime } from '../../effect.js'
-import { note } from '../../note.js'
+import { getBackspinTime, note } from '../../note.js'
 import { windows } from '../../windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
@@ -27,7 +27,9 @@ export abstract class Note extends Archetype {
         }
     }
     abstract bucket: Bucket
-    
+
+    shadow = skin.sprites.shadowNote
+
     export = this.defineExport({
         accuracyDiff: { name: 'accuracyDiff', type: Number },
     })
@@ -54,6 +56,7 @@ export abstract class Note extends Archetype {
     hitbox = this.entityMemory(Rect)
     scheduleSFXTime = this.entityMemory(Number)
     hasSFXScheduled = this.entityMemory(Boolean)
+    bsTime = this.entityMemory(Number)
 
     playEffect() {
         if (!options.noteEffectEnabled) return
@@ -65,6 +68,7 @@ export abstract class Note extends Archetype {
 
     drawNote() {
         this.sprite.draw(this.notePosition.mul(this.y), this.z, 1)
+        if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)
     }
 
     touchOrder = 1
@@ -97,6 +101,9 @@ export abstract class Note extends Archetype {
         this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
 
         this.visualTime.min = this.visualTime.max - note.duration
+
+        this.bsTime = getBackspinTime(this.targetTime, this.import.timescaleGroup)
+
         this.spawnTime = options.backspinAssist ? this.visualTime.min : scaledTimeToEarliestTime(
             Math.min(
                 this.visualTime.min,

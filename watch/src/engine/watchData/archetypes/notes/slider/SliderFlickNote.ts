@@ -46,11 +46,11 @@ export class SliderFlickNote extends SliderNote {
     initialize() {
         super.initialize()
 
-        const lane = this.import.lane
-        const direction = this.sliderImport.direction
+        // const lane = this.import.lane
+        // const direction = this.sliderImport.direction
         
-        const l = (lane + (direction < 0 ? direction : 0)) * 2.1 - 1.05
-        const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
+        // const l = (lane + (direction < 0 ? direction : 0)) * 2.1 - 1.05
+        // const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
 
         // new Rect({ l, r, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
         this.arrow.z = getZ(103, this.targetTime, this.import.lane)
@@ -71,6 +71,7 @@ export class SliderFlickNote extends SliderNote {
                 t
             }
             skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
         }
         else for (let i = -1; i >= this.sliderImport.direction; i--) {
             const lane = (this.import.lane + i) * 2.1
@@ -81,6 +82,7 @@ export class SliderFlickNote extends SliderNote {
                 t
             }
             skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
         }
     }
     

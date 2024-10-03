@@ -37,7 +37,12 @@ export const skin = defineSkin({
         slider: "DJ Slider",
         sliderBar: "DJ Slider Bar",
         sliderFallback: SkinSpriteName.NoteHeadNeutral,
-        sliderBarFallback: SkinSpriteName.GridNeutral
+        sliderBarFallback: SkinSpriteName.GridNeutral,
+
+        shadow: "DJ Shadow",
+        shadowNote: "DJ Shadow Note",
+        shadowSlider: "DJ Shadow Slider",
+        shadowSliderArrow: "DJ Shadow Slider Arrow"
     },
 })
 

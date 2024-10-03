@@ -3,7 +3,7 @@ import { approach, perspectiveLayout } from '../../../../../../shared/src/engine
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
-import { note, getSpawnTime } from '../../note.js'
+import { note, getSpawnTime, getBackspinTime } from '../../note.js'
 import { windows } from '../../windows.js'
 // import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
@@ -27,6 +27,8 @@ export abstract class Note extends Archetype {
         }
     }
     abstract bucket: Bucket
+
+    shadow = skin.sprites.shadowNote
     
     import = this.defineImport({
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
@@ -45,6 +47,7 @@ export abstract class Note extends Archetype {
     notePosition = this.entityMemory(Quad)
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
+    bsTime = this.entityMemory(Number)
     sharedMemory = this.defineSharedMemory({
         despawnTime: Number
     })
@@ -81,6 +84,7 @@ export abstract class Note extends Archetype {
 
     drawNote() {
         this.sprite.draw(this.notePosition.mul(this.y), this.z, 1)
+        if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)
     }
 
     touchOrder = 1
@@ -111,6 +115,8 @@ export abstract class Note extends Archetype {
         this.sharedMemory.despawnTime = this.targetTime
 
         this.result.time = this.targetTime
+
+        this.bsTime = getBackspinTime(this.targetTime, this.import.timescaleGroup)
 
         if (replay.isReplay) {
             switch (this.import.judgment) {
