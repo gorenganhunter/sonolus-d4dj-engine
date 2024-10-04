@@ -42,6 +42,3 @@ export const effect = defineEffect({
         goodAlt: EffectClipName.GoodAlternative,
     },
 })
-
-export const getScheduleSFXTime = (targetTime: number) =>
-    targetTime - 0.5 - Math.max(audio.offset, 0)

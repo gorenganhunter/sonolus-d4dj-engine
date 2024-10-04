@@ -95,8 +95,6 @@ export abstract class Note extends Archetype {
         if (options.mirror) this.import.lane *= -1
 
         this.targetTime = bpmChanges.at(this.import.beat).time
-
-        this.scheduleSFXTime = getScheduleSFXTime(this.targetTime)
     
         this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
 
@@ -107,13 +105,12 @@ export abstract class Note extends Archetype {
         this.spawnTime = options.backspinAssist ? this.visualTime.min : scaledTimeToEarliestTime(
             Math.min(
                 this.visualTime.min,
-                this.visualTime.max,
-                timeToScaledTime(this.scheduleSFXTime, this.import.timescaleGroup)
+                this.visualTime.max
             ),
             this.import.timescaleGroup
         )
 
-        // debug.log(this.spawnTime)
+        if (this.shouldScheduleSFX) this.scheduleSFX()
     }
 
     globalPreprocess() {
@@ -182,7 +179,6 @@ export abstract class Note extends Archetype {
         if (time.now > this.inputTime.max) this.despawn = true
         if (this.despawn) return
 
-        if (this.shouldScheduleSFX && !this.hasSFXScheduled && time.now >= this.scheduleSFXTime) this.scheduleSFX()
         // debug.log(this.import.beat)
 
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
