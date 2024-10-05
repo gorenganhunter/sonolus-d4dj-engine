@@ -5,6 +5,7 @@ import { skin } from '../skin.js'
 import { slider } from '../slider.js'
 import { archetypes } from './index.js'
 
+
 export class Initialization extends Archetype {
     preprocess() {
         const noteRadius = 0.05 * options.noteSize
@@ -29,6 +30,34 @@ export class Initialization extends Archetype {
         note.duration = 0.5 + (12 - options.noteSpeed) * 0.4
         slider.isUsed = false
         slider.next.beat = 99999999
+
+        switch (options.scratchSensitivity) {
+            case -2:
+                note.scratch.angle = 120
+                note.scratch.distance = 0.2
+                note.scratch.movement = 10
+                break;
+            case -1:
+                note.scratch.angle = 115
+                note.scratch.distance = 0.1
+                note.scratch.movement = 5
+                break;
+            case 0:
+                note.scratch.angle = 105
+                note.scratch.distance = 0.07
+                note.scratch.movement = 1
+                break;
+            case 1:
+                note.scratch.angle = 95
+                note.scratch.distance = 0.03
+                note.scratch.movement = 0.75
+                break;
+            case 2:
+                note.scratch.angle = 75
+                note.scratch.distance = 0
+                note.scratch.movement = 0.5
+                break;
+        }
         
         new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(transform).copyTo(note.sliderBox)
 

@@ -160,13 +160,13 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
-    // scratchSensitivity: {
-    //     name: "Scratch Sensitivity",
-    //     type: "slider",
-    //     scope: "d4dj",
-    //     min: -2,
-    //     max: 2,
-    //     def: 0,
-    //     step: 1
-    // }
+    scratchSensitivity: {
+        name: "Scratch Sensitivity",
+        type: "slider",
+        scope: "d4dj",
+        min: -2,
+        max: 2,
+        def: 0,
+        step: 1
+    }
 } satisfies Record<string, EngineConfigurationOption>

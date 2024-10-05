@@ -4,7 +4,12 @@ import { archetypes } from "./archetypes/index.js"
 export const note = levelData({
     radius: Number,
     duration: Number,
-    sliderBox: Rect
+    sliderBox: Rect,
+    scratch: {
+        angle: Number,
+        distance: Number,
+        movement: Number
+    }
 })
 
 export const getBackspinTime = (baseTime: number, tsGroup: number): number =>

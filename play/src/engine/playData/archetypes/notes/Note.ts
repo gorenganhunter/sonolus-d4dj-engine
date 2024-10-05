@@ -2,7 +2,7 @@ import { EngineArchetypeDataName, SkinSpriteName } from '@sonolus/core'
 import { approach, perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
-import { effect, getScheduleSFXTime } from '../../effect.js'
+import { effect } from '../../effect.js'
 import { getBackspinTime, note } from '../../note.js'
 import { windows } from '../../windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
@@ -114,7 +114,7 @@ export abstract class Note extends Archetype {
     }
 
     globalPreprocess() {
-        const toMS = (window: JudgmentWindow) => ({
+        const toMS = (window: RangeLike) => ({
             min: window.min * 1000,
             max: window.max * 1000,
         })

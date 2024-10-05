@@ -3,6 +3,8 @@
 //     old: Dictionary(16, Number, Number)
 // })
 
+import { note } from "../note.js";
+
 // const last = levelMemory({
 //     dx: {
 //         now: Dictionary(16, Number, Number),
@@ -92,8 +94,6 @@ export const claim = (touch: Touch) => {
     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
 }
 
-const minScratchDistance = 0.1
-
 export const isClaimed = (touch: Touch): boolean => {
 //    debug.log(touch.id)
     
@@ -106,17 +106,17 @@ export const isClaimed = (touch: Touch): boolean => {
 
     const v = touch.position.sub(old.pos).length
 //    debug.log(v)
-    if (v < 0.02 * screen.w) return true
+    if (v < 0.02 * screen.w * note.scratch.movement) return true
     // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minScratchVr) return true
     // 
-    if (old.isUsed && touch.t - old.t < minScratchDistance) return true
+    if (old.isUsed && touch.t - old.t < note.scratch.distance) return true
 
     // const { position: pos, dx, dy, vr } = touch
     // claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
 // debug.log(touch.vr)
-    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
+    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < note.scratch.angle : false
 }
 
 // export const isUsed = (touch: Touch) => usedTouchIds.has(touch.id)
