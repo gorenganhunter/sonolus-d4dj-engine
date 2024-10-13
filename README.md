@@ -18,6 +18,12 @@ Todo list:
 -   [Sonolus Website](https://sonolus.com)
 -   [Sonolus Wiki](https://github.com/NonSpicyBurrito/sonolus-wiki)
 
+## Installation
+
+```
+npm install sonolus-bandori-engine
+```
+
 ## Custom Resources
 
 ### Skin Sprites
@@ -50,3 +56,33 @@ Todo list:
 | `DJ Slider Great`                             |
 | `DJ Slider Perfect`                           |
 | `DJ Slider Flick Perfect`                     |
+
+## Documentation
+
+### `version`
+
+Package version.
+
+### `databaseEngineItem`
+
+Partial database engine item compatible with [sonolus-express](https://github.com/NonSpicyBurrito/sonolus-express).
+
+### `b34djToLevelData(chart, offset?)`
+
+Converts D4DJ (bangbangboom-editor) chart to Level Data.
+
+-   `chart`: D4DJ chart.
+-   `offset`: offset (default: `0`).
+
+### Assets
+
+The following assets are exposed as package entry points:
+
+-   `EngineConfiguration`
+-   `EnginePlayData`
+-   `EngineWatchData`
+-   `EnginePreviewData`
+-   `EngineTutorialData`
+-   `EngineThumbnail`
+
+In Node.js, you can obtain path to assets using `require.resolve('sonolus-d4dj-engine/EngineConfiguration')` or `import.meta.resolve('sonolus-d4dj-engine/EngineConfiguration')`.
