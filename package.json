@@ -1,22 +1,42 @@
 {
   "name": "sonolus-d4dj-engine",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A recreation of D4DJ Groovy Mix engine in Sonolus.",
   "type": "module",
+  "author": "Gorengan Hunter",
+  "repository": "github:gorenganhunter/sonolus-d4dj-engine",
+  "license": "MIT",
+  "keywords": [
+    "Sonolus",
+    "D4DJ"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.cjs",
+    "./EngineConfiguration": "./dist/EngineConfiguration",
+    "./EnginePlayData": "./dist/EnginePlayData",
+    "./EngineWatchData": "./dist/EngineWatchData",
+    "./EnginePreviewData": "./dist/EnginePreviewData",
+    "./EngineTutorialData": "./dist/EngineTutorialData",
+    "./EngineThumbnail": "./dist/thumbnail.png"
+  },
   "scripts": {
     "dev:play": "sonolus-cli --dev ./play",
     "dev:watch": "sonolus-cli --dev ./watch",
     "dev:preview": "sonolus-cli --dev ./preview",
     "dev:tutorial": "sonolus-cli --dev ./tutorial",
-    "type-check": "tsc -p ./shared --noEmit && tsc -p ./play --noEmit && tsc -p ./watch --noEmit && tsc -p ./preview --noEmit && tsc -p ./tutorial --noEmit",
-    "format": "prettier . --write",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
-    "build": "sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial"
+    "check-type": "tsc -p ./lib --noEmit && tsc -p ./shared --noEmit && tsc -p ./play --noEmit && tsc -p ./watch --noEmit && tsc -p ./preview --noEmit && tsc -p ./tutorial --noEmit",
+    "check-lint": "eslint .",
+    "check-format": "prettier . --check",
+    "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.mjs"
+  },
+  "dependencies": {
+    "@sonolus/core": "~7.9.1"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@sonolus/core": "^7.9.1",
     "@sonolus/sonolus.js": "^9.5.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

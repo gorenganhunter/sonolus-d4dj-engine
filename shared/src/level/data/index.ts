@@ -1,6 +1,6 @@
 import { EngineArchetypeDataName, EngineArchetypeName, LevelData } from '@sonolus/core'
 
-export { default as data } from "./game.json"
+export { default as data } from "./guru.json"
 
 export const dat: LevelData = {
     bgmOffset: 0,
@@ -26,132 +26,51 @@ export const dat: LevelData = {
                 }
             ]
         },
+        // {
+        //     archetype: EngineArchetypeName.TimeScaleChange,
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 2
+        //         },
+        //         {
+        //             name: EngineArchetypeDataName.TimeScale,
+        //             value: 0
+        //         }
+        //     ]
+        // },
+        // {
+        //     archetype: EngineArchetypeName.TimeScaleChange,
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 20
+        //         },
+        //         {
+        //             name: EngineArchetypeDataName.TimeScale,
+        //             value: 1
+        //         }
+        //     ]
+        // },
         {
-            archetype: EngineArchetypeName.TimeScaleChange,
+            archetype: "SliderFlickNote",
             data: [
                 {
                     name: EngineArchetypeDataName.Beat,
-                    value: 2
-                },
-                {
-                    name: EngineArchetypeDataName.TimeScale,
-                    value: 0
-                }
-            ]
-        },
-        {
-            archetype: EngineArchetypeName.TimeScaleChange,
-            data: [
-                {
-                    name: EngineArchetypeDataName.Beat,
-                    value: 20
-                },
-                {
-                    name: EngineArchetypeDataName.TimeScale,
                     value: 1
-                }
-            ]
-        },
-        {
-            archetype: "StopStartNote",
-            data: [
-                {
-                    name: EngineArchetypeDataName.Beat,
-                    value: 2
                 },
                 {
                     name: "lane",
-                    value: 3
+                    value: -2
                 },
                 {
-                    name: "tail",
-                    ref: "st1"
-                }
-            ],
-            name: "sh1"
-        },
-        {
-            archetype: "HoldConnector",
-            data: [
-                {
-                    name: "head",
-                    ref: "sh1"
-                },
-                {
-                    name: "tail",
-                    ref: "st1"
-                }
-            ]
-        },
-        {
-            archetype: "StopEndNote",
-            data: [
-                {
-                    name: EngineArchetypeDataName.Beat,
-                    value: 12
-                },
-                {
-                    name: "lane",
-                    value: 3
-                },
-                {
-                    name: "head",
-                    ref: "sh1"
-                }
-            ],
-            name: "st1"
-        },
-        {
-            archetype: "StopStartNote",
-            data: [
-                {
-                    name: EngineArchetypeDataName.Beat,
-                    value: 3
-                },
-                {
-                    name: "lane",
-                    value: -3
-                },
-                {
-                    name: "tail",
-                    ref: "st2"
-                }
-            ],
-            name: "sh2"
-        },
-        {
-            archetype: "HoldConnector",
-            data: [
-                {
-                    name: "head",
-                    ref: "sh2"
-                },
-                {
-                    name: "tail",
-                    ref: "st2"
-                }
-            ]
-        },
-        {
-            archetype: "StopEndNote",
-            data: [
-                {
-                    name: EngineArchetypeDataName.Beat,
+                    name: "direction",
                     value: 4
-                },
-                {
-                    name: "lane",
-                    value: -3
-                },
-                {
-                    name: "head",
-                    ref: "sh2"
                 }
-            ],
-            name: "st2"
+            ]
         },
         {
-            archetype: "StopStartNote",
+            archetype: "SliderFlickNote",
             data: [
                 {
                     name: EngineArchetypeDataName.Beat,
@@ -159,45 +78,173 @@ export const dat: LevelData = {
                 },
                 {
                     name: "lane",
-                    value: -3
+                    value: 2
                 },
                 {
-                    name: "tail",
-                    ref: "st3"
-                }
-            ],
-            name: "sh3"
-        },
-        {
-            archetype: "HoldConnector",
-            data: [
-                {
-                    name: "head",
-                    ref: "sh3"
-                },
-                {
-                    name: "tail",
-                    ref: "st3"
+                    name: "direction",
+                    value: -2
                 }
             ]
         },
         {
-            archetype: "StopEndNote",
+            archetype: "DarkTapNote",
             data: [
                 {
                     name: EngineArchetypeDataName.Beat,
-                    value: 6
+                    value: 5
                 },
                 {
                     name: "lane",
-                    value: -3
+                    value: -2
                 },
-                {
-                    name: "head",
-                    ref: "sh3"
-                }
-            ],
-            name: "st3"
+            ]
         },
+        // {
+        //     archetype: "StopStartNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 2
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: 3
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st1"
+        //         }
+        //     ],
+        //     name: "sh1"
+        // },
+        // {
+        //     archetype: "HoldConnector",
+        //     data: [
+        //         {
+        //             name: "head",
+        //             ref: "sh1"
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st1"
+        //         }
+        //     ]
+        // },
+        // {
+        //     archetype: "StopEndNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 12
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: 3
+        //         },
+        //         {
+        //             name: "head",
+        //             ref: "sh1"
+        //         }
+        //     ],
+        //     name: "st1"
+        // },
+        // {
+        //     archetype: "StopStartNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 3
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: -3
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st2"
+        //         }
+        //     ],
+        //     name: "sh2"
+        // },
+        // {
+        //     archetype: "HoldConnector",
+        //     data: [
+        //         {
+        //             name: "head",
+        //             ref: "sh2"
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st2"
+        //         }
+        //     ]
+        // },
+        // {
+        //     archetype: "StopEndNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 4
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: -3
+        //         },
+        //         {
+        //             name: "head",
+        //             ref: "sh2"
+        //         }
+        //     ],
+        //     name: "st2"
+        // },
+        // {
+        //     archetype: "StopStartNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 5
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: -3
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st3"
+        //         }
+        //     ],
+        //     name: "sh3"
+        // },
+        // {
+        //     archetype: "HoldConnector",
+        //     data: [
+        //         {
+        //             name: "head",
+        //             ref: "sh3"
+        //         },
+        //         {
+        //             name: "tail",
+        //             ref: "st3"
+        //         }
+        //     ]
+        // },
+        // {
+        //     archetype: "StopEndNote",
+        //     data: [
+        //         {
+        //             name: EngineArchetypeDataName.Beat,
+        //             value: 6
+        //         },
+        //         {
+        //             name: "lane",
+        //             value: -3
+        //         },
+        //         {
+        //             name: "head",
+        //             ref: "sh3"
+        //         }
+        //     ],
+        //     name: "st3"
+        // },
     ],
 }
