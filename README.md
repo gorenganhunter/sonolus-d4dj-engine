@@ -21,7 +21,7 @@ Todo list:
 ## Installation
 
 ```
-npm install sonolus-bandori-engine
+npm install sonolus-d4dj-engine
 ```
 
 ## Custom Resources
