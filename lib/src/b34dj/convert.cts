@@ -1,44 +1,26 @@
 import { LevelData } from '@sonolus/core'
-import { B34DJChart } from './index.cjs'
+import { B34DJChart, B34DJNoteData, B34DJSoflanData, D4DJNoteType } from './index.cjs'
 
-export function b34djToLevelData(chartData: B34DJChart, offset = 0): LevelData {
-    let chart: any = Object.values(chartData);
-    chart[2] = chart[2].map((obj: any) => Object.values(obj));
-    chart[3] = chart[3].map((obj: any) => Object.values(obj));
-    const timescale = chart[2]
-    chart[2] = []
+export function b34djToLevelData(chart: B34DJChart, offset = 0): LevelData {
+    let d4chart: any = []
+
+    d4chart[0] = chart.MusicName
+    d4chart[1] = []
+    d4chart[2] = chart.BarLineList
+    d4chart[3] = chart.NoteDataList.map((note: B34DJNoteData) => [note.LaneId, D4DJNoteType[note.Type], note.Time, note.NextId, note.Direction, note.EffectType, note.EffectParameter])
+
+    const timescale = chart.SoflanDataList.map((soflan: B34DJSoflanData) => [soflan.Time, soflan.TimeScale, soflan.LeftRight])
     timescale.forEach((ts: any) => {
-        const i = chart[2].findIndex((tsc: any) => (tsc[0] === ts[0]) && (tsc[1] === ts[1]))
-        if (i === -1) chart[2].push(ts)
-        else chart[2][i][2] = 3
+        const i = d4chart[1].findIndex((tsc: number[]) => (tsc[0] === ts[0]) && (tsc[1] === ts[1]))
+        if (i === -1) d4chart[1].push(ts)
+        else d4chart[1][i][2] = 3
     })
-    chart = JSON.parse(
-        JSON.stringify(chart)
-            .replaceAll('"Tap1"', "0")
-            .replaceAll('"Tap2"', "1")
-            .replaceAll('"ScratchLeft"', "2")
-            .replaceAll('"ScratchRight"', "3")
-            .replaceAll('"StopStart"', "4")
-            .replaceAll('"StopEnd"', "5")
-            .replaceAll('"LongStart"', "6")
-            .replaceAll('"LongMiddle"', "7")
-            .replaceAll('"LongEnd"', "8")
-            .replaceAll('"Slide"', "9"),
-    );
-    const temp = chart[1];
-    chart[1] = chart[2];
-    chart[2] = temp;
-    chart[3] = chart[3].map((note: any) => {
-        const temp = note[1]
-        note[1] = note[2]
-        note[2] = temp
-        return note
-    })
-    return parse(chart, offset);
+    
+    return d4djToLevelData(d4chart, offset);
 };
 
-function parse(chart: any, offset = 0): LevelData {
-    let sus = {
+export function d4djToLevelData(chart: any, offset = 0): LevelData {
+    let data = {
         bgmOffset: offset,
         entities: [
             {
@@ -210,16 +192,16 @@ function parse(chart: any, offset = 0): LevelData {
     }));
     let notes = note(chart);
 
-    sus.entities.push(...ts, ...notes, ...bl);
-    return sus;
+    data.entities.push(...ts, ...notes, ...bl);
+    return data;
 }
 
 function note(chart: any) {
     let hold: any[] = [];
     let slider: any[] = [];
     let notes: any = {};
-    let sol = chart[3].map((arr: any[], i: number) => {
-        const sus = {
+    let nots = chart[3].map((arr: any[], i: number) => {
+        const not = {
             archetype:
                 arr[1] === 0
                     ? "DarkTapNote"
@@ -270,10 +252,10 @@ function note(chart: any) {
 
         if (arr[3] && (arr[1] === 4 || arr[1] === 6)) {
             let note: any = {};
-            note.head = sus.name;
+            note.head = not.name;
             note.tail = `note${arr[3]}`;
             hold.push(note);
-            sus.data.push({
+            not.data.push({
                 name: "tail",
                 ref: `note${arr[3]}`,
             });
@@ -281,39 +263,39 @@ function note(chart: any) {
 
         if (arr[1] === 9) {
             if (arr[3] > 0) {
-                slider.push({ prev: sus.name, next: `note${arr[3]}` });
-                sus.data.push({
+                slider.push({ prev: not.name, next: `note${arr[3]}` });
+                not.data.push({
                     name: "next",
                     ref: `note${arr[3]}`,
                 });
             }
 
-            const sld = slider.find((note) => note.next === sus.name);
+            const sld = slider.find((note) => note.next === not.name);
             if (sld)
-                sus.data.push({
+                not.data.push({
                     name: "prev",
                     ref: sld.prev,
                 });
         }
 
         if (arr[1] === 5 || arr[1] === 8) {
-            sus.data.push({
+            not.data.push({
                 name: "head",
-                ref: hold.find((note) => note.tail === sus.name).head,
+                ref: hold.find((note) => note.tail === not.name).head,
             });
         }
 
         if (arr[4])
-            sus.data.push({
+            not.data.push({
                 name: "direction",
                 value: arr[4],
             });
 
-        return sus;
+        return not;
     });
 
     hold.forEach(({ head, tail }, i) =>
-        sol.splice(parseInt(head.replace("note", "")) + 1 + i, 0, {
+        nots.splice(parseInt(head.replace("note", "")) + 1 + i, 0, {
             archetype: "HoldConnector",
             data: [
                 {
@@ -331,7 +313,7 @@ function note(chart: any) {
     for (const beat in notes) {
         const sim = notes[beat].sort((a: any, b: any) => a.lane - b.lane);
         if (sim.length === 2) {
-            sol.push({
+            nots.push({
                 archetype: "SimLine",
                 data: [
                     {
@@ -345,7 +327,7 @@ function note(chart: any) {
                 ],
             });
         } else if (sim.length === 3) {
-            sol.push({
+            nots.push({
                 archetype: "SimLine",
                 data: [
                     {
@@ -358,7 +340,7 @@ function note(chart: any) {
                     },
                 ],
             });
-            sol.push({
+            nots.push({
                 archetype: "SimLine",
                 data: [
                     {
@@ -374,5 +356,5 @@ function note(chart: any) {
         }
     }
 
-    return sol;
+    return nots;
 }
