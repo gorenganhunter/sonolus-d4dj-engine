@@ -5,7 +5,6 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { sliderWindows, windows } from "../../../windows.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
 import { archetypes } from "../../index.js";

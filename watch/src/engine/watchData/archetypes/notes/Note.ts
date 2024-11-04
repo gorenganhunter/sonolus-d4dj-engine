@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { note, getSpawnTime, getBackspinTime } from '../../note.js'
-import { windows } from '../../windows.js'
+import { windows } from '../../../../../../shared/src/engine/data/windows.js'
 // import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
@@ -54,6 +54,21 @@ export abstract class Note extends Archetype {
     
     get hitTime() {
         return this.targetTime + this.import.accuracy
+    }
+    
+    get windows() {
+        const dualWindows = windows
+
+        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
+            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
+            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
+        })
+
+        return {
+            perfect: toWindow('perfect'),
+            great: toWindow('great'),
+            good: toWindow('good'),
+        }
     }
 
     spawnTime() {
@@ -151,15 +166,15 @@ export abstract class Note extends Archetype {
     }
 
     globalPreprocess() {
-        const toMS = (window: JudgmentWindow) => ({
+        const toMS = (window: RangeLike) => ({
             min: window.min * 1000,
             max: window.max * 1000,
         })
 
         this.bucket.set({
-            perfect: toMS(windows.perfect),
-            great: toMS(windows.great),
-            good: toMS(windows.good),
+            perfect: toMS(this.windows.perfect),
+            great: toMS(this.windows.great),
+            good: toMS(this.windows.good),
         })
 
         this.life.set({

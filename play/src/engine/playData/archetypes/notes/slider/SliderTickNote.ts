@@ -5,7 +5,6 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { sliderWindows, windows } from "../../../windows.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
 import { isUsed, markAsUsed } from "../../InputManager.js";
@@ -45,8 +44,8 @@ export class SliderTickNote extends SliderNote {
     }
 
     touch() {
-        if (time.now < this.targetTime - sliderWindows.good.max) return
-        if (time.now > this.targetTime + sliderWindows.good.max) return
+        if ((time.now < this.targetTime - this.windows.good.max) && ((slider.next.beat !== this.import.beat) && (slider.next.lane !== this.import.lane))) return
+        if (time.now > this.targetTime + this.windows.good.max) return
 
         for (const touch of touches) {
             if (isUsed(touch)) continue
@@ -71,8 +70,8 @@ export class SliderTickNote extends SliderNote {
 
     updateSequential() {
         super.updateSequential()
-        if (time.now < this.targetTime - sliderWindows.good.max) return
-        if (time.now > this.targetTime + sliderWindows.good.max) return this.incomplete(time.now)
+        if (time.now < this.targetTime - this.windows.good.max) return
+        if (time.now > this.targetTime + this.windows.good.max) return this.incomplete(time.now)
 
         if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
@@ -109,7 +108,7 @@ export class SliderTickNote extends SliderNote {
             slider.isUsed = false
         }
 
-        this.result.judgment = input.judge(hitTime, this.targetTime, windows)
+        this.result.judgment = input.judge(hitTime, this.targetTime, this.windows)
         this.result.accuracy = hitTime - this.targetTime
 
         this.result.bucket.index = this.bucket.index

@@ -3,7 +3,6 @@ import { buckets } from "../../../buckets.js";
 import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
-import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'
@@ -40,7 +39,7 @@ export class HoldStartNote extends HoldNote {
         markAsUsed(touch)
         this.sharedMemory.activatedTouchId = touch.id
 
-        this.result.judgment = input.judge(touch.startTime, this.targetTime, windows)
+        this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
         this.result.accuracy = touch.startTime - this.targetTime
 
         this.result.bucket.index = this.bucket.index

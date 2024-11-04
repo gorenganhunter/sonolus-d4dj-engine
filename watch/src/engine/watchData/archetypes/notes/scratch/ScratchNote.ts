@@ -7,7 +7,6 @@ import { skin } from "../../../skin.js";
 import { Note } from "../Note.js";
 import { effect } from "../../../effect.js";
 import { buckets } from "../../../buckets.js";
-import { windows } from "../../../windows.js";
 // import { claim, isClaimed } from "../../ScratchManager.js";
 import { options } from '../../../../configuration/options.js'
 

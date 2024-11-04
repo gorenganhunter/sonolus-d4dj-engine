@@ -6,7 +6,6 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { getZ, skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { sliderWindows } from "../../../windows.js";
 // import { isUsed, markAsUsed } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'

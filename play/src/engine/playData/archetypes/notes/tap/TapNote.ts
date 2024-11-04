@@ -1,5 +1,4 @@
 import { buckets } from "../../../buckets.js";
-import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { Note } from "../Note.js";
 import { options } from '../../../../configuration/options.js'
@@ -24,7 +23,7 @@ export abstract class TapNote extends Note {
     }
 
     complete(touch: Touch) {
-        this.result.judgment = input.judge(touch.startTime, this.targetTime, windows)
+        this.result.judgment = input.judge(touch.startTime, this.targetTime, this.windows)
         this.result.accuracy = touch.startTime - this.targetTime
 
         this.result.bucket.index = this.bucket.index

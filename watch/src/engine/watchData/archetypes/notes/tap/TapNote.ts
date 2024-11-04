@@ -1,5 +1,4 @@
 import { buckets } from "../../../buckets.js";
-import { windows } from "../../../windows.js";
 // import { isUsed, markAsUsed } from "../../InputManager.js";
 import { Note } from "../Note.js";
 import { options } from '../../../../configuration/options.js'

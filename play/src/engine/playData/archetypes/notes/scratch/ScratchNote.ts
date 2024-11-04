@@ -7,7 +7,6 @@ import { isUsed, markAsUsed } from "../../InputManager.js";
 import { Note } from "../Note.js";
 import { effect } from "../../../effect.js";
 import { buckets } from "../../../buckets.js";
-import { windows } from "../../../windows.js";
 import { startClaim, claim, isClaimed } from "../../ScratchManager.js";
 import { options } from '../../../../configuration/options.js'
 
@@ -102,7 +101,7 @@ export class ScratchNote extends Note {
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime + windows.perfect.min) return
+        if (!this.result.judgment || time.now <= this.targetTime + this.windows.perfect.min) return
 // // debug.log(this.result.judgment)
 
         this.playSFX()
@@ -112,8 +111,8 @@ export class ScratchNote extends Note {
     }
 
     complete(touch: Touch) {
-        const t = Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max / 2), this.targetTime + windows.perfect.min / 2)
-        this.result.judgment = input.judge(t, this.targetTime, windows)
+        const t = Math.max(Math.min(touch.t, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+        this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
         
         // if (options.sfxEnabled) switch (this.result.judgment) {

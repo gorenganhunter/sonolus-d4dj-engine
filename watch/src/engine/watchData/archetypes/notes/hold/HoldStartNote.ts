@@ -3,7 +3,6 @@ import { buckets } from "../../../buckets.js";
 import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
-import { windows } from "../../../windows.js";
 // import { isUsed, markAsUsed } from "../../InputManager.js";
 import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'

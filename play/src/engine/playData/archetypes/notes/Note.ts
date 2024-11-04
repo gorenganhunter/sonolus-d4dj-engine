@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { getBackspinTime, note } from '../../note.js'
-import { windows } from '../../windows.js'
+import { windows } from '../../../../../../shared/src/engine/data/windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
@@ -27,7 +27,7 @@ export abstract class Note extends Archetype {
         }
     }
     abstract bucket: Bucket
-
+    
     shadow = skin.sprites.shadowNote
 
     export = this.defineExport({
@@ -58,6 +58,21 @@ export abstract class Note extends Archetype {
     hasSFXScheduled = this.entityMemory(Boolean)
     bsTime = this.entityMemory(Number)
 
+    get windows() {
+        const dualWindows = windows
+
+        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
+            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
+            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
+        })
+
+        return {
+            perfect: toWindow('perfect'),
+            great: toWindow('great'),
+            good: toWindow('good'),
+        }
+    }
+
     playEffect() {
         if (!options.noteEffectEnabled) return
 
@@ -76,12 +91,12 @@ export abstract class Note extends Archetype {
     hasInput = true
 
     initialize() {
-        this.inputTime.min = this.targetTime + windows.good.min + input.offset
-        this.inputTime.max = this.targetTime + windows.good.max + input.offset
+        this.inputTime.min = this.targetTime + this.windows.good.min + input.offset
+        this.inputTime.max = this.targetTime + this.windows.good.max + input.offset
 
         this.z = 1000 - this.targetTime
 
-        this.result.accuracy = windows.good.max
+        this.result.accuracy = this.windows.good.max
 
         new Rect({ l: this.import.lane === -3 ? -15 : this.import.lane * 2.1 - 2.1 * options.judgmentWidth, r: this.import.lane === 3 ? 15 : this.import.lane * 2.1 + 2.1 * options.judgmentWidth, b: 2, t: -1 }).transform(skin.transform).copyTo(this.hitbox)
 
@@ -120,9 +135,9 @@ export abstract class Note extends Archetype {
         })
 
         this.bucket.set({
-            perfect: toMS(windows.perfect),
-            great: toMS(windows.great),
-            good: toMS(windows.good),
+            perfect: toMS(this.windows.perfect),
+            great: toMS(this.windows.great),
+            good: toMS(this.windows.good),
         })
 
         this.life.set({

@@ -2,7 +2,6 @@ import { buckets } from "../../../buckets.js";
 import { effect } from "../../../effect.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
-import { windows } from "../../../windows.js";
 import { queueHold } from "../../HoldManager.js";
 import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'
@@ -16,7 +15,7 @@ export class HoldEndNote extends HoldNote {
         super.preprocess()
 
         const minPrevInputTime =
-            bpmChanges.at(this.prevImport.beat).time + windows.good.min + input.offset
+            bpmChanges.at(this.prevImport.beat).time + this.windows.good.min + input.offset
 
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
@@ -71,7 +70,7 @@ export class HoldEndNote extends HoldNote {
     }
 
     complete(hitTime: number) {
-        this.result.judgment = input.judge(hitTime, this.targetTime, windows)
+        this.result.judgment = input.judge(hitTime, this.targetTime, this.windows)
         this.result.accuracy = hitTime - this.targetTime
 
         this.result.bucket.index = this.bucket.index

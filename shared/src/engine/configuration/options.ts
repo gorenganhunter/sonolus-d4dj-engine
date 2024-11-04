@@ -1,6 +1,14 @@
 import { EngineConfigurationOption, Text } from '@sonolus/core'
 
 export const optionsDefinition = {
+    strictJudgment: {
+        name: Text.JudgmentStrict,
+        scope: 'd4dj',
+        standard: true,
+        advanced: true,
+        type: 'toggle',
+        def: 0,
+    },
     speed: {
         name: Text.Speed,
         standard: true,

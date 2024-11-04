@@ -6,7 +6,6 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { getZ, skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { windows } from "../../../windows.js";
 import { isUsed, markAsUsed } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
@@ -153,7 +152,7 @@ export class SliderFlickNote extends SliderNote {
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime + windows.perfect.min) return
+        if (!this.result.judgment || time.now <= this.targetTime + this.windows.perfect.min) return
 // // debug.log(this.result.judgment)
 
         this.playSFX()
@@ -170,8 +169,8 @@ export class SliderFlickNote extends SliderNote {
     }
 
     complete(touch: Touch) {
-        const t = Math.max(Math.min(touch.t, this.targetTime + windows.perfect.max / 2), this.targetTime + windows.perfect.min / 2)
-        this.result.judgment = input.judge(t, this.targetTime, windows)
+        const t = Math.max(Math.min(touch.t, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+        this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
 
         // debug.log(this.result.accuracy)

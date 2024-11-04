@@ -2,7 +2,6 @@ import { buckets } from "../../../buckets.js";
 import { effect } from "../../../effect.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
-import { windows } from "../../../windows.js";
 import { queueHold } from "../../HoldManager.js";
 import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'

@@ -1,6 +1,6 @@
 import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
-import { effect, getScheduleSFXTime } from '../effect.js'
+import { effect } from '../effect.js'
 import { getBackspinTime, note } from '../note.js'
 import { particle } from '../particle.js'
 import { getZ, skin } from '../skin.js'
