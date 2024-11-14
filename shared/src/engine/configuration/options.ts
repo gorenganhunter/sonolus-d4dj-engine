@@ -176,5 +176,11 @@ export const optionsDefinition = {
         max: 2,
         def: 0,
         step: 1
+    },
+    disk: {
+        name: "Disk (use lightweight render mode)",
+        type: "toggle",
+        scope: "d4dj",
+        def: 0
     }
 } satisfies Record<string, EngineConfigurationOption>

@@ -42,7 +42,14 @@ export const skin = defineSkin({
         shadow: "DJ Shadow",
         shadowNote: "DJ Shadow Note",
         shadowSlider: "DJ Shadow Slider",
-        shadowSliderArrow: "DJ Shadow Slider Arrow"
+        shadowSliderArrow: "DJ Shadow Slider Arrow",
+
+        turntableBase: "DJ Turntable Base",
+        turntableRed: "DJ Turntable Red",
+        turntableOrange: "DJ Turntable Orange",
+
+        diskOutside: "DJ Disk Outside",
+        diskInside: "DJ Disk Inside"
     },
 })
 

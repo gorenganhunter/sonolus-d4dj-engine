@@ -1,4 +1,4 @@
-import { approach, perspectiveLayout } from '../../../../../shared/src/engine/data/utils.js'
+import { approach, perspectiveLayout, diskLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
@@ -7,8 +7,14 @@ import { skin } from '../skin.js'
 import { archetypes } from './index.js'
 import { slider } from "../slider.js";
 import { timeToScaledTime } from './timeScale.js'
+import { scaledScreen } from '../scaledScreen.js'
 
 export class Stage extends Archetype {
+    data = this.defineImport({
+        discTsgL: { name: "discTsgL", type: Number },
+        discTsgR: { name: "discTsgR", type: Number }
+    })
+
     next = this.entityMemory({
         time: Number,
         scaledTime: Number
@@ -52,7 +58,7 @@ export class Stage extends Archetype {
 
         skin.sprites.draw(this.sprites.borderRight, perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
         skin.sprites.draw(this.sprites.borderLeft, perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
-        skin.sprites.borderBottom.draw(perspectiveLayout({ l: -7.35, r: 7.35, b: 1.01, t: 0.99 }), 2, 1)
+        skin.sprites.borderBottom.draw(perspectiveLayout({ l: options.disk ? -6.3 : -7.35, r: options.disk ? 6.3 : 7.35, b: 1.01, t: 0.99 }), 7, 1)
 
         for (let i = -3; i <= 3; i++) {
             if (i < 3) skin.sprites.draw(
@@ -77,29 +83,77 @@ export class Stage extends Archetype {
 
             skin.sprites.slot.draw(
                 perspectiveLayout({ l: i * 2.1 - 0.25, r: i * 2.1 + 0.25, b: 1.02, t: 0.98 }),
-                3, 
+                8,
                 1,
             )
         }
 
         skin.sprites.judgeLine.draw(
             perspectiveLayout({ l: -7.35, r: 7.35, b: 1 + note.radius, t: 1 - note.radius }),
-            1,
+            6,
             0.7,
         )
 
         if (!this.useFallbackStage) skin.sprites.djStage.draw(perspectiveLayout({ l: -7.35, r: 7.35, b, t }), 0, options.opacity)
         
-        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 8, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 9, 1)
         
         if(slider.isUsed) this.renderSlider()
+
+        this.renderDisk()
     }
 
     updateSequential() {
         if (bpmChanges.at(slider.next.beat).time < time.now || bpmChanges.at(slider.prev.beat).time > time.now) slider.isUsed = false
     }
     
+    renderDisk() {
+        if (options.disk) {
+            this.renderLeftDisk()
+            this.renderRightDisk()
+        }
+    }
+
+
+    renderLeftDisk() {
+        const dw = 3.8
+        const dh = dw * 0.09
+
+        let dt = timeToScaledTime(time.now, this.data.discTsgL)
+        dt %= 2
+
+        const origin = new Vec({
+            x: -8.825,
+            y: 1
+        })
+
+        const angle = Math.PI * dt
+
+        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
+        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
+    }
+
+    renderRightDisk() {
+        const dw = 3.8
+        const dh = dw * 0.09
+
+        let dt = timeToScaledTime(time.now, this.data.discTsgR)
+        dt %= 2
+
+        const origin = new Vec({
+            x: 8.825,
+            y: 1
+        })
+
+        const angle = Math.PI * dt
+
+        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
+        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
+    }
+
     renderSlider() {
         // const visibleTimeMax = Math.min(timeScaleChanges.at(slider.next.beat).scaledTime, time.scaled + note.duration)
         // debug.log(visibleTimeMax)

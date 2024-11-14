@@ -20,6 +20,10 @@ export function b34djToLevelData(chart: B34DJChart, offset = 0): LevelData {
 };
 
 export function d4djToLevelData(chart: any, offset = 0): LevelData {
+    let disc = {
+        left: chart[1].filter((soflan: any) => [1,3].includes(soflan[2])),
+        right: chart[1].filter((soflan: any) => [2,3].includes(soflan[2]))
+    }
     let data = {
         bgmOffset: offset,
         entities: [
@@ -29,7 +33,16 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
             },
             {
                 archetype: "Stage",
-                data: [],
+                data: [
+                    {
+                        name: "discTsgL",
+                        ref: "tsg:3"
+                    },
+                    {
+                        name: "discTsgR",
+                        ref: "tsg:4"
+                    }
+                ],
             },
             {
                 archetype: "#BPM_CHANGE",
@@ -99,6 +112,42 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
                 name: "tsg:2",
             },
             {
+                archetype: "TimeScaleGroup",
+                data: [
+                    {
+                        name: "first",
+                        ref: "tsc:3:0",
+                    },
+                    {
+                        name: "length",
+                        value: disc.left.length + 1,
+                    },
+                    {
+                        name: "next",
+                        ref: "tsg:4",
+                    },
+                ],
+                name: "tsg:3",
+            },
+            {
+                archetype: "TimeScaleGroup",
+                data: [
+                    {
+                        name: "first",
+                        ref: "tsc:4:0",
+                    },
+                    {
+                        name: "length",
+                        value: disc.right.length + 1,
+                    },
+                    {
+                        name: "next",
+                        value: -1,
+                    },
+                ],
+                name: "tsg:4",
+            },
+            {
                 archetype: "TimeScaleChange",
                 data: [
                     {
@@ -152,6 +201,42 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
                 ],
                 name: `tsc:2:0`,
             },
+            {
+                archetype: "TimeScaleChange",
+                data: [
+                    {
+                        name: "#BEAT",
+                        value: 0,
+                    },
+                    {
+                        name: "timeScale",
+                        value: 1,
+                    },
+                    {
+                        name: "next",
+                        ref: "tsc:3:1",
+                    },
+                ],
+                name: `tsc:3:0`,
+            },
+            {
+                archetype: "TimeScaleChange",
+                data: [
+                    {
+                        name: "#BEAT",
+                        value: 0,
+                    },
+                    {
+                        name: "timeScale",
+                        value: 1,
+                    },
+                    {
+                        name: "next",
+                        ref: "tsc:4:1",
+                    },
+                ],
+                name: `tsc:4:0`,
+            },
         ],
     };
 
@@ -167,15 +252,47 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
                 value: arr[1],
             },
             {
-                name: "disc",
-                value: arr[2],
-            },
-            {
                 name: "next",
                 ref: `tsc:0:${i + 2}`,
             },
         ],
         name: `tsc:0:${i + 1}`,
+    }));
+    let discL = disc.left.map((arr: any[], i: number) => ({
+        archetype: "TimeScaleChange",
+        data: [
+            {
+                name: "#BEAT",
+                value: arr[0],
+            },
+            {
+                name: "timeScale",
+                value: arr[1],
+            },
+            {
+                name: "next",
+                ref: `tsc:3:${i + 2}`,
+            },
+        ],
+        name: `tsc:3:${i + 1}`,
+    }));
+    let discR = disc.right.map((arr: any[], i: number) => ({
+        archetype: "TimeScaleChange",
+        data: [
+            {
+                name: "#BEAT",
+                value: arr[0],
+            },
+            {
+                name: "timeScale",
+                value: arr[1],
+            },
+            {
+                name: "next",
+                ref: `tsc:4:${i + 2}`,
+            },
+        ],
+        name: `tsc:4:${i + 1}`,
     }));
     let bl = chart[2].map((time: number) => ({
         archetype: "BarLine",
@@ -192,7 +309,7 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
     }));
     let notes = note(chart);
 
-    data.entities.push(...ts, ...notes, ...bl);
+    data.entities.push(...ts, ...discL, ...discR, ...notes, ...bl);
     return data;
 }
 
