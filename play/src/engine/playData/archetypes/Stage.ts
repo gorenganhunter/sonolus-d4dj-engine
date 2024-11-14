@@ -1,4 +1,4 @@
-import { approach, perspectiveLayout, diskLayout, rotate } from '../../../../../shared/src/engine/data/utils.js'
+import { approach, perspectiveLayout, diskLayout } from '../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
@@ -271,9 +271,9 @@ export class Stage extends Archetype {
 
         const angle = Math.PI * dt
 
-        skin.sprites.turntableBase.draw(diskLayout({ l: -8.825 - dw, r: -8.825 + dw, t: 1 - dh, b: 1 + dh }), 3, 1)
-        skin.sprites.diskOutside.draw(rotate(origin, new Rect({ l: -8.825 - dw * 0.825, r: -8.825 + dw * 0.825, t: 1 - dh * 0.825, b: 1 + dh * 0.825 }), angle, scaledScreen.wToH * 0.8), 4, 1)
-        skin.sprites.diskInside.draw(rotate(origin, new Rect({ l: -8.825 - dw / 3, r: -8.825 + dw / 3, t: 1 - dh / 3, b: 1 + dh / 3 }), angle, scaledScreen.wToH * 0.8), 5, 1)
+        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw, dh, angle), 4, 1)
+        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
     }
 
     renderRightDisk() {
@@ -290,8 +290,8 @@ export class Stage extends Archetype {
 
         const angle = Math.PI * dt
 
-        skin.sprites.turntableBase.draw(diskLayout({ l: 8.825 - dw, r: 8.825 + dw, t: 1 - dh, b: 1 + dh }), 3, 1)
-        skin.sprites.diskOutside.draw(rotate(origin, new Rect({ l: 8.825 - dw * 0.825, r: 8.825 + dw * 0.825, t: 1 - dh * 0.825, b: 1 + dh * 0.825 }), angle, scaledScreen.wToH * 0.8), 4, 1)
-        skin.sprites.diskInside.draw(rotate(origin, new Rect({ l: 8.825 - dw / 3, r: 8.825 + dw / 3, t: 1 - dh / 3, b: 1 + dh / 3 }), angle, scaledScreen.wToH * 0.8), 5, 1)
+        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw, dh, angle), 4, 1)
+        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
     }
 }
