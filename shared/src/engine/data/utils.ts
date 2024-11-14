@@ -35,18 +35,21 @@ interface Transform2d {
     m20: number, m21: number, m22: number,
 }
 
+
+const vanishY = 2.25
+
 /*
 This matrix comes from a composition of
 scale(1, -1)
 translate(0, 1)
-perspective_vanish_y(1)  // vanishing point at (0, 1)
+perspective_vanish_y(vanishY)  // vanishing point at (0, vanishY)
 translate(0, -1)
 scale(1, -1)
  */
 const diskTransform: Transform2d = {
     m00: 1, m01: 0, m02: 0,
-    m10: 0, m11: 0, m12: 1,
-    m20: 0, m21: -1, m22: 2,
+    m10: 0, m11: 1 - 1 / vanishY, m12: 1 / vanishY,
+    m20: 0, m21: -1 / vanishY, m22: 1 + 1 / vanishY,
 }
 
 const homogenousTransformVec = (mat: Transform2d, vec: { x: number, y: number }) => {
