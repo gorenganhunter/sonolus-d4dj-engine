@@ -117,40 +117,40 @@ export class Stage extends Archetype {
 
 
     renderLeftDisk() {
-        const dw = 3.9
-        const dh = dw * scaledScreen.wToH * 0.75
+        const dw = 3.8
+        const dh = dw * 0.09
 
         let dt = timeToScaledTime(time.now, this.data.discTsgL)
         dt %= 2
 
         const origin = new Vec({
-            x: -8.8,
+            x: -8.825,
             y: 1
         })
 
         const angle = Math.PI * dt
 
         skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
-        skin.sprites.diskOutside.draw(diskLayout(origin, dw, dh, angle), 4, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
         skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
     }
 
     renderRightDisk() {
-        const dw = 3.9
-        const dh = dw * scaledScreen.wToH * 0.75
+        const dw = 3.8
+        const dh = dw * 0.09
 
         let dt = timeToScaledTime(time.now, this.data.discTsgR)
         dt %= 2
 
         const origin = new Vec({
-            x: 8.8,
+            x: 8.825,
             y: 1
         })
 
         const angle = Math.PI * dt
 
         skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
-        skin.sprites.diskOutside.draw(diskLayout(origin, dw, dh, angle), 4, 1)
+        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
         skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
     }
 
