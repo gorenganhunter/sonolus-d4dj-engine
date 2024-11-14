@@ -1,6 +1,7 @@
 import { options } from '../../configuration/options.js'
 import { note } from '../note.js'
 import { particle } from '../particle.js'
+import { scaledScreen } from '../scaledScreen.js'
 import { skin } from '../skin.js'
 import { slider } from '../slider.js'
 import { archetypes } from './index.js'
@@ -13,9 +14,22 @@ export class Initialization extends Archetype {
 
         const t = screen.t * 4 / 5
         const b = judgeLineY
+        const w = screen.h / 10.75 * options.width
         const h = t - b
 
-        const transform = Mat.identity.scale(screen.h / 10.75 * options.width, -h).translate(0, t)
+        const transform = Mat.identity.scale(w, -h).translate(0, t)
+
+        scaledScreen.l = screen.l / w
+        scaledScreen.r = screen.r / w
+        scaledScreen.b = screen.b / -h
+        scaledScreen.t = screen.t / -h
+
+        scaledScreen.w = screen.w / w
+        scaledScreen.h = screen.h / h
+
+        scaledScreen.wToH = w / h
+
+        transform.m31
 
         skin.transform.set(transform)
         particle.transform.set(transform)

@@ -176,5 +176,11 @@ export const optionsDefinition = {
         max: 2,
         def: 0,
         step: 1
+    },
+    disk: {
+        name: "Disk",
+        type: "toggle",
+        scope: "d4dj",
+        def: 1
     }
 } satisfies Record<string, EngineConfigurationOption>
