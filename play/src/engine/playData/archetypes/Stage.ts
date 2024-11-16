@@ -39,6 +39,14 @@ export class Stage extends Archetype {
         this.sprites.splitLine = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.splitLine.id
         this.sprites.borderRight = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.borderRight.id
         this.sprites.borderLeft = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.borderLeft.id
+        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
+        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
+
+        if (options.mirror) {
+            const temp = this.data.discTsgL
+            this.data.discTsgL = this.data.discTsgR
+            this.data.discTsgR = temp
+        }
     }
 
     getLane(touch: Touch) {
