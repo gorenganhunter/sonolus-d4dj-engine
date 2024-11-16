@@ -25,7 +25,7 @@ export const perspectiveLayout = ({ l, r, b, t }: { l: number; r: number; b: num
 //     })
 
 export const diskLayout = (center: { x: number, y: number }, width: number, height: number, rotation: number) => {
-    const prePerspective = Quad.one.rotate(rotation).scale(width, height).translate(center.x, center.y)
+    const prePerspective = Quad.one.rotate(-rotation).scale(-width, height).translate(center.x, center.y)
     return homogenousTransformQuad(diskTransform, prePerspective)
 }
 

@@ -56,6 +56,7 @@ const files = {
 }
 
 const db = require("./d4dj-server/pack/db.json")
+const dbc = require("./d4c/pack/db.json")
 
 for (const file of Object.keys(files)) {
     const path = files[file]
@@ -76,7 +77,12 @@ const version = {
 fs.writeFileSync("./d4dj-private-data/version.json", JSON.stringify(version))
 
 db.engines[0] = engine
+dbc.engines[0] = engine
 
 fs.writeFileSync("./d4dj-server/pack/db.json", JSON.stringify(db))
 
 fs.writeFileSync("./d4dj-server/version.json", JSON.stringify(version))
+
+fs.writeFileSync("./d4c/pack/db.json", JSON.stringify(db2))
+
+fs.writeFileSync("./d4c/version.json", JSON.stringify(version))

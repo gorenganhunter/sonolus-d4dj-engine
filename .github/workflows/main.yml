@@ -28,6 +28,16 @@ jobs:
           TOKEN: ${{ secrets.GH_TOKEN }}
         run: git clone "https://gorenganhunter:$TOKEN@github.com/gorenganhunter/d4dj-server.git"
 
+      - name: Clone D4C
+        env:
+          TOKEN: ${{ secrets.GH_TOKEN }}
+        run: git clone "https://gorenganhunter:$TOKEN@github.com/gorenganhunter/d4c.git"
+      
+      - name: Clone Level Packer
+        env:
+          TOKEN: ${{ secrets.GH_TOKEN }}
+        run: git clone "https://gorenganhunter:$TOKEN@github.com/gorenganhunter/sonolus-d4dj-level-packer.git"
+          
       - name: Use Node.js
         uses: actions/setup-node@v4
         with: 
@@ -45,6 +55,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Update Dependencies
+        run: |
+          cd sonolus-d4dj-level-packer
+          npm install sonolus-d4dj-engine@latest
+
       - name: Update build
         run: node update.cjs
 
@@ -60,9 +75,23 @@ jobs:
           git commit -m "Auto Update"
           git push
       
+      - name: Push Packer
+        run: |
+          cd sonolus-d4dj-level-packer
+          git add .
+          git commit -m "Auto Update"
+          git push
+      
       - name: Push Server
         run: |
           cd d4dj-server
+          git add .
+          git commit -m "Auto Update"
+          git push
+
+      - name: Push Custom Server
+        run: |
+          cd d4c
           git add .
           git commit -m "Auto Update"
           git push
