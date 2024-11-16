@@ -83,6 +83,6 @@ fs.writeFileSync("./d4dj-server/pack/db.json", JSON.stringify(db))
 
 fs.writeFileSync("./d4dj-server/version.json", JSON.stringify(version))
 
-fs.writeFileSync("./d4c/pack/db.json", JSON.stringify(db2))
+fs.writeFileSync("./d4c/pack/db.json", JSON.stringify(dbc))
 
 fs.writeFileSync("./d4c/version.json", JSON.stringify(version))
