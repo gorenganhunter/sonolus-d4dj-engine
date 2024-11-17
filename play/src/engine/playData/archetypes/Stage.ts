@@ -269,15 +269,15 @@ export class Stage extends Archetype {
         const dw = 3.8
         const dh = dw * 0.09
 
-        let dt = timeToScaledTime(time.now, this.data.discTsgL)
-        dt %= 2
+        let dt = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.data.discTsgL)
+        dt %= 3.6
 
         const origin = new Vec({
             x: -8.825,
             y: 1
         })
 
-        const angle = Math.PI * dt
+        const angle = Math.PI * dt / 1.8
 
         skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
         skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
@@ -288,15 +288,15 @@ export class Stage extends Archetype {
         const dw = 3.8
         const dh = dw * 0.09
 
-        let dt = timeToScaledTime(time.now, this.data.discTsgR)
-        dt %= 2
+        let dt = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.data.discTsgR)
+        dt %= 3.6
 
         const origin = new Vec({
             x: 8.825,
             y: 1
         })
 
-        const angle = Math.PI * dt
+        const angle = Math.PI * dt / 1.8
 
         skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
         skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
