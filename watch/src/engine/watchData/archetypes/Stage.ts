@@ -147,7 +147,7 @@ export class Stage extends Archetype {
         //     p3: nextPos.translate(0.025, 0),
         //     p4: nextPos.translate(-0.025, 0)
         // })
-        skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 0.95 + note.radius * 4, t: 1 - note.radius * 2 }), 105, 1)
+        skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 1 + note.radius * 2.5, t: 1 - note.radius * 2.5 }), 105, 1)
         this.renderConnector()
         // skin.sprites.sliderConnector.draw(layout, 104, 1)
     }

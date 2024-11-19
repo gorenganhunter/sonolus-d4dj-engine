@@ -30,7 +30,7 @@ export class ScratchNote extends Note {
 
     // activatedTouchId = this.entityMemory(TouchId)
     touchPos = this.entityMemory(Vec)
-    arrowPosition = this.entityMemory(Quad)
+    arrowPosition = this.entityMemory(Rect)
     sprites = this.entityMemory({
         note: SkinSpriteId,
         arrow: SkinSpriteId
@@ -50,7 +50,12 @@ export class ScratchNote extends Note {
 
     drawNote() {
         skin.sprites.draw(this.sprites.note, this.notePosition.mul(this.y), this.z, 1)
-        skin.sprites.draw(this.sprites.arrow, this.arrowPosition.mul(this.y), this.z + 1, 1)
+
+        const a1 = (time.now % 0.5) * 2
+        const a2 = 1 - a1
+
+        skin.sprites.draw(this.sprites.arrow, this.arrowPosition.mul(this.y), this.z + 1, a1)
+        skin.sprites.draw(this.sprites.arrow, this.arrowPosition.add({ x: 0, y: -2 * note.radius }).mul(this.y), this.z + 1, a2)
     }
 
     // touch() {
@@ -88,10 +93,10 @@ export class ScratchNote extends Note {
     initialize() {
         super.initialize()
         
-        const l = this.import.lane * 2.1 - 1.05
-        const r = this.import.lane * 2.1 + 1.05
+        const l = this.import.lane * 2.1 - 1.25
+        const r = this.import.lane * 2.1 + 1.25
 
-        perspectiveLayout({ l, r, b: 1 - note.radius * 2, t: 1 - note.radius * 4 }).copyTo(this.arrowPosition)
+        new Rect({ l, r, b: 1 - note.radius * 2, t: 1 - note.radius * 6 }).copyTo(this.arrowPosition)
     }
 
 //     updateParallel() {

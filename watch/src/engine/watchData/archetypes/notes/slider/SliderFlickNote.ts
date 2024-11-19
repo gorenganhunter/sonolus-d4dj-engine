@@ -58,30 +58,46 @@ export class SliderFlickNote extends SliderNote {
     drawNote() {
         super.drawNote()
         
-        const b = 1 + note.radius
-        const t = 1 - note.radius
+        const b = 1 + note.radius * 2
+        const t = 1 - note.radius * 2
 
-        if (this.sliderImport.direction > 0) for (let i = 1; i <= this.sliderImport.direction; i++) {
+        if (this.sliderImport.direction > 0) for (let i = 0.7; i <= this.sliderImport.direction; i += 0.5) {
             const lane = (this.import.lane + i) * 2.1
-            const layout = {
+            const layout = perspectiveLayout({
                 r: lane - 1.05,
                 l: lane + 1.05,
                 b,
                 t
-            }
-            skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
-            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
+            }).mul(this.y)
+            skin.sprites.sliderArrow.draw(layout, this.z - 2, 1)
+
+            const n = Math.floor((this.sliderImport.direction - 0.7) / 0.5)
+            const x = (i - 0.7) / 0.5
+            let a = ((time.now - (x / n)) % (0.25 * n)) * 4 / n
+            a = Math.abs(a - Math.round(a))
+
+            skin.sprites.shadowSliderArrow.draw(layout, this.z - 1, a)
+
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(layout, this.z - 1, 1 - options.backspinBrightness)
         }
-        else for (let i = -1; i >= this.sliderImport.direction; i--) {
+        else for (let i = -0.7; i >= this.sliderImport.direction; i -= 0.5) {
             const lane = (this.import.lane + i) * 2.1
-            const layout = {
+            const layout = perspectiveLayout({
                 l: lane - 1.05,
                 r: lane + 1.05,
                 b,
                 t
-            }
-            skin.sprites.sliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z, 1)
-            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(perspectiveLayout(layout).mul(this.y), this.arrow.z + 1, 1 - options.backspinBrightness)
+            }).mul(this.y)
+            skin.sprites.sliderArrow.draw(layout, this.z - 2, 1)
+
+            const n = Math.floor((this.sliderImport.direction + 0.7) / -0.5)
+            const x = (i + 0.7) / -0.5
+            let a = ((time.now - (x / n)) % (0.25 * n)) * 4 / n
+            a = Math.abs(a - Math.round(a))
+
+            skin.sprites.shadowSliderArrow.draw(layout, this.z - 1, a)
+
+            if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(layout, this.z - 1, 1 - options.backspinBrightness)
         }
     }
     

@@ -14,7 +14,7 @@ export class Disk extends SpawnableArchetype({ xOrigin: Number, yOrigin: Number,
         return entityInfos.get(0).state === EntityState.Despawned
     }
 
-    preprocess(): void {
+    initialize(): void {
         if (!this.spawnData.spin) {
             const dw = 3.8
             const dh = dw * 0.09

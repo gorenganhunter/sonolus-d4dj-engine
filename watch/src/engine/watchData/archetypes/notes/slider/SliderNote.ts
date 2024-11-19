@@ -29,7 +29,7 @@ export abstract class SliderNote extends Note {
         const l = this.import.lane * 2.1 - 0.5
         const r = this.import.lane * 2.1 + 0.5
 
-        perspectiveLayout({ l, r, t: 1 - note.radius * 2, b: 1 + note.radius * 2 }).copyTo(this.notePosition)
+        perspectiveLayout({ l, r, t: 1 - note.radius * 2.5, b: 1 + note.radius * 2.5 }).copyTo(this.notePosition)
 
         skin.sprites.sliderNote.draw(this.notePosition.mul(this.y), this.z, 1)
         if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)

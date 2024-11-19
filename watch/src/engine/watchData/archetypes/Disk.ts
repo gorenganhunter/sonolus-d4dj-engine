@@ -14,7 +14,7 @@ export class Disk extends SpawnableArchetype({ xOrigin: Number, yOrigin: Number,
         return 999999
     }
 
-    preprocess(): void {
+    initialize(): void {
         if (!this.spawnData.spin) {
             const dw = 3.8
             const dh = dw * 0.09
