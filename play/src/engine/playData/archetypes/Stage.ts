@@ -9,6 +9,7 @@ import { slider } from "../slider.js";
 import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
 import { timeToScaledTime } from './utils.js'
 import { scaledScreen } from '../scaledScreen.js'
+import { archetypes } from './index.js'
 
 export class Stage extends Archetype {
     data = this.defineImport({
@@ -47,6 +48,8 @@ export class Stage extends Archetype {
             this.data.discTsgL = this.data.discTsgR
             this.data.discTsgR = temp
         }
+
+        this.renderDisk()
     }
 
     getLane(touch: Touch) {
@@ -266,40 +269,14 @@ export class Stage extends Archetype {
 
 
     renderLeftDisk() {
-        const dw = 3.8
-        const dh = dw * 0.09
-
-        let dt = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.data.discTsgL)
-        dt %= 3.6
-
-        const origin = new Vec({
-            x: -8.825,
-            y: 1
-        })
-
-        const angle = Math.PI * dt / 1.8
-
-        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
-        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
-        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
+        archetypes.Disk.spawn({ xOrigin: -8.825, yOrigin: 1, whMultiplier: 1, z: 3, spin: false, skin: skin.sprites.turntableBase.id, tsg: this.data.discTsgL })
+        archetypes.Disk.spawn({ xOrigin: -8.825, yOrigin: 1, whMultiplier: 0.82, z: 4, spin: true, skin: skin.sprites.diskOutside.id, tsg: this.data.discTsgL })
+        archetypes.Disk.spawn({ xOrigin: -8.825, yOrigin: 1, whMultiplier: 0.325, z: 5, spin: true, skin: skin.sprites.diskInside.id, tsg: this.data.discTsgL })
     }
 
     renderRightDisk() {
-        const dw = 3.8
-        const dh = dw * 0.09
-
-        let dt = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.data.discTsgR)
-        dt %= 3.6
-
-        const origin = new Vec({
-            x: 8.825,
-            y: 1
-        })
-
-        const angle = Math.PI * dt / 1.8
-
-        skin.sprites.turntableBase.draw(diskLayout(origin, dw, dh, 0), 3, 1)
-        skin.sprites.diskOutside.draw(diskLayout(origin, dw * 0.8, dh * 0.8, angle), 4, 1)
-        skin.sprites.diskInside.draw(diskLayout(origin, dw / 3, dh / 3, angle), 5, 1)
+        archetypes.Disk.spawn({ xOrigin: 8.825, yOrigin: 1, whMultiplier: 1, z: 3, spin: false, skin: skin.sprites.turntableBase.id, tsg: this.data.discTsgR })
+        archetypes.Disk.spawn({ xOrigin: 8.825, yOrigin: 1, whMultiplier: 0.82, z: 4, spin: true, skin: skin.sprites.diskOutside.id, tsg: this.data.discTsgR })
+        archetypes.Disk.spawn({ xOrigin: 8.825, yOrigin: 1, whMultiplier: 0.325, z: 5, spin: true, skin: skin.sprites.diskInside.id, tsg: this.data.discTsgR })
     }
 }

@@ -1,9 +1,9 @@
+import { Disk } from './Disk.js'
 import { HoldConnector } from './HoldConnector.js'
 import { HoldManager } from './HoldManager.js'
 import { Initialization } from './Initialization.js'
 import { InputManager } from './InputManager.js'
 import { ScratchManager } from './ScratchManager.js'
-import { Slider } from './Slider.js'
 import { Stage } from './Stage.js'
 import { BarLine } from './lines/BarLine.js'
 import { SimLine } from './lines/SimLine.js'
@@ -46,5 +46,7 @@ export const archetypes = defineArchetypes({
     SimLine,
 
     TimeScaleChange,
-    TimeScaleGroup
+    TimeScaleGroup,
+
+    Disk
 })
