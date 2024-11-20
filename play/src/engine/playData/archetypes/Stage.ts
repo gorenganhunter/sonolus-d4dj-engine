@@ -256,8 +256,6 @@ export class Stage extends Archetype {
         )
 
         if (!this.useFallbackStage) skin.sprites.djStage.draw(perspectiveLayout({ l: -7.35, r: 7.35, b, t }), 0, options.opacity)
-
-        this.renderDisk()
     }
 
     renderDisk() {
