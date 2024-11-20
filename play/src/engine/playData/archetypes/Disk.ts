@@ -6,14 +6,6 @@ import { timeToScaledTime } from "./utils.js"
 export class Disk extends SpawnableArchetype({ xOrigin: Number, yOrigin: Number, tsg: Number, skin: SkinSpriteId, z: Number, whMultiplier: Number, spin: Boolean }) {
     layout = this.entityMemory(Quad)
 
-    spawnOrder(): number {
-        return 2
-    }
-
-    shouldSpawn() {
-        return entityInfos.get(0).state === EntityState.Despawned
-    }
-
     initialize(): void {
         if (!this.spawnData.spin) {
             const dw = 3.8

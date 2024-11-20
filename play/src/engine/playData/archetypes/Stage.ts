@@ -48,8 +48,6 @@ export class Stage extends Archetype {
             this.data.discTsgL = this.data.discTsgR
             this.data.discTsgR = temp
         }
-
-        this.renderDisk()
     }
 
     getLane(touch: Touch) {
@@ -198,6 +196,8 @@ export class Stage extends Archetype {
     initialize() {
         this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
         this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
+
+        this.renderDisk()
     }
 
     updateParallel() {

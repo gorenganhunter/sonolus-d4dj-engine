@@ -34,6 +34,7 @@ export const skin = defineSkin({
         sliderNote: SkinSpriteName.NoteTickPurple,
         sliderConnector: SkinSpriteName.NoteConnectionPurple,
         sliderArrow: SkinSpriteName.DirectionalMarkerPurple,
+        sliderArrowGlow: "DJ Slider Arrow Glow",
         slider: "DJ Slider",
         sliderBar: "DJ Slider Bar",
         sliderFallback: SkinSpriteName.NoteHeadNeutral,
