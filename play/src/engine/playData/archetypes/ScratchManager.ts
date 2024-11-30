@@ -18,7 +18,7 @@ import { note } from "../note.js";
 
 
 // const minScratchV = 0.05 * screen.w
-const minScratchVr = 2
+const minScratchVr = 4
 
 export class ScratchManager extends SpawnableArchetype({}) {
     // touch() {
@@ -106,7 +106,7 @@ export const isClaimed = (touch: Touch): boolean => {
 
     const v = touch.position.sub(old.pos).length
 //    debug.log(v)
-    if (v < 0.02 * screen.w * note.scratch.movement) return true
+    if (v < 0.1 * screen.w * note.scratch.movement) return true
     // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minScratchVr) return true

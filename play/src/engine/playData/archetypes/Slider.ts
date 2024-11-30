@@ -150,9 +150,9 @@ export const isClaimed = (touch: Touch) => {
 
     const old = claimed.getValue(id)
 
-    const v = touch.position.sub(old.pos).length
-//    debug.log(v)
-    if (v < 0.02 * screen.w) return true
+//     const v = touch.position.sub(old.pos).length
+// //    debug.log(v)
+//     if (v < 0.02 * screen.w) return true
     // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minSliderFlickVr) return true

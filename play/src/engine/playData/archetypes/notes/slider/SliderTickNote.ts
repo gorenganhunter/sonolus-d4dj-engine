@@ -25,6 +25,7 @@ export class SliderTickNote extends SliderNote {
 
     // hasInput = false
     used = this.entityMemory(Boolean)
+    usedTime = this.entityMemory(Number)
     next = this.entityMemory({
         time: Number,
         scaledTime: Number,
@@ -48,6 +49,7 @@ export class SliderTickNote extends SliderNote {
         if (time.now > this.targetTime + this.windows.good.max) return
 
         for (const touch of touches) {
+            if (!touch.started) continue
             if (isUsed(touch)) continue
             if (!this.hitbox.contains(touch)) continue
 
@@ -75,11 +77,12 @@ export class SliderTickNote extends SliderNote {
 
         if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
+                this.usedTime = time.now
                 this.used = true
             } else {
                 this.complete(this.targetTime)
             }
-        } else if (this.used) this.complete(time.now)
+        } else if (this.used && time.now >= this.targetTime) this.complete(this.usedTime)
     }
 
     updateParallel() {
