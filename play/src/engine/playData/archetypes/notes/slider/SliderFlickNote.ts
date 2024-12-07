@@ -105,7 +105,7 @@ export class SliderFlickNote extends SliderNote {
 
         if(this.activatedTouch.id) {
             for (const touch of touches) {
-                if(time.now > this.inputTime.max) return this.incomplete(touch.t)
+                if(time.now > this.inputTime.max) return this.incomplete(time.now)
                 if(touch.id !== this.activatedTouch.id) continue
                 if(isClaimed(touch)) return
 
@@ -114,7 +114,7 @@ export class SliderFlickNote extends SliderNote {
                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
 //debug.log(p)
                 if(p > 0.2) this.complete(touch)
-                else if(touch.ended) this.incomplete(touch.t)
+                else if(touch.ended) this.incomplete(time.now)
                 else if (this.hitbox.contains(touch.position)) {
                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
                     if (touch.position.x > this.activatedTouch.right.x) touch.position.copyTo(this.activatedTouch.right)
@@ -124,7 +124,7 @@ export class SliderFlickNote extends SliderNote {
             }
         } else {
             for (const touch of touches) {
-                if(time.now > this.inputTime.max) return this.incomplete(touch.t)
+                if(time.now > this.inputTime.max) return this.incomplete(time.now)
                 if(slider.touch !== touch.id && isUsed(touch)) continue
                 if(!this.hitbox.contains(touch.position)) continue
                 if(isClaimed(touch)) continue
@@ -185,7 +185,7 @@ export class SliderFlickNote extends SliderNote {
     }
 
     complete(touch: Touch) {
-        const t = Math.max(Math.min(touch.t, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+        const t = Math.max(Math.min(time.now, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
         this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
 

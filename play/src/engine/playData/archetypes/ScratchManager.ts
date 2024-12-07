@@ -87,11 +87,11 @@ const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i
 const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
 export const startClaim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: touch.t })
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
 }
 
 export const claim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
 }
 
 export const isClaimed = (touch: Touch): boolean => {
@@ -111,7 +111,7 @@ export const isClaimed = (touch: Touch): boolean => {
 
     if (touch.vr < minScratchVr) return true
     // 
-    if (old.isUsed && touch.t - old.t < note.scratch.distance) return true
+    if (old.isUsed && time.now - old.t < note.scratch.distance) return true
 
     // const { position: pos, dx, dy, vr } = touch
     // claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })

@@ -11,10 +11,7 @@ export class BarLine extends Archetype {
         timescaleGroup: { name: "timeScaleGroup", type: Number }
     })
 
-    visualTime = this.entityMemory({
-        min: Number,
-        max: Number
-    })
+    visualTime = this.entityMemory(Range)
 
     // spawnTime = this.entityMemory(Number)
     targetTime = this.entityMemory(Number)
@@ -24,10 +21,7 @@ export class BarLine extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
-        this.visualTime.min = this.visualTime.max - note.duration
-
-        // this.spawnTime = this.visualTime.min
+        this.visualTime.copyFrom(Range.l.mul(note.duration).add(options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)))
     }
 
     spawnTime() {

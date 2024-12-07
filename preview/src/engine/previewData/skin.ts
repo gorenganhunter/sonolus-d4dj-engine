@@ -2,6 +2,7 @@ import { SkinSpriteName } from '@sonolus/core'
 import { panel } from "./panel.js"
 
 export const skin = defineSkin({
+    renderMode: "lightweight",
     sprites: {
         djStage: "DJ Stage",
         lane: SkinSpriteName.Lane,

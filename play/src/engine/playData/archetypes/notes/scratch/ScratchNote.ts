@@ -70,7 +70,7 @@ export class ScratchNote extends Note {
                 // if((d >= 0.04 * screen.w ) && (touch.vr > 2)) this.complete(touch)
                 if (isClaimed(touch)) continue
 
-                if(touch.ended) this.incomplete(touch.t)
+                if(touch.ended) this.incomplete(time.now)
                 else this.complete(touch)
 
                 return
@@ -116,7 +116,7 @@ export class ScratchNote extends Note {
     }
 
     complete(touch: Touch) {
-        const t = Math.max(Math.min(touch.t, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+        const t = Math.max(Math.min(time.now, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
         this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
         

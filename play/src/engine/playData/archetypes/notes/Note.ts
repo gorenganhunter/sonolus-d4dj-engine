@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { getBackspinTime, note } from '../../note.js'
-import { windows } from '../../../../../../shared/src/engine/data/windows.js'
+import { toBucketWindows, toWindows, windows } from '../../../../../../shared/src/engine/data/windows.js'
 import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
@@ -42,14 +42,8 @@ export abstract class Note extends Archetype {
 
     targetTime = this.entityMemory(Number)
     spawnTime = this.entityMemory(Number)
-    visualTime = this.entityMemory({
-        min: Number,
-        max: Number,
-    })
-    inputTime = this.entityMemory({
-        min: Number,
-        max: Number,
-    })
+    visualTime = this.entityMemory(Range)
+    inputTime = this.entityMemory(Range)
     notePosition = this.entityMemory(Quad)
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
@@ -59,18 +53,7 @@ export abstract class Note extends Archetype {
     bsTime = this.entityMemory(Number)
 
     get windows() {
-        const dualWindows = windows
-
-        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
-            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
-            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
-        })
-
-        return {
-            perfect: toWindow('perfect'),
-            great: toWindow('great'),
-            good: toWindow('good'),
-        }
+        return toWindows(windows, options.strictJudgment)
     }
 
     playEffect() {
@@ -111,9 +94,7 @@ export abstract class Note extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
     
-        this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
-
-        this.visualTime.min = this.visualTime.max - note.duration
+        this.visualTime.copyFrom(Range.l.mul(note.duration).add(options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)))
 
         this.bsTime = getBackspinTime(this.targetTime, this.import.timescaleGroup)
 
@@ -129,16 +110,7 @@ export abstract class Note extends Archetype {
     }
 
     globalPreprocess() {
-        const toMS = (window: RangeLike) => ({
-            min: window.min * 1000,
-            max: window.max * 1000,
-        })
-
-        this.bucket.set({
-            perfect: toMS(this.windows.perfect),
-            great: toMS(this.windows.great),
-            good: toMS(this.windows.good),
-        })
+        this.bucket.set(toBucketWindows(this.windows))
 
         this.life.set({
             perfect: 0,

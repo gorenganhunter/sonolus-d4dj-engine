@@ -4,7 +4,7 @@ import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { note, getSpawnTime, getBackspinTime } from '../../note.js'
-import { windows } from '../../../../../../shared/src/engine/data/windows.js'
+import { toBucketWindows, toWindows, windows } from '../../../../../../shared/src/engine/data/windows.js'
 // import { isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
@@ -40,10 +40,7 @@ export abstract class Note extends Archetype {
 
     initialized = this.entityMemory(Boolean)
     targetTime = this.entityMemory(Number)
-    visualTime = this.entityMemory({
-        min: Number,
-        max: Number,
-    })
+    visualTime = this.entityMemory(Range)
     notePosition = this.entityMemory(Quad)
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
@@ -57,18 +54,7 @@ export abstract class Note extends Archetype {
     }
     
     get windows() {
-        const dualWindows = windows
-
-        const toWindow = (key: 'perfect' | 'great' | 'good') => ({
-            min: options.strictJudgment ? dualWindows.strict[key].min : dualWindows.normal[key].min,
-            max: options.strictJudgment ? dualWindows.strict[key].max : dualWindows.normal[key].max,
-        })
-
-        return {
-            perfect: toWindow('perfect'),
-            great: toWindow('great'),
-            good: toWindow('good'),
-        }
+        return toWindows(windows, options.strictJudgment)
     }
 
     spawnTime() {
@@ -123,9 +109,7 @@ export abstract class Note extends Archetype {
 
         this.targetTime = bpmChanges.at(this.import.beat).time
 
-        this.visualTime.max = options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)
-
-        this.visualTime.min = this.visualTime.max - note.duration
+        this.visualTime.copyFrom(Range.l.mul(note.duration).add(options.backspinAssist ? this.targetTime : timeToScaledTime(this.targetTime, this.import.timescaleGroup)))
 
         this.sharedMemory.despawnTime = this.targetTime
 
@@ -166,16 +150,7 @@ export abstract class Note extends Archetype {
     }
 
     globalPreprocess() {
-        const toMS = (window: RangeLike) => ({
-            min: window.min * 1000,
-            max: window.max * 1000,
-        })
-
-        this.bucket.set({
-            perfect: toMS(this.windows.perfect),
-            great: toMS(this.windows.great),
-            good: toMS(this.windows.good),
-        })
+        this.bucket.set(toBucketWindows(this.windows))
 
         this.life.set({
             perfect: 0,

@@ -136,11 +136,11 @@ const minSliderFlickVr = 2
 const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
 export const startClaim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: touch.t })
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
 }
 
 export const claim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: touch.t })
+    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
 }
 
 export const isClaimed = (touch: Touch) => {
@@ -157,7 +157,7 @@ export const isClaimed = (touch: Touch) => {
 
     if (touch.vr < minSliderFlickVr) return true
 
-    if (old.isUsed && touch.t - old.t < minSliderFlickDistance) return true
+    if (old.isUsed && time.now - old.t < minSliderFlickDistance) return true
     
     return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
 }

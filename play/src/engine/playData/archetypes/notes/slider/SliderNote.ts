@@ -27,8 +27,8 @@ export abstract class SliderNote extends Note {
     })
 
     drawNote() {
-        const l = this.import.lane * 2.1 - 0.5
-        const r = this.import.lane * 2.1 + 0.5
+        const l = this.import.lane * 2.1 - 0.66
+        const r = this.import.lane * 2.1 + 0.66
 
         perspectiveLayout({ l, r, t: 1 - note.radius * 2.5, b: 1 + note.radius * 2.5 }).copyTo(this.notePosition)
 
