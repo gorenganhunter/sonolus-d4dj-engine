@@ -6,15 +6,14 @@ import { skin } from '../skin.js'
 import { slider } from '../slider.js'
 import { archetypes } from './index.js'
 
-
 export class Initialization extends Archetype {
     preprocess() {
         const noteRadius = 0.05 * options.noteSize
-        const judgeLineY = -0.5
+        const judgeLineY = -0.4725
 
-        const t = screen.t * 4 / 5
+        const t = screen.t * 0.85
         const b = judgeLineY
-        const w = screen.h / 10.75 * options.width
+        const w = screen.h / 10 * options.width
         const h = t - b
 
         const transform = Mat.identity.scale(w, -h).translate(0, t)
@@ -28,8 +27,6 @@ export class Initialization extends Archetype {
         scaledScreen.h = screen.h / h
 
         scaledScreen.wToH = w / h
-
-        transform.m31
 
         skin.transform.set(transform)
         particle.transform.set(transform)

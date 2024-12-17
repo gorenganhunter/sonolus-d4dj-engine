@@ -97,7 +97,7 @@ export class Stage extends Archetype {
         }
 
         skin.sprites.judgeLine.draw(
-            perspectiveLayout({ l: -7.35, r: 7.35, b: 1 + note.radius, t: 1 - note.radius }),
+            perspectiveLayout({ l: -7.35, r: 7.35, b: 1 + note.radius * 1.25, t: 1 - note.radius * 1.25 }),
             6,
             0.7,
         )
