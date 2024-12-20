@@ -12,7 +12,6 @@ export abstract class TapNote extends Note {
 
         for (const touch of touches) {
             if (!this.hitbox.contains(touch.position)) continue
-            if (options.judgmentMode && note.sliderBox.contains(touch.position)) continue
             if (!touch.started) continue
             if (isUsed(touch)) continue
 

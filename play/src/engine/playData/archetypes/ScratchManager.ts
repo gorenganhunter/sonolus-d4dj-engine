@@ -106,7 +106,7 @@ export const isClaimed = (touch: Touch): boolean => {
 
     const v = touch.position.sub(old.pos).length
 //    debug.log(v)
-    if (v < 0.1 * screen.w * note.scratch.movement) return true
+    if (v < 0.05 * screen.w * note.scratch.movement) return true
     // if ((v || 0) < minScratchV) return true
 
     if (touch.vr < minScratchVr) return true

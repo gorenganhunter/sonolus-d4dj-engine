@@ -41,7 +41,7 @@ export class HoldEndNote extends HoldNote {
                     else return queueHold(this.holdImport.prevRef)
                 }
 
-                if ((time.now >= this.inputTime.min && this.hitbox.contains(touch.position)) && !(options.judgmentMode && note.sliderBox.contains(touch.position))) {
+                if ((time.now >= this.inputTime.min && this.hitbox.contains(touch.position))) {
                     this.complete(touch.t)
                 } else {
                     this.incomplete(touch.t)

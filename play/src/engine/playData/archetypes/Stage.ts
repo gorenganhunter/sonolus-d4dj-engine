@@ -60,11 +60,11 @@ export class Stage extends Archetype {
         if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) return false
 // debug.log(isUsed(touch))
         
-        if ((slider.touch !== touch.id) && !note.sliderBox.contains(touch.startPosition) && !(!options.judgmentMode && slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
+        if ((slider.touch !== touch.id) && !note.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
 
         slider.touch = touch.id
         
-        const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
+        const tch = touch.x / (screen.h * options.width * (1.3225 - options.judgelineHeight * 0.02775) / 13.225) / slider.y
         const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
         
         if (!touch.ended) skin.sprites.sliderConnector.draw(perspectiveLayout({ l: sliderPos - 1.05, r: sliderPos + 1.05, b: 1 + note.radius, t: 1 - note.radius * 8 }), 101, 0.5)
@@ -208,8 +208,8 @@ export class Stage extends Archetype {
         //     t: 1 - note.radius / 4,
         //     b: 1 + note.radius / 4,
         // })
-        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
+        skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: slider.y + 0.01 * (slider.y / 1.21), t: slider.y - 0.01 * (slider.y / 1.21) }), -1, 1)
+        skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }), 9, 1)
         if(slider.isUsed) this.renderSlider()
 
         const hidden = approach(0, 1, 1 - options.laneLength)
@@ -217,14 +217,14 @@ export class Stage extends Archetype {
         const t = 0 + hidden
         const b = 1
 
-        skin.sprites.draw(this.sprites.borderRight, perspectiveLayout({ l: 7.35, r: 7.5, b, t }), 2, options.lineOpacity)
-        skin.sprites.draw(this.sprites.borderLeft, perspectiveLayout({ l: -7.5, r: -7.35, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.borderRight, perspectiveLayout({ l: 7.35, r: 7.55, b, t }), 2, options.lineOpacity)
+        skin.sprites.draw(this.sprites.borderLeft, perspectiveLayout({ l: -7.55, r: -7.35, b, t }), 2, options.lineOpacity)
         skin.sprites.borderBottom.draw(perspectiveLayout({ l: options.disk ? -6.3 : -7.35, r: options.disk ? 6.3 : 7.35, b: 1.01, t: 0.99 }), 7, 1)
 
         for (let i = -3; i <= 3; i++) {
             if (i < 3) skin.sprites.draw(
                 this.sprites.splitLine,
-                perspectiveLayout({ l: i * 2.1 + 1.05 - 0.08, r: i * 2.1 + 1.05 + 0.08, b, t }),
+                perspectiveLayout({ l: i * 2.1 + 1.05 - 0.1, r: i * 2.1 + 1.05 + 0.1, b, t }),
                 2,
                 options.lineOpacity,
             )

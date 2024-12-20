@@ -9,11 +9,11 @@ import { archetypes } from './index.js'
 export class Initialization extends Archetype {
     preprocess() {
         const noteRadius = 0.05 * options.noteSize
-        const judgeLineY = -0.4725
+        const judgeLineY = -0.4725 + options.judgelineHeight * 0.02775
 
-        const t = screen.t * 0.85
+        const t = 0.85
         const b = judgeLineY
-        const w = screen.h / 10 * options.width
+        const w = screen.h * options.width * (1.3225 - options.judgelineHeight * 0.02775) / 13.225
         const h = t - b
 
         const transform = Mat.identity.scale(w, -h).translate(0, t)
@@ -28,6 +28,8 @@ export class Initialization extends Archetype {
 
         scaledScreen.wToH = w / h
 
+        slider.y = (-0.75 - t) / -h
+
         skin.transform.set(transform)
         particle.transform.set(transform)
 
@@ -37,7 +39,7 @@ export class Initialization extends Archetype {
             good: 0.1,
         })
 
-        note.radius = noteRadius / h
+        note.radius = noteRadius / 1.3225
         note.duration = 0.5 + (12 - options.noteSpeed) * 0.4
         slider.isUsed = false
         slider.next.beat = 99999999
@@ -70,7 +72,7 @@ export class Initialization extends Archetype {
                 break;
         }
         
-        new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(transform).copyTo(note.sliderBox)
+        new Rect({ l: -6.3, r: 6.3, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }).transform(transform).copyTo(note.sliderBox)
 
         const gap = 0.05
         const uiRect = screen.rect.shrink(gap, gap)

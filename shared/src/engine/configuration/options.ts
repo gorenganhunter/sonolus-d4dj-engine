@@ -38,22 +38,22 @@ export const optionsDefinition = {
         step: 0.01,
         unit: Text.PercentageUnit
     },
-    judgmentMode: {
-        name: "Judgement Mode",
-        type: "select",
-        scope: "d4dj",
-        values: ["Combined", "Separated"],
-        def: 0
-    },
-    // judgelineHeight: {
-    //     name: "Judgement Line Height",
-    //     type: "slider",
+    // judgmentMode: {
+    //     name: "Judgement Mode",
+    //     type: "select",
     //     scope: "d4dj",
-    //     min: -10,
-    //     max: 10,
-    //     def: 0,
-    //     step: 1
+    //     values: ["Combined", "Separated"],
+    //     def: 0
     // },
+    judgelineHeight: {
+        name: "Judgement Line Height",
+        type: "slider",
+        scope: "d4dj",
+        min: -10,
+        max: 10,
+        def: 0,
+        step: 1
+    },
     mirror: {
         name: Text.Mirror,
         type: 'toggle',
