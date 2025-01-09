@@ -101,6 +101,7 @@ export class SliderFlickNote extends SliderNote {
     }
     
     touch() {
+        if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if(time.now < this.inputTime.min) return
 
         if(this.activatedTouch.id) {
@@ -162,6 +163,7 @@ export class SliderFlickNote extends SliderNote {
 
     updateSequential() {
         super.updateSequential()
+        if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if (time.now > this.inputTime.max) this.incomplete(time.now)
     }
     
@@ -180,6 +182,7 @@ export class SliderFlickNote extends SliderNote {
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
         // debug.log(hitTime - this.targetTime)
+        slider.touch = 0
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }
