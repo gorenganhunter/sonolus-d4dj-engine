@@ -17,7 +17,7 @@ export class Stage extends Archetype {
         discTsgR: { name: "discTsgR", type: Number }
     })
 
-    touchOrder = 2
+    touchOrder = 3
     
     sprites = this.entityMemory({
         splitLine: SkinSpriteId,

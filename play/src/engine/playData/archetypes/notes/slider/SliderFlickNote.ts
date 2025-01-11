@@ -24,6 +24,8 @@ export class SliderFlickNote extends SliderNote {
     }
     bucket = buckets.sliderFlickNote
 
+    touchOrder = 2
+
     arrow = this.entityMemory({
         layout: Quad,
         z: Number
@@ -39,11 +41,7 @@ export class SliderFlickNote extends SliderNote {
         super.preprocess()
 
         if (options.mirror) this.sliderImport.direction *= -1
-    }
-
-    initialize() {
-        super.initialize()
-
+        
         const lane = this.import.lane
         const direction = this.sliderImport.direction
         
@@ -51,6 +49,11 @@ export class SliderFlickNote extends SliderNote {
         const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
 
         new Rect({ l, r, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
+    }
+
+    initialize() {
+        super.initialize()
+
         this.arrow.z = getZ(103, this.targetTime, this.import.lane)
     }
 
@@ -162,7 +165,7 @@ export class SliderFlickNote extends SliderNote {
     }
 
     updateSequential() {
-        super.updateSequential()
+        // super.updateSequential()
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if (time.now > this.inputTime.max) this.incomplete(time.now)
     }

@@ -17,7 +17,7 @@ export abstract class SliderNote extends Note {
 
     shadow = skin.sprites.shadowSlider
 
-    touchOrder = 2
+    // touchOrder = 2
 
     sliderImport = this.defineImport({
         prev: { name: "prev", type: Number },

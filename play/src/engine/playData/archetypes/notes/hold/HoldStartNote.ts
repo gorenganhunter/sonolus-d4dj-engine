@@ -23,8 +23,10 @@ export class HoldStartNote extends HoldNote {
     touch() {
         if (time.now < this.inputTime.min) return
 
+        const hitbox = this.getHitbox()
+
         for (const touch of touches) {
-            if (!this.hitbox.contains(touch.position)) continue
+            if (!hitbox.contains(touch.position)) continue
             if (!touch.started) continue
             if (isUsed(touch)) continue
 

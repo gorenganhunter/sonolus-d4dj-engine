@@ -32,9 +32,13 @@ export class SliderTickNote extends SliderNote {
         lane: Number
     })
 
+    preprocess() {
+        super.preprocess()
+        new Rect({ l: this.import.lane * 2.1 - 2.15, r: this.import.lane * 2.1 + 2.15, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
+    }
+
     initialize() {
         super.initialize()
-        new Rect({ l: this.import.lane * 2.1 - 2.2, r: this.import.lane * 2.1 + 2.2, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
         this.used = false
         
         if(this.sliderImport.next) {
@@ -49,10 +53,12 @@ export class SliderTickNote extends SliderNote {
         if ((time.now < this.targetTime - this.windows.good.max) && ((slider.next.beat !== this.import.beat) && (slider.next.lane !== this.import.lane))) return
         if (time.now > this.targetTime + this.windows.good.max) return
 
+        const hitbox = this.getHitbox()
+
         for (const touch of touches) {
             if (!touch.started) continue
             if (isUsed(touch)) continue
-            if (!this.hitbox.contains(touch)) continue
+            if (!hitbox.contains(touch.position)) continue
 
             markAsUsed(touch)
             slider.touch = touch.id
@@ -77,7 +83,9 @@ export class SliderTickNote extends SliderNote {
         if (time.now < this.targetTime - this.windows.good.max) return
         if (time.now > this.targetTime + this.windows.good.max) return this.incomplete(time.now)
 
-        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
+        const hitbox = this.getHitbox()
+
+        if (hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
                 this.usedTime = time.now
                 this.used = true

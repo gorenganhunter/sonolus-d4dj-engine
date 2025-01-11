@@ -5,10 +5,11 @@ import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
 import { getBackspinTime, note } from '../../note.js'
 import { toBucketWindows, toWindows, windows } from '../../../../../../shared/src/engine/data/windows.js'
-import { isUsed, markAsUsed } from '../InputManager.js'
+import { inputNoteIndexes, isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
 import { particle } from '../../particle.js'
 import { scaledTimeToEarliestTime, timeToScaledTime } from '../utils.js'
+import { archetypes } from '../index.js'
 
 export abstract class Note extends Archetype {
     abstract sprite: SkinSprite
@@ -47,10 +48,31 @@ export abstract class Note extends Archetype {
     notePosition = this.entityMemory(Quad)
     y = this.entityMemory(Number)
     z = this.entityMemory(Number)
-    hitbox = this.entityMemory(Rect)
+    hitbox = this.defineSharedMemory(Rect)
     scheduleSFXTime = this.entityMemory(Number)
     hasSFXScheduled = this.entityMemory(Boolean)
     bsTime = this.entityMemory(Number)
+
+    getHitbox() {
+        let hitbox: Rect = new Rect()
+        this.hitbox.copyTo(hitbox)
+        const mid = (this.hitbox.l + this.hitbox.r) / 2
+        for (const index of inputNoteIndexes) {
+            if (this.index === index) continue
+            const otherImport = this.import.get(index)
+            const otherInfo = entityInfos.get(index)
+
+            if (otherInfo.state === EntityState.Despawned || otherImport.beat !== this.import.beat) continue
+            
+            const otherHitbox = this.hitbox.get(index)
+            const otherMid = (otherHitbox.l + otherHitbox.r) / 2
+
+            if (otherMid > mid && this.hitbox.r > otherHitbox.l) hitbox.r = (this.hitbox.r + otherHitbox.l) / 2
+            else if (otherMid < mid && this.hitbox.l < otherHitbox.r) hitbox.l = (this.hitbox.l + otherHitbox.r) / 2
+        }
+
+        return hitbox
+    }
 
     get windows() {
         return toWindows(windows, options.strictJudgment)
@@ -81,8 +103,6 @@ export abstract class Note extends Archetype {
 
         this.result.accuracy = this.windows.good.max
 
-        new Rect({ l: this.import.lane === -3 ? -30 : this.import.lane * 2.1 - 2.1 * options.judgmentWidth, r: this.import.lane === 3 ? 30 : this.import.lane * 2.1 + 2.1 * options.judgmentWidth, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
-
         const l = this.import.lane * 2.1 - (1.05 * options.noteSize)
         const r = this.import.lane * 2.1 + (1.05 * options.noteSize)
 
@@ -107,6 +127,8 @@ export abstract class Note extends Archetype {
         )
 
         if (this.shouldScheduleSFX) this.scheduleSFX()
+
+        new Rect({ l: this.import.lane === -3 ? -30 : this.import.lane * 2.1 - 2.1 * options.judgmentWidth, r: this.import.lane === 3 ? 30 : this.import.lane * 2.1 + 2.1 * options.judgmentWidth, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
     }
 
     globalPreprocess() {
@@ -174,5 +196,10 @@ export abstract class Note extends Archetype {
         this.y = approach(this.visualTime.min, this.visualTime.max, scaledTime)
 
         this.drawNote()
+    }
+
+    updateSequentialOrder = 1
+    updateSequential() {
+        inputNoteIndexes.add(this.index)
     }
 }

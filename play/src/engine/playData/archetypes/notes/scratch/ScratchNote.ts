@@ -61,6 +61,8 @@ export class ScratchNote extends Note {
     touch() {
         if(time.now < this.inputTime.min) return
 
+        const hitbox = this.getHitbox()
+
         if(this.activatedTouchId) {
             for (const touch of touches) {
                 if(touch.id !== this.activatedTouchId) continue
@@ -77,8 +79,8 @@ export class ScratchNote extends Note {
             }
         } else {
             for (const touch of touches) {
-                if(!this.hitbox.contains(touch.position)) continue
-                if(!this.hitbox.contains(touch.startPosition)) continue
+                if(!hitbox.contains(touch.position)) continue
+                if(!hitbox.contains(touch.startPosition)) continue
                 if(isUsed(touch)) continue
                 if(isClaimed(touch)) continue
 

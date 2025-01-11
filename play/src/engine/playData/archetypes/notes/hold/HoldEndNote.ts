@@ -32,6 +32,8 @@ export class HoldEndNote extends HoldNote {
 
     touch() {
         const id = this.prevSingleSharedMemory.activatedTouchId
+        const hitbox = this.getHitbox()
+
         if (id) {
             for (const touch of touches) {
                 if (touch.id !== id) continue
@@ -41,7 +43,7 @@ export class HoldEndNote extends HoldNote {
                     else return queueHold(this.holdImport.prevRef)
                 }
 
-                if ((time.now >= this.inputTime.min && this.hitbox.contains(touch.position))) {
+                if ((time.now >= this.inputTime.min && hitbox.contains(touch.position))) {
                     this.complete(touch.t)
                 } else {
                     this.incomplete(touch.t)
@@ -62,7 +64,7 @@ export class HoldEndNote extends HoldNote {
 
         for (const touch of touches) {
             if (!touch.ended) continue
-            if (!this.hitbox.contains(touch.position)) continue
+            if (!hitbox.contains(touch.position)) continue
 
             this.complete(touch.t)
             return
