@@ -1,81 +1,188 @@
-// const scratch = levelMemory({
-//     now: Dictionary(16, Number, Number),
-//     old: Dictionary(16, Number, Number)
-// })
-
 import { note } from "../note.js";
+import { inputNoteIndexes, isUsed } from "./InputManager.js";
+import { archetypes } from "./index.js";
 
-// const last = levelMemory({
-//     dx: {
-//         now: Dictionary(16, Number, Number),
-//         old: Dictionary(16, Number, Number)
-//     },
-//     dy: {
-//         now: Dictionary(16, Number, Number),
-//         old: Dictionary(16, Number, Number)
-//     },
-// })
+const flickDisallowEmptiesNow = levelMemory(Dictionary(16, Number, Number))
+const flickDisallowEmptiesOld = levelMemory(Dictionary(16, Number, Number))
+const lastdx = levelMemory(Dictionary(16, Number, Number))
+const lastdy = levelMemory(Dictionary(16, Number, Number))
+const lastdxOld = levelMemory(Dictionary(16, Number, Number))
+const lastdyOld = levelMemory(Dictionary(16, Number, Number))
 
+// const minFlickV = 0.2
+const minFlickVr = 2
 
-// const minScratchV = 0.05 * screen.w
-const minScratchVr = 4
+// const calcV = (touch: Touch) => ((touch.dx * touch.dx + touch.dy * touch.dy) ** 0.5) / time.delta
 
 export class ScratchManager extends SpawnableArchetype({}) {
     // touch() {
     //     claimed.clear()
     // }
 
-    // updateSequential() {
-    //     for (const touch of touches) {
-    //         const id = claimed.indexOf(touch.id)
+    updateSequentialOrder = -3
+    updateSequential(): void {
+        claimed.clear()
 
-    //         if (id === -1) continue
+        flickDisallowEmptiesOld.clear()
+        flickDisallowEmptiesNow.copyTo(flickDisallowEmptiesOld)
+        flickDisallowEmptiesNow.clear()
 
-    //         const { position: pos, dx, dy, vr } = touch
-    //         // if (touch.vr < 1) claimed.set(touch.id, { pos, dx, dy, vr, isUsed: false })
-    //         // else claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
-    //     }
-    // }
-    // updateSequential(): void {
-    //     claimed.clear()
+        lastdxOld.clear()
+        lastdyOld.clear()
+        lastdx.copyTo(lastdxOld)
+        lastdy.copyTo(lastdyOld)
+        lastdx.clear()
+        lastdy.clear()
 
-    //     scratch.old.clear()
-    //     scratch.now.copyTo(scratch.old)
-    //     scratch.now.clear()
+        for (const touch of touches) {
+            const id = flickDisallowEmptiesOld.indexOf(touch.id)
+            lastdx.set(touch.id, touch.dx)
+            lastdy.set(touch.id, touch.dy)
 
-    //     last.dx.old.clear()
-    //     last.dy.old.clear()
-    //     last.dx.now.copyTo(last.dx.old)
-    //     last.dy.now.copyTo(last.dy.old)
-    //     last.dx.now.clear()
-    //     last.dy.now.clear()
+            if(id === -1) continue
 
-    //     for (const touch of touches) {
-    //         const id = scratch.old.indexOf(touch.id)
-    //         last.dx.now.set(touch.id, touch.dx)
-    //         last.dy.now.set(touch.id, touch.dy)
+            const lastdxIndex = lastdxOld.indexOf(touch.id)
+            const lastdxValue = lastdxIndex === -1 ? 0 : lastdxOld.getValue(lastdxIndex)
+            const lastdyValue = lastdxIndex === -1 ? 0 : lastdyOld.getValue(lastdxIndex)
 
-    //         if(id === -1) continue
+            if (touch.vr < minFlickVr || isUsed(touch)) {
+                lastdx.set(touch.id, lastdxValue)
+                lastdy.set(touch.id, lastdyValue)
+                flickDisallowEmptiesNow.set(touch.id, 1)
 
-    //         const lastdxIndex = last.dx.old.indexOf(touch.id)
-    //         const lastdxValue = lastdxIndex === -1 ? 0 : last.dx.old.getValue(lastdxIndex)
-    //         const lastdyValue = lastdxIndex === -1 ? 0 : last.dy.old.getValue(lastdxIndex)
+                continue
+            }
 
-    //         if (calcV(touch) < minScratchV) {
-    //             last.dx.now.set(touch.id, lastdxValue)
-    //             last.dy.now.set(touch.id, lastdyValue)
-    //             scratch.now.set(touch.id, 1)
-
-    //             continue
-    //         }
-
-    //         const dotmul = lastdxValue * touch.dx + lastdyValue * touch.dy
-    //         if (dotmul <= 0) continue
-    //         
-    //         scratch.now.set(touch.id, 1)
-    //     }
-    // }
+            // const dotmul = lastdxValue * touch.dx + lastdyValue * touch.dy
+            // if (dotmul <= 0) continue
+            
+            const angle = vectorAngle([touch.dx, touch.dy], [lastdxValue, lastdyValue]) / (Math.PI / 180)
+            if (angle > note.scratch.angle) continue
+            
+            flickDisallowEmptiesNow.set(touch.id, 1)
+        }
+    }
 }
+
+function getHitbox(index: number) {
+    let hitbox: Rect = archetypes.ScratchNote.hitbox.get(index)
+    let noteImport = archetypes.ScratchNote.import.get(index)
+    const mid = (hitbox.l + hitbox.r) / 2
+    for (const otherIndex of inputNoteIndexes) {
+        if (otherIndex === index) continue
+        const otherImport = archetypes.ScratchNote.import.get(otherIndex)
+        const otherInfo = entityInfos.get(otherIndex)
+
+        if (otherInfo.state === EntityState.Despawned || otherImport.beat !== noteImport.beat) continue
+        
+        const otherHitbox = archetypes.ScratchNote.hitbox.get(otherIndex)
+        const otherMid = (otherHitbox.l + otherHitbox.r) / 2
+
+        if (otherMid > mid && hitbox.r > otherHitbox.l) hitbox.r = (hitbox.r + otherHitbox.l) / 2
+        else if (otherMid < mid && hitbox.l < otherHitbox.r) hitbox.l = (hitbox.l + otherHitbox.r) / 2
+    }
+// debug.log(mid)
+    return hitbox
+}
+// class ClaimInfo {
+//     public cx: number
+//     public cy: number
+//     public time: number
+//     
+//     function getDis(x: number, y: number) {
+//         IF (rotate == PI / 2 || rotate == PI / 2 * 3) {
+//             Return(Abs(x - cx));
+//         } FI
+//         let k = Tan(rotate), b = cy - k * cx;
+//         let dis = Abs(-1 * k * x + y - b) / Power({k * k + 1, 0.5});
+//         Return(dis);
+//         return VAR;
+//     }
+//     function contain(x: number, y: number) {
+//         FUNCBEGIN
+//         Return(getDis(x, y) <= judgeDistanceLimit);
+//         return VAR;
+//     }
+// };
+
+function getInfo(index: number) {
+    const noteImport = archetypes.ScratchNote.import.get(index);
+    return {
+        hitbox: getHitbox(index),
+        time: bpmChanges.at(noteImport.beat)
+    };
+}
+
+function findBestTouchIndex(index: number) {
+    const origin = getInfo(index);
+    let res = -1
+    for (const touch of touches) {
+        // debug.log(touch.vr)
+        if (touch.vr < minFlickVr) continue
+        const id = flickDisallowEmptiesNow.indexOf(touch.id);
+        if (id != -1) continue
+        if (!origin.hitbox.contains(touch.position)) continue
+
+        // let dis = Math.min(
+        //     origin.getDis(touch.x, touch.y),
+        //     origin.getDis(touch.x - touch.dx, touch.y - touch.dy)
+        // );
+        // if (res != -1 && minDis <= dis) continue
+
+        let claimIndex = claimed.indexOf(touch.id);
+        if (claimIndex == -1) {
+            res = touch.id
+            continue
+        }
+
+        const claim = getInfo(claimed.getValue(claimIndex));
+        if (origin.time > claim.time) continue
+        if (origin.time < claim.time) {
+            res = touch.id
+            continue
+        }
+     
+        // if (dis > Math.min(
+        //     claim.getDis(touch.x, touch.y),
+        //     claim.getDis(touch.x - touch.dx, touch.y - touch.dy)
+        // )) continue
+        if (index > claimed.getValue(claimIndex)) continue // nmd 如果 time 和 dis 完全相等的话会导致一直 claim，然后 Sonolus 死机
+        // mlgb 老子在这里调了 6 个小时结果是 nm 这个问题
+        res = touch.id;
+    }
+    return res;
+}
+
+function claim(index: number) {
+    let currentId = index;
+    // const info = getInfo(currentId);
+    while (true) {
+        let touchIndex = findBestTouchIndex(currentId);
+        if (touchIndex == -1) break
+        flickDisallowEmptiesNow.set(touchIndex, 1);
+        let claimIndex = claimed.indexOf(touchIndex);
+        if (claimIndex == -1) {
+            claimed.set(touchIndex, currentId); 
+            break
+        }
+
+        let tmp = currentId;
+        currentId = claimed.getValue(claimIndex);
+        claimed.set(touchIndex, tmp);
+    }
+}
+
+function getClaimedTouchIndex(index: number) {
+    for (let i = 0; i < claimed.count; i++) {
+        if (claimed.getValue(i) == index) {
+            return claimed.getKey(i);
+        }
+    }
+    return -1;
+}
+
+export const flickClaimStart = (index: number) => claim(index)
+export const flickGetClaimedStart = (index: number) => getClaimedTouchIndex(index)
 
 // const getAngle = (dx: number, dy: number) => {
 //     const temp = Math.atan(dy/dx) / (Math.PI / 180)
@@ -84,40 +191,42 @@ export class ScratchManager extends SpawnableArchetype({}) {
 
 const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
 
-const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
+const claimed = levelMemory(Dictionary(16, Number, Number))
 
-export const startClaim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
-}
+// const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
-export const claim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
-}
+// export const startClaim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
+// }
 
-export const isClaimed = (touch: Touch): boolean => {
-//    debug.log(touch.id)
-    
-    const id = claimed.indexOf(touch.id)
-// debug.log(id)
-    if (id === -1) return false
-    
-    const old = claimed.getValue(id)
-    // if (!old.isUsed) return false
+// export const claim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
+// }
+export const isClaimed = (touch: Touch) => claimed.has(touch.id)
+// export const isClaimed = (touch: Touch): boolean => {
+// //    debug.log(touch.id)
+//     
+//     const id = claimed.indexOf(touch.id)
+// // debug.log(id)
+//     if (id === -1) return false
+//     
+//     const old = claimed.getValue(id)
+//     // if (!old.isUsed) return false
 
-    const v = touch.position.sub(old.pos).length
-//    debug.log(v)
-    if (v < 0.05 * screen.w * note.scratch.movement) return true
-    // if ((v || 0) < minScratchV) return true
+//     const v = touch.position.sub(old.pos).length
+// //    debug.log(v)
+//     if (v < 0.2 * note.scratch.movement) return true
+//     // if ((v || 0) < minScratchV) return true
 
-    if (touch.vr < minScratchVr) return true
-    // 
-    if (old.isUsed && time.now - old.t < note.scratch.distance) return true
+//     if (touch.vr < minScratchVr) return true
+//     // 
+//     if (old.isUsed && time.now - old.t < note.scratch.distance) return true
 
-    // const { position: pos, dx, dy, vr } = touch
-    // claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
-// debug.log(touch.vr)
-    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < note.scratch.angle : false
-}
+//     // const { position: pos, dx, dy, vr } = touch
+//     // claimed.set(touch.id, { pos, dx, dy, vr, isUsed: true })
+// // debug.log(touch.vr)
+//     return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < note.scratch.angle : false
+// }
 
 // export const isUsed = (touch: Touch) => usedTouchIds.has(touch.id)
 // export const markAsUsed = (touch: Touch) => usedTouchIds.add(touch.id)

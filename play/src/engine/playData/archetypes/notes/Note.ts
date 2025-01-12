@@ -198,8 +198,8 @@ export abstract class Note extends Archetype {
         this.drawNote()
     }
 
-    updateSequentialOrder = 1
+    updateSequentialOrder = 0
     updateSequential() {
-        inputNoteIndexes.add(this.index)
+        if (time.now >= this.inputTime.min && !this.despawn) inputNoteIndexes.add(this.info.index)
     }
 }

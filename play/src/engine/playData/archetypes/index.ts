@@ -5,6 +5,7 @@ import { Initialization } from './Initialization.js'
 import { InputManager } from './InputManager.js'
 import { ScratchManager } from './ScratchManager.js'
 import { Stage } from './Stage.js'
+import { Slider } from './Slider.js'
 import { BarLine } from './lines/BarLine.js'
 import { SimLine } from './lines/SimLine.js'
 import { HoldEndNote } from './notes/hold/HoldEndNote.js'
@@ -25,7 +26,7 @@ export const archetypes = defineArchetypes({
     InputManager,
     HoldManager,
     ScratchManager,
-    // Slider,
+    Slider,
 
     DarkTapNote,
     LightTapNote,

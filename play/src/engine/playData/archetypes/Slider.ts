@@ -1,163 +1,246 @@
-import { approach, leftRotated, perspectiveLayout } from "../../../../../shared/src/engine/data/utils.js";
 import { note } from "../note.js";
-import { skin } from "../skin.js";
 import { slider } from "../slider.js";
-import { isUsed, markAsUsed } from "./InputManager.js";
-import { options } from '../../configuration/options.js'
-import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
-import { timeToScaledTime } from "./utils.js";
+import { isUsed } from "./InputManager.js";
+import { archetypes } from "./index.js";
 
-// export class Slider extends SpawnableArchetype({}) {
-//     sliderBox = this.entityMemory(Rect)
+const flickDisallowEmptiesNow = levelMemory(Dictionary(16, Number, Number))
+const flickDisallowEmptiesOld = levelMemory(Dictionary(16, Number, Number))
+const lastdx = levelMemory(Dictionary(16, Number, Number))
+const lastdy = levelMemory(Dictionary(16, Number, Number))
+const lastdxOld = levelMemory(Dictionary(16, Number, Number))
+const lastdyOld = levelMemory(Dictionary(16, Number, Number))
 
-//     touchOrder = 2
-//     hasInput = true
+// const minFlickV = 0.2
+const minFlickVr = 2
 
-//     next = this.entityMemory({
-//         time: Number,
-//         scaledTime: Number
-//     })
+// const calcV = (touch: Touch) => ((touch.dx * touch.dx + touch.dy * touch.dy) ** 0.5) / time.delta
 
-//     sprites = this.entityMemory({
-//         slider: SkinSpriteId,
-//         sliderBar: SkinSpriteId
-//     })
+export class Slider extends SpawnableArchetype({}) {
+    // touch() {
+    //     claimed.clear()
+    // }
 
-//     touch() {
-//         for (const touch of touches) {
-//             if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) continue
-// // debug.log(isUsed(touch))
-//             
-//             if ((slider.touch !== touch.id) && !this.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) continue
+    updateSequentialOrder = -3
+    updateSequential(): void {
+        claimed.clear()
 
-//             slider.touch = touch.id
-//             
-//             const tch = touch.x / screen.h * 10.75 / options.width / (1 + note.radius * 4)
-//             const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
-//             
-//             if (!touch.ended) skin.sprites.sliderConnector.draw(perspectiveLayout({ l: sliderPos - 1.05, r: sliderPos + 1.05, b: 1 + note.radius, t: 1 - note.radius * 8 }), 101, 0.5)
+        flickDisallowEmptiesOld.clear()
+        flickDisallowEmptiesNow.copyTo(flickDisallowEmptiesOld)
+        flickDisallowEmptiesNow.clear()
 
-//             // debug.log(sliderPos)
-//             slider.position = sliderPos
+        lastdxOld.clear()
+        lastdyOld.clear()
+        lastdx.copyTo(lastdxOld)
+        lastdy.copyTo(lastdyOld)
+        lastdx.clear()
+        lastdy.clear()
 
-//             if (!isUsed(touch)) markAsUsed(touch)
-//             return
-//         }
+        for (const touch of touches) {
+            const id = flickDisallowEmptiesOld.indexOf(touch.id)
+            lastdx.set(touch.id, touch.dx)
+            lastdy.set(touch.id, touch.dy)
+
+            if(id === -1) continue
+
+            const lastdxIndex = lastdxOld.indexOf(touch.id)
+            const lastdxValue = lastdxIndex === -1 ? 0 : lastdxOld.getValue(lastdxIndex)
+            const lastdyValue = lastdxIndex === -1 ? 0 : lastdyOld.getValue(lastdxIndex)
+
+            if (touch.vr < minFlickVr || (isUsed(touch) && touch.id !== slider.touch)) {
+                lastdx.set(touch.id, lastdxValue)
+                lastdy.set(touch.id, lastdyValue)
+                flickDisallowEmptiesNow.set(touch.id, 1)
+// debug.log(touch.id)
+                continue
+            }
+
+            // const dotmul = lastdxValue * touch.dx + lastdyValue * touch.dy
+            // if (dotmul <= 0) continue
+            
+            // const angle = vectorAngle([touch.dx, touch.dy], [lastdxValue, lastdyValue]) / (Math.PI / 180)
+            // if (angle < note.scratch.angle) continue
+            // 
+            // flickDisallowEmptiesNow.set(touch.id, 1)
+        }
+    }
+}
+
+function getHitbox(index: number) {
+    return archetypes.SliderFlickNote.hitbox.get(index)
+    // let noteImport = archetypes.ScratchNote.import.get(index)
+    // const mid = (hitbox.l + hitbox.r) / 2
+    // for (const otherIndex of inputNoteIndexes) {
+    //     if (otherIndex === index) continue
+    //     const otherImport = archetypes.ScratchNote.import.get(otherIndex)
+    //     const otherInfo = entityInfos.get(otherIndex)
+
+    //     if (otherInfo.state === EntityState.Despawned || otherImport.beat !== noteImport.beat) continue
+    //     
+    //     const otherHitbox = archetypes.ScratchNote.hitbox.get(otherIndex)
+    //     const otherMid = (otherHitbox.l + otherHitbox.r) / 2
+
+    //     if (otherMid > mid && hitbox.r > otherHitbox.l) hitbox.r = (hitbox.r + otherHitbox.l) / 2
+    //     else if (otherMid < mid && hitbox.l < otherHitbox.r) hitbox.l = (hitbox.l + otherHitbox.r) / 2
+    // }
+// debug.log(mid)
+    // return hitbox
+}
+// class ClaimInfo {
+//     public cx: number
+//     public cy: number
+//     public time: number
+//     
+//     function getDis(x: number, y: number) {
+//         IF (rotate == PI / 2 || rotate == PI / 2 * 3) {
+//             Return(Abs(x - cx));
+//         } FI
+//         let k = Tan(rotate), b = cy - k * cx;
+//         let dis = Abs(-1 * k * x + y - b) / Power({k * k + 1, 0.5});
+//         Return(dis);
+//         return VAR;
 //     }
-
-//     updateParallel() {
-//         skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: 1 + note.radius * 3.9, t: 0.99 + note.radius * 3.9 }), 3, 1)
-//         skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: 1.075 + note.radius * 3.9, t: 0.925 + note.radius * 3.9 }), 4, 1)
-//         if(slider.isUsed) this.renderSlider()
+//     function contain(x: number, y: number) {
+//         FUNCBEGIN
+//         Return(getDis(x, y) <= judgeDistanceLimit);
+//         return VAR;
 //     }
+// };
 
-//     updateSequential() {
-//         if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
-//             slider.position = slider.next.lane * 2.1
-//             // debug.log(slider.position)
-//         }
-//     }
+function getInfo(index: number) {
+    const noteImport = archetypes.SliderFlickNote.import.get(index);
+    const sliderImport = archetypes.SliderFlickNote.sliderImport.get(index);
+    return {
+        hitbox: getHitbox(index),
+        time: bpmChanges.at(noteImport.beat),
+        direction: sliderImport.direction
+    };
+}
 
-//     renderSlider() {
-//         skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.5, r: slider.position + 0.5, b: 0.95 + note.radius * 4, t: 1 - note.radius * 2 }), 105, 1)
-//         this.renderConnector()
-//     }
+function findBestTouchIndex(index: number) {
+    const origin = getInfo(index);
+    let res = -1
+    for (const touch of touches) {
+        // debug.log(touch.vr)
+        if (touch.vr < minFlickVr) continue
+        // debug.log(touch.dx)
+        if (origin.direction > 0 ? touch.dx < 0 : touch.dx > 0) continue
+        const id = flickDisallowEmptiesNow.indexOf(touch.id);
+        // debug.log(id + 10000)
+        if (id != -1) continue
+        if (!origin.hitbox.contains(touch.position)) continue
 
-//     initialize() {
-//         this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
-//         this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
-//         new Rect({ l: -6.3, r: 6.3, b: 1.1 + note.radius * 4, t: 0.9 + note.radius * 4 }).transform(skin.transform).copyTo(this.sliderBox)
-//     }
+        // let dis = Math.min(
+        //     origin.getDis(touch.x, touch.y),
+        //     origin.getDis(touch.x - touch.dx, touch.y - touch.dy)
+        // );
+        // if (res != -1 && minDis <= dis) continue
 
-//     renderConnector() {
-//         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
-//         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-//         
-//         this.next.time = bpmChanges.at(slider.next.beat).time
-//         this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
+        let claimIndex = claimed.indexOf(touch.id);
+        // debug.log(claimIndex + 20000)
+        if (claimIndex == -1) {
+            res = touch.id
+            continue
+        }
 
-//         const hiddenDuration = 0
+        const claim = getInfo(claimed.getValue(claimIndex));
+        if (origin.time > claim.time) continue
+        if (origin.time < claim.time) {
+            res = touch.id
+            continue
+        }
+     
+        // if (dis > Math.min(
+        //     claim.getDis(touch.x, touch.y),
+        //     claim.getDis(touch.x - touch.dx, touch.y - touch.dy)
+        // )) continue
+        if (index > claimed.getValue(claimIndex)) continue // nmd 如果 time 和 dis 完全相等的话会导致一直 claim，然后 Sonolus 死机
+        // mlgb 老子在这里调了 6 个小时结果是 nm 这个问题
+        res = touch.id;
+    }
+    return res;
+}
 
-//         const visibleTime = {
-//             min: Math.max(/* (this.headImport.lane === (3 || -3)) ? */ scaledTime /* : timeScaleChanges.at(this.head.time).scaledTime */, scaledTime + hiddenDuration),
-//             max: Math.min(/* (this.headImport.lane === (3 || -3)) ? */ this.next.scaledTime  /* : timeScaleChanges.at(this.tail.time).scaledTime */, scaledTime + note.duration * options.laneLength),
-//         }
+function claim(index: number) {
+    let currentId = index;
+    // const info = getInfo(currentId);
+    while (true) {
+        let touchIndex = findBestTouchIndex(currentId);
+        if (touchIndex == -1) break
+        flickDisallowEmptiesNow.set(touchIndex, 1);
+        let claimIndex = claimed.indexOf(touchIndex);
+        if (claimIndex == -1) {
+            claimed.set(touchIndex, currentId); 
+            break
+        }
 
-//         const l = {
-//             min: this.getL(visibleTime.min),
-//             max: this.getL(visibleTime.max),
-//         }
+        let tmp = currentId;
+        currentId = claimed.getValue(claimIndex);
+        claimed.set(touchIndex, tmp);
+    }
+}
 
-//         const r = {
-//             min: this.getR(visibleTime.min),
-//             max: this.getR(visibleTime.max),
-//         }
+function getClaimedTouchIndex(index: number) {
+    for (let i = 0; i < claimed.count; i++) {
+        if (claimed.getValue(i) == index) {
+            return claimed.getKey(i);
+        }
+    }
+    return -1;
+}
 
-//         const y = {
-//             min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
-//             max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
-//         }
+export const flickClaimStart = (index: number) => claim(index)
+export const flickGetClaimedStart = (index: number) => getClaimedTouchIndex(index)
 
-//         const layout = {
-//             x1: l.min * y.min,
-//             x2: l.max * y.max,
-//             x3: r.max * y.max,
-//             x4: r.min * y.min,
-//             y1: y.min,
-//             y2: y.max,
-//             y3: y.max,
-//             y4: y.min,
-//         }
-
-//         skin.sprites.sliderConnector.draw(layout, 90, options.connectorAlpha)
-//     }
-
-//     getLane(time2: number) {
-//         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-//         return Math.remap(scaledTime, this.next.scaledTime, slider.position, slider.next.lane * 2.1, time2)
-//     }
-
-//     getL(time2: number) {
-//         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-//         return Math.remap(scaledTime, this.next.scaledTime, slider.position - (0.125 * options.noteSize), slider.next.lane * 2.1 - (0.125 * options.noteSize), time2)
-//     }
-
-//     getR(time2: number) {
-//         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-//         return Math.remap(scaledTime, this.next.scaledTime, slider.position + (0.125 * options.noteSize), slider.next.lane * 2.1 + (0.125 * options.noteSize), time2)
-//     }
+// const getAngle = (dx: number, dy: number) => {
+//     const temp = Math.atan(dy/dx) / (Math.PI / 180)
+//     return dx < 0 ? 180 - temp : temp
 // }
 
-const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
+// const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
 
-const minSliderFlickDistance = 0.1
-const minSliderFlickVr = 2
+const claimed = levelMemory(Dictionary(16, Number, Number))
 
-const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
+// const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
-export const startClaim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
-}
+// export const startClaim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
+// }
 
-export const claim = (touch: Touch) => {
-    claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
-}
+// export const claim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
+// }
+export const isClaimed = (touch: Touch) => claimed.has(touch.id)
 
-export const isClaimed = (touch: Touch) => {
-    const id = claimed.indexOf(touch.id)
-    
-    if (id === -1) return false
+// const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
 
-    const old = claimed.getValue(id)
+// const minSliderFlickDistance = 0.1
+// const minSliderFlickVr = 2
 
-//     const v = touch.position.sub(old.pos).length
-// //    debug.log(v)
-//     if (v < 0.02 * screen.w) return true
-    // if ((v || 0) < minScratchV) return true
+// const claimed = levelMemory(Dictionary(16, TouchId, { pos: Vec, dx: Number, dy: Number , vr: Number , isUsed: Boolean, t: Number }))
 
-    if (touch.vr < minSliderFlickVr) return true
+// export const startClaim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: false, t: time.now })
+// }
 
-    if (old.isUsed && time.now - old.t < minSliderFlickDistance) return true
-    
-    return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
-}
+// export const claim = (touch: Touch) => {
+//     claimed.set(touch.id, { pos: touch.position, dx: touch.dx, dy: touch.dy, vr: touch.vr, isUsed: true, t: time.now })
+// }
+
+// export const isClaimed = (touch: Touch) => {
+//     const id = claimed.indexOf(touch.id)
+//     
+//     if (id === -1) return false
+
+//     const old = claimed.getValue(id)
+
+// //     const v = touch.position.sub(old.pos).length
+// // //    debug.log(v)
+// //     if (v < 0.02 * screen.w) return true
+//     // if ((v || 0) < minScratchV) return true
+
+//     if (touch.vr < minSliderFlickVr) return true
+
+//     if (old.isUsed && time.now - old.t < minSliderFlickDistance) return true
+//     
+//     return old.isUsed ? vectorAngle([touch.dx, touch.dy], [old.dx, old.dy]) / (Math.PI / 180) < 90 : false
+// }

@@ -3,11 +3,11 @@ import { approach, perspectiveLayout } from "../../../../../../../shared/src/eng
 import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
-import { isUsed, markAsUsed } from "../../InputManager.js";
+import { isUsed, markAsUsed, markAsUsedId } from "../../InputManager.js";
 import { Note } from "../Note.js";
 import { effect } from "../../../effect.js";
 import { buckets } from "../../../buckets.js";
-import { startClaim, claim, isClaimed } from "../../ScratchManager.js";
+import { flickClaimStart, flickGetClaimedStart } from "../../ScratchManager.js";
 import { options } from '../../../../configuration/options.js'
 
 export class ScratchNote extends Note {
@@ -35,6 +35,7 @@ export class ScratchNote extends Note {
         note: SkinSpriteId,
         arrow: SkinSpriteId
     })
+    played = this.entityMemory(Boolean)
     
     // playEffect() {
     //     particle.effects.scratch.spawn(this.notePosition, 0.2, false)
@@ -43,6 +44,8 @@ export class ScratchNote extends Note {
 
     preprocess() {
         super.preprocess()
+
+        this.played = false
 
         this.sprites.note = this.sprite.exists ? this.sprite.id : skin.sprites.scratchFallback.id
         this.sprites.arrow = skin.sprites.scratchArrow.exists ? skin.sprites.scratchArrow.id : skin.sprites.scratchArrowFallback.id
@@ -58,42 +61,61 @@ export class ScratchNote extends Note {
         skin.sprites.draw(this.sprites.arrow, this.arrowPosition.add({ x: 0, y: -2 * note.radius }).mul(this.y), this.z + 1, a2)
     }
 
-    touch() {
-        if(time.now < this.inputTime.min) return
-
-        const hitbox = this.getHitbox()
-
-        if(this.activatedTouchId) {
-            for (const touch of touches) {
-                if(touch.id !== this.activatedTouchId) continue
-
-                // const d = touch.position.sub(touch.startPosition).length
-
-                // if((d >= 0.04 * screen.w ) && (touch.vr > 2)) this.complete(touch)
-                if (isClaimed(touch)) continue
-
-                if(touch.ended) this.incomplete(time.now)
-                else this.complete(touch)
-
-                return
-            }
-        } else {
-            for (const touch of touches) {
-                if(!hitbox.contains(touch.position)) continue
-                if(!hitbox.contains(touch.startPosition)) continue
-                if(isUsed(touch)) continue
-                if(isClaimed(touch)) continue
-
-                if (touch.started) {
-                    startClaim(touch)
-                    // markAsUsed(touch)
-                }
-                // debug.log(touch.id)
-
-                this.activatedTouchId = touch.id
-                return
-            }
+    updateSequential() {
+        super.updateSequential()
+        
+        if (this.played) {
+            if (time.now < this.targetTime) return
+            this.complete(time.now)
+            return
         }
+        if (time.now < this.inputTime.min) return
+        if (time.now > this.inputTime.max) this.incomplete(time.now)
+        flickClaimStart(this.info.index)
+    }
+
+    touch() {
+        if (this.played) return
+        if (time.now < this.inputTime.min) return
+        let index = flickGetClaimedStart(this.info.index)
+        if (index === -1) return
+        this.played = true
+        // markAsUsedId(index)
+        // debug.log(index)
+
+        // const hitbox = this.getHitbox()
+
+        // if(this.activatedTouchId) {
+        //     for (const touch of touches) {
+        //         if(touch.id !== this.activatedTouchId) continue
+
+        //         // const d = touch.position.sub(touch.startPosition).length
+
+        //         // if((d >= 0.04 * screen.w ) && (touch.vr > 2)) this.complete(touch)
+        //         if (isClaimed(touch)) continue
+
+        //         if(touch.ended) this.incomplete(time.now)
+        //         else this.complete(touch)
+
+        //         return
+        //     }
+        // } else {
+        //     for (const touch of touches) {
+        //         if(!hitbox.contains(touch.position)) continue
+        //         if(!hitbox.contains(touch.startPosition)) continue
+        //         if(isUsed(touch)) continue
+        //         if(isClaimed(touch)) continue
+
+        //         if (touch.started) {
+        //             startClaim(touch)
+        //             // markAsUsed(touch)
+        //         }
+        //         // debug.log(touch.id)
+
+        //         this.activatedTouchId = touch.id
+        //         return
+        //     }
+        // }
     }
 
     initialize() {
@@ -108,7 +130,7 @@ export class ScratchNote extends Note {
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime + this.windows.perfect.min) return
+        if (!this.result.judgment || time.now <= this.targetTime /*+ this.windows.perfect.min*/) return
 // // debug.log(this.result.judgment)
 
         this.playSFX()
@@ -117,8 +139,8 @@ export class ScratchNote extends Note {
         this.despawn = true
     }
 
-    complete(touch: Touch) {
-        const t = Math.max(Math.min(time.now, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+    complete(hitTime: number) {
+        const t = Math.max(Math.min(hitTime, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
         this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
         
@@ -133,14 +155,14 @@ export class ScratchNote extends Note {
         //         this.sfx.good.play(0.02)
         //         break
         // }
-
+// debug.log(t)
         this.result.bucket.index = this.bucket.index
         this.result.bucket.value = this.result.accuracy * 1000
 
         // this.playSFX()
         // this.playEffect()
 
-        claim(touch)
+        // claim(touch)
 
         // this.despawn = true
     }

@@ -2,7 +2,7 @@ export const slider = levelMemory({
     y: Number,
     position: Number,
     isUsed: Boolean,
-    touch: TouchId,
+    touch: Number,
     next: {
         beat: Number,
         lane: Number,

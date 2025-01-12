@@ -6,10 +6,10 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { getZ, skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { isUsed, markAsUsed } from "../../InputManager.js";
+import { isUsed, markAsUsedId } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
-import { claim, isClaimed, startClaim } from "../../Slider.js"
+import { flickClaimStart, flickGetClaimedStart } from "../../Slider.js";
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
@@ -31,11 +31,7 @@ export class SliderFlickNote extends SliderNote {
         z: Number
     })
 
-    activatedTouch = this.entityMemory({
-        id: Number,
-        right: Vec,
-        left: Vec
-    })
+    played = this.entityMemory(Boolean)
 
     preprocess() {
         super.preprocess()
@@ -49,6 +45,8 @@ export class SliderFlickNote extends SliderNote {
         const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
 
         new Rect({ l, r, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
+        
+        this.played = false
     }
 
     initialize() {
@@ -105,49 +103,56 @@ export class SliderFlickNote extends SliderNote {
     
     touch() {
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
-        if(time.now < this.inputTime.min) return
+        if (this.played) return
+        if (time.now < this.inputTime.min) return
+        let index = flickGetClaimedStart(this.info.index)
+        if (index === -1) return
+        markAsUsedId(index)
+        slider.isUsed = false
+        slider.touch = index
+        this.played = true
+        // debug.log(index)
+//         if(this.activatedTouch.id) {
+//             for (const touch of touches) {
+//                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
+//                 if(touch.id !== this.activatedTouch.id) continue
+//                 // if(isClaimed(touch)) return
 
-        if(this.activatedTouch.id) {
-            for (const touch of touches) {
-                if(time.now > this.inputTime.max) return this.incomplete(time.now)
-                if(touch.id !== this.activatedTouch.id) continue
-                if(isClaimed(touch)) return
+//                 // slider.position = touch.position.x
 
-                // slider.position = touch.position.x
+//                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
+// //debug.log(p)
+//                 if(p > 0.2) this.complete(touch)
+//                 else if(touch.ended) this.incomplete(time.now)
+//                 else if (this.hitbox.contains(touch.position)) {
+//                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
+//                     if (touch.position.x > this.activatedTouch.right.x) touch.position.copyTo(this.activatedTouch.right)
+//                 }
 
-                const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
-//debug.log(p)
-                if(p > 0.2) this.complete(touch)
-                else if(touch.ended) this.incomplete(time.now)
-                else if (this.hitbox.contains(touch.position)) {
-                    if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
-                    if (touch.position.x > this.activatedTouch.right.x) touch.position.copyTo(this.activatedTouch.right)
-                }
+//                 return
+//             }
+//         } else {
+//             for (const touch of touches) {
+//                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
+//                 if(slider.touch !== touch.id && isUsed(touch)) continue
+//                 if(!this.hitbox.contains(touch.position)) continue
+//                 // if(isClaimed(touch)) continue
+// //debug.log(touch.id)
+//                 // markAsUsed(touch)
+//                 // startClaim(touch)
+//                 
+//                 slider.isUsed = false
+//                 // slider.touch = touch.id
 
-                return
-            }
-        } else {
-            for (const touch of touches) {
-                if(time.now > this.inputTime.max) return this.incomplete(time.now)
-                if(slider.touch !== touch.id && isUsed(touch)) continue
-                if(!this.hitbox.contains(touch.position)) continue
-                if(isClaimed(touch)) continue
-//debug.log(touch.id)
-                markAsUsed(touch)
-                startClaim(touch)
-                
-                slider.isUsed = false
-                slider.touch = touch.id
+//                 // slider.position = touch.position.x
 
-                // slider.position = touch.position.x
-
-                this.activatedTouch.id = touch.id
-                touch.position.copyTo(this.activatedTouch.right)
-                touch.position.copyTo(this.activatedTouch.left)
-                
-                return
-            }
-        }
+//                 this.activatedTouch.id = touch.id
+//                 touch.position.copyTo(this.activatedTouch.right)
+//                 touch.position.copyTo(this.activatedTouch.left)
+//                 
+//                 return
+//             }
+//         }
     }
 
     playEffect() {
@@ -167,13 +172,20 @@ export class SliderFlickNote extends SliderNote {
     updateSequential() {
         // super.updateSequential()
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
+        if (this.played) {
+            if (time.now < this.targetTime) return
+            this.complete(time.now)
+            return
+        }
+        if (time.now < this.inputTime.min) return
         if (time.now > this.inputTime.max) this.incomplete(time.now)
+        flickClaimStart(this.info.index)
     }
     
     updateParallel() {
         super.updateParallel()
 
-        if (!this.result.judgment || time.now <= this.targetTime + this.windows.perfect.min) return
+        if (!this.result.judgment || time.now <= this.targetTime /* + this.windows.perfect.min*/) return
 // // debug.log(this.result.judgment)
 
         this.playSFX()
@@ -190,8 +202,8 @@ export class SliderFlickNote extends SliderNote {
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }
 
-    complete(touch: Touch) {
-        const t = Math.max(Math.min(time.now, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
+    complete(hitTime: number) {
+        const t = Math.max(Math.min(hitTime, this.targetTime + this.windows.perfect.max / 2), this.targetTime + this.windows.perfect.min / 2)
         this.result.judgment = input.judge(t, this.targetTime, this.windows)
         this.result.accuracy = t - this.targetTime
 
@@ -203,7 +215,7 @@ export class SliderFlickNote extends SliderNote {
         // this.playSFX()
         // this.playEffect()
 
-        claim(touch)
+        // claim(touch)
         
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction

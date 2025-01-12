@@ -177,6 +177,7 @@ export class Initialization extends Archetype {
         archetypes.InputManager.spawn({})
         archetypes.HoldManager.spawn({})
         archetypes.ScratchManager.spawn({})
+        archetypes.Slider.spawn({})
 
         this.despawn = true
     }

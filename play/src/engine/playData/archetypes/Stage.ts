@@ -7,6 +7,7 @@ import { skin } from '../skin.js'
 import { isUsed, markAsUsed } from './InputManager.js'
 import { slider } from "../slider.js";
 import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
+import { isClaimed as isSliderClaimed } from "./Slider.js"
 import { timeToScaledTime } from './utils.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { archetypes } from './index.js'
@@ -57,10 +58,19 @@ export class Stage extends Archetype {
     }
 
     handleSlider(touch: Touch) {
-        if ((isUsed(touch) || isScratchClaimed(touch)) && (slider.touch !== touch.id)) return false
+        // if (isUsed(touch) && (slider.touch !== touch.id)) return false
 // debug.log(isUsed(touch))
         
-        if ((slider.touch !== touch.id) && !note.sliderBox.contains(touch.startPosition) && !(slider.isUsed && new Rect({ l: slider.position - 1.05, r: slider.position + 1.05, t: 0, b: 1 + note.radius * 4 }).transform(skin.transform).contains(touch.startPosition))) return false
+        if (
+            slider.touch !== touch.id &&
+            !(touch.started && !slider.isUsed && note.sliderBox.contains(touch.position) && !isUsed(touch)) &&
+            !(touch.started && slider.isUsed && !isUsed(touch) && new Rect({
+                l: slider.position - 1.05,
+                r: slider.position + 1.05,
+                t: -5,
+                b: 10
+            }).transform(skin.transform).contains(touch.position))
+        ) return false
 
         slider.touch = touch.id
         
@@ -99,7 +109,7 @@ export class Stage extends Archetype {
             //     return
             // }
 
-            if (isUsed(touch)) continue
+            if (isUsed(touch) || isSliderClaimed(touch)) continue
 
             if (!touch.started) continue
 
