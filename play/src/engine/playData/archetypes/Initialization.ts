@@ -71,6 +71,9 @@ export class Initialization extends Archetype {
                 note.scratch.movement = 0.5
                 break;
         }
+
+        new Rect({ l: -30, r: -5.25, b: 5, t: -5 }).transform(transform).copyTo(note.scratch.hitbox.left)
+        new Rect({ l: 5.25, r: 30, b: 5, t: -5 }).transform(transform).copyTo(note.scratch.hitbox.right)
         
         new Rect({ l: -6.3, r: 6.3, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }).transform(transform).copyTo(note.sliderBox)
 

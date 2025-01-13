@@ -13,6 +13,8 @@ const lastdyOld = levelMemory(Dictionary(16, Number, Number))
 // const minFlickV = 0.2
 const minFlickVr = 2
 
+export const noEmptyTap = levelMemory(Collection(16, TouchId))
+
 // const calcV = (touch: Touch) => ((touch.dx * touch.dx + touch.dy * touch.dy) ** 0.5) / time.delta
 
 export class Slider extends SpawnableArchetype({}) {

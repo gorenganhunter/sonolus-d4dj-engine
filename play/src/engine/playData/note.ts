@@ -8,7 +8,11 @@ export const note = levelData({
     scratch: {
         angle: Number,
         distance: Number,
-        movement: Number
+        movement: Number,
+        hitbox: {
+            left: Rect,
+            right: Rect
+        }
     }
 })
 

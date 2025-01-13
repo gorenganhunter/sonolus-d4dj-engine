@@ -6,8 +6,8 @@ import { particle } from '../particle.js'
 import { skin } from '../skin.js'
 import { isUsed, markAsUsed } from './InputManager.js'
 import { slider } from "../slider.js";
-import { isClaimed as isScratchClaimed } from "./ScratchManager.js"
-import { isClaimed as isSliderClaimed } from "./Slider.js"
+import { flickClaimStartEmpty, claimed } from "./ScratchManager.js"
+import { isClaimed as isSliderClaimed, noEmptyTap } from "./Slider.js"
 import { timeToScaledTime } from './utils.js'
 import { scaledScreen } from '../scaledScreen.js'
 import { archetypes } from './index.js'
@@ -109,7 +109,7 @@ export class Stage extends Archetype {
             //     return
             // }
 
-            if (isUsed(touch) || isSliderClaimed(touch)) continue
+            if (isUsed(touch) || noEmptyTap.has(touch.id)) continue
 
             if (!touch.started) continue
 
@@ -122,12 +122,20 @@ export class Stage extends Archetype {
                 if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
                 // else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
                 if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
-            } else if (!isScratchClaimed(touch)) {
+            }
+        }
+        const t = 1 - note.radius
+        const b = 1 + note.radius
+        for (let i = 0; i < claimed.count; i++) {
+            if (claimed.getValue(i) == -1) {
+                const touch = touches.get(claimed.getKey(i))
+                if (isUsed(touch)) continue
+                const lane = this.getLane(touch)
                 if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
                 if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
             }
-            return
         }
+        noEmptyTap.clear()
     }
 
     spawnOrder() {
@@ -138,11 +146,13 @@ export class Stage extends Archetype {
         return entityInfos.get(0).state === EntityState.Despawned
     }
 
+    updateSequentialOrder = 999
     updateSequential() {
         if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
             slider.position = slider.next.lane * 2.1
             // debug.log(slider.position)
         }
+        flickClaimStartEmpty()
     }
     
     renderSlider() {

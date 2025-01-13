@@ -6,10 +6,10 @@ import { note } from "../../../note.js";
 import { particle } from "../../../particle.js";
 import { getZ, skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
-import { isUsed, markAsUsedId } from "../../InputManager.js";
+import { isUsed, markAsUsed, markAsUsedId } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
-import { flickClaimStart, flickGetClaimedStart } from "../../Slider.js";
+import { flickClaimStart, flickGetClaimedStart, noEmptyTap } from "../../Slider.js";
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
@@ -105,6 +105,14 @@ export class SliderFlickNote extends SliderNote {
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if (this.played) return
         if (time.now < this.inputTime.min) return
+        for (const touch of touches) {
+            // if(time.now < this.inputTime.min) return
+            // if(time.now > this.inputTime.max) return this.incomplete(time.now)
+            if(!touch.started) continue
+            if(isUsed(touch)) continue
+            if(!this.hitbox.contains(touch.position)) continue
+            noEmptyTap.add(touch.id)
+        }
         let index = flickGetClaimedStart(this.info.index)
         if (index === -1) return
         markAsUsedId(index)
@@ -138,7 +146,7 @@ export class SliderFlickNote extends SliderNote {
 //                 if(!this.hitbox.contains(touch.position)) continue
 //                 // if(isClaimed(touch)) continue
 // //debug.log(touch.id)
-//                 // markAsUsed(touch)
+//                 markAsUsed(touch)
 //                 // startClaim(touch)
 //                 
 //                 slider.isUsed = false
@@ -151,7 +159,7 @@ export class SliderFlickNote extends SliderNote {
 //                 touch.position.copyTo(this.activatedTouch.left)
 //                 
 //                 return
-//             }
+//            }
 //         }
     }
 

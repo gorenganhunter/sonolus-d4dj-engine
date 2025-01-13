@@ -72,6 +72,7 @@ export class ScratchNote extends Note {
         if (time.now < this.inputTime.min) return
         if (time.now > this.inputTime.max) this.incomplete(time.now)
         flickClaimStart(this.info.index)
+        debug.log(5555)
     }
 
     touch() {
@@ -80,6 +81,7 @@ export class ScratchNote extends Note {
         let index = flickGetClaimedStart(this.info.index)
         if (index === -1) return
         this.played = true
+        debug.log(8888)
         // markAsUsedId(index)
         // debug.log(index)
 
