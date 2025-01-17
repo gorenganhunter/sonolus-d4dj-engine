@@ -153,7 +153,7 @@ export class HoldConnector extends Archetype {
     }
 
     get shouldScheduleSFX() {
-        return options.sfxEnabled && effect.clips.longLoop.exists && options.autoSfx
+        return options.sfxEnabled && effect.clips.longLoop.exists && options.autoSfx && this.headImport.lane != -3 && this.headImport.lane != 3
     }
 
     get shouldUpdateCircularEffect() {

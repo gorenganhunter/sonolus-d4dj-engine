@@ -7,6 +7,16 @@ import { skin } from "../../../skin.js";
 import { HoldEndNote } from "../hold/HoldEndNote.js";
 
 export class StopEndNote extends HoldEndNote {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
+        perfect: effect.clips.scratchPerfect,
+        great: effect.clips.scratchPerfect,
+        good: effect.clips.scratchPerfect,
+        fallback: {
+            perfect: effect.clips.perfect,
+            great: effect.clips.great,
+            good: effect.clips.good
+        }
+    }
     sprite = skin.sprites.stopTail
     effect = {
         linear: particle.effects.stopNoteLinear,

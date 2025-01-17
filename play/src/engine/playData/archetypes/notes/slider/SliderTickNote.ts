@@ -85,7 +85,7 @@ export class SliderTickNote extends SliderNote {
 
         // const hitbox = this.getHitbox()
 
-        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 + note.radius * 4 }).transform(skin.transform))) {
+        if (this.hitbox.contains(new Vec({ x: slider.position, y: 1 }).transform(skin.transform))) {
             if (time.now < this.targetTime) {
                 this.usedTime = time.now
                 this.used = true

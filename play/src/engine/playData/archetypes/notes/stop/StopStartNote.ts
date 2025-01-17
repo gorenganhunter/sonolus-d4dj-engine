@@ -1,10 +1,21 @@
 import { approach } from "../../../../../../../shared/src/engine/data/utils.js";
 import { buckets } from "../../../buckets.js";
+import { effect } from "../../../effect.js";
 import { particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
 import { HoldStartNote } from "../hold/HoldStartNote.js";
 
 export class StopStartNote extends HoldStartNote {
+    sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
+        perfect: effect.clips.scratchPerfect,
+        great: effect.clips.scratchPerfect,
+        good: effect.clips.scratchPerfect,
+        fallback: {
+            perfect: effect.clips.perfect,
+            great: effect.clips.great,
+            good: effect.clips.good
+        }
+    }
     sprite = skin.sprites.stopHead
     effect = {
         linear: particle.effects.stopNoteLinear,

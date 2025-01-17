@@ -2,6 +2,7 @@ import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
 import { effectLayout, particle } from '../particle.js'
+import { archetypes } from './index.js'
 
 const Hold = {
     clipInstanceId: LoopedEffectClipInstanceId,
@@ -32,10 +33,11 @@ export const moveHold = (id: number, lane: number) => {
 export class HoldManager extends SpawnableArchetype({}) {
     updateSequential() {
         for (const [id, hold] of holds.old) {
+            const note = archetypes.HoldStartNote.import.get(id)
             if (holds.queue.has(id)) {
                 holds.now.set(id, hold)
             } else {
-                stopHoldSFX(hold.clipInstanceId)
+                if (note.lane != -3 && note.lane != 3) stopHoldSFX(hold.clipInstanceId)
                 destroyCircularHoldEffect(hold.effectInstanceIds.circular)
                 destroyLinearHoldEffect(hold.effectInstanceIds.linear)
             }
@@ -44,8 +46,9 @@ export class HoldManager extends SpawnableArchetype({}) {
         for (const id of holds.queue) {
             if (holds.now.has(id)) continue
 
+            const note = archetypes.HoldStartNote.import.get(id)
             holds.now.set(id, {
-                clipInstanceId: playHoldSFX(),
+                clipInstanceId: (note.lane != -3 && note.lane != 3) ? playHoldSFX() : 0,
                 effectInstanceIds: {
                     circular: spawnCircularHoldEffect(),
                     linear: spawnLinearHoldEffect(),
