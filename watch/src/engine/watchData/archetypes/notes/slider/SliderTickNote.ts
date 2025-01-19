@@ -75,15 +75,15 @@ export class SliderTickNote extends SliderNote {
     //     slider.next.lane = this.nextImport.lane
     // }
     // 
-    complete(/*hitTime: number*/) {
-        if (this.sliderImport.next) {
-            slider.next.beat = this.nextImport.beat
-            slider.next.lane = this.nextImport.lane
-            slider.next.timescaleGroup = this.nextImport.timescaleGroup
-            slider.isUsed = true
-        } else {
-            slider.isUsed = false
-        }
+    // complete(/*hitTime: number*/) {
+    //     if (this.sliderImport.next) {
+    //         slider.next.beat = this.nextImport.beat
+    //         slider.next.lane = this.nextImport.lane
+    //         slider.next.timescaleGroup = this.nextImport.timescaleGroup
+    //         slider.isUsed = true
+    //     } else {
+    //         slider.isUsed = false
+    //     }
 
         // archetypes.Honoka.spawn({ time: time.now })
 
@@ -108,7 +108,7 @@ export class SliderTickNote extends SliderNote {
         // this.playEffect()
 
         // this.despawn = true
-    }
+    // }
 
     // playEffect() {
     //     particle.effects.slider.spawn(this.notePosition, 0.2, false)

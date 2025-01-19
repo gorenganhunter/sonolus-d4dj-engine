@@ -78,7 +78,7 @@ export class SliderTickNote extends SliderNote {
     }
 
     updateSequential() {
-        super.updateSequential()
+        // super.updateSequential()
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if (time.now < this.targetTime - this.windows.good.max) return
         if (time.now > this.targetTime + this.windows.good.max) return this.incomplete(time.now)

@@ -1,9 +1,11 @@
 import { DatabaseEngineItem } from '@sonolus/core'
 
 export { b34djToLevelData, d4djToLevelData } from './b34dj/convert.cjs'
+export { d4cToLevelData } from './d4c/convert.cjs'
 export * from './b34dj/index.cjs'
+export * from './d4c/index.cjs'
 
-export const version = '1.1.20'
+export const version = '1.2.0'
 
 export const databaseEngineItem = {
     name: 'd4dj',

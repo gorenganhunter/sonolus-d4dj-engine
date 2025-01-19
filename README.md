@@ -74,6 +74,13 @@ Converts D4DJ (bangbangboom-editor) chart to Level Data.
 -   `chart`: D4DJ chart.
 -   `offset`: offset (default: `0`).
 
+### `d4cToLevelData(chart, offset?)`
+
+Converts D4C chart to Level Data.
+
+-   `chart`: D4C chart.
+-   `offset`: offset (default: `0`).
+
 ### Assets
 
 The following assets are exposed as package entry points:
