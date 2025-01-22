@@ -5,7 +5,7 @@ export { d4cToLevelData } from './d4c/convert.cjs'
 export * from './b34dj/index.cjs'
 export * from './d4c/index.cjs'
 
-export const version = '1.2.3'
+export const version = '1.2.4'
 
 export const databaseEngineItem = {
     name: 'd4dj',

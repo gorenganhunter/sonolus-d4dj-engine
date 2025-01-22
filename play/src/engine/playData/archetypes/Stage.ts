@@ -6,7 +6,7 @@ import { particle } from '../particle.js'
 import { skin } from '../skin.js'
 import { isUsed, markAsUsed } from './InputManager.js'
 import { slider } from "../slider.js";
-import { flickClaimStartEmpty, claimed } from "./ScratchManager.js"
+import { flickClaimStartEmpty, claimed, scratchTouches } from "./ScratchManager.js"
 import { isClaimed as isSliderClaimed, noEmptyTap } from "./Slider.js"
 import { timeToScaledTime } from './utils.js'
 import { scaledScreen } from '../scaledScreen.js'
@@ -131,8 +131,8 @@ export class Stage extends Archetype {
                 const id = claimed.getKey(i)
                 for (const touch of touches) {
                     if (touch.id != id) continue
-                    if (isUsed(touch)) continue
-                    const lane = this.getLane(touch)
+                    if (isUsed(touch) && !scratchTouches.has(id)) continue
+                    const lane = this.getLane(touch) > 0 ? 3 : -3
                     if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
                     if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
                 }

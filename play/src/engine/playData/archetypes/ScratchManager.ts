@@ -1,5 +1,5 @@
 import { note } from "../note.js";
-import { inputNoteIndexes, isUsed } from "./InputManager.js";
+import { inputNoteIndexes, isUsed, markAsUsedId } from "./InputManager.js";
 import { archetypes } from "./index.js";
 
 const flickDisallowEmptiesNow = levelMemory(Dictionary(16, Number, Number))
@@ -8,6 +8,9 @@ const lastdx = levelMemory(Dictionary(16, Number, Number))
 const lastdy = levelMemory(Dictionary(16, Number, Number))
 const lastdxOld = levelMemory(Dictionary(16, Number, Number))
 const lastdyOld = levelMemory(Dictionary(16, Number, Number))
+
+export const scratchTouches = levelMemory(Collection(16, Number))
+const scratchTouchesOld = levelMemory(Collection(16, Number))
 
 // const minFlickV = 0.2
 const minFlickVr = 3
@@ -23,6 +26,13 @@ export class ScratchManager extends SpawnableArchetype({}) {
     updateSequential(): void {
         claimed.clear()
         //debug.log(7777)
+
+        scratchTouchesOld.clear()
+        scratchTouches.copyTo(scratchTouchesOld)
+        scratchTouches.clear()
+        for (const touch of touches) {
+            if (scratchTouchesOld.has(touch.id) && !touch.ended) scratchTouches.add(touch.id)
+        }
 
         flickDisallowEmptiesOld.clear()
         flickDisallowEmptiesNow.copyTo(flickDisallowEmptiesOld)
@@ -46,7 +56,7 @@ export class ScratchManager extends SpawnableArchetype({}) {
             const lastdxValue = lastdxIndex === -1 ? 0 : lastdxOld.getValue(lastdxIndex)
             const lastdyValue = lastdxIndex === -1 ? 0 : lastdyOld.getValue(lastdxIndex)
 
-            if (touch.vr < minFlickVr || isUsed(touch)) {
+            if (touch.vr < minFlickVr || (isUsed(touch) && !scratchTouches.has(touch.id))) {
                 lastdx.set(touch.id, lastdxValue)
                 lastdy.set(touch.id, lastdyValue)
                 flickDisallowEmptiesNow.set(touch.id, 1)
@@ -234,7 +244,10 @@ function claimEmpty() {
 function getClaimedTouchIndex(index: number) {
     for (let i = 0; i < claimed.count; i++) {
         if (claimed.getValue(i) == index) {
-            return claimed.getKey(i);
+            const id = claimed.getKey(i)
+            markAsUsedId(id)
+            scratchTouches.add(id)
+            return id;
         }
     }
     return -1;
