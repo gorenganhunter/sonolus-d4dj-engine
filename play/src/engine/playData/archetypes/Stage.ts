@@ -53,7 +53,7 @@ export class Stage extends Archetype {
 
     getLane(touch: Touch) {
         const x = touch.position.x
-        const l = x / screen.h * 10.75 / options.width / 2.1
+        const l = x / screen.h / options.width / (1.3225 - options.judgelineHeight * 0.02775) * 13.225 / 2.1
         return l > 3 ? 3 : l < -3 ? -3 : Math.round(l)
     }
 
@@ -128,11 +128,14 @@ export class Stage extends Archetype {
         const b = 1 + note.radius
         for (let i = 0; i < claimed.count; i++) {
             if (claimed.getValue(i) == -1) {
-                const touch = touches.get(claimed.getKey(i))
-                if (isUsed(touch)) continue
-                const lane = this.getLane(touch)
-                if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
-                if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+                const id = claimed.getKey(i)
+                for (const touch of touches) {
+                    if (touch.id != id) continue
+                    if (isUsed(touch)) continue
+                    const lane = this.getLane(touch)
+                    if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
+                    if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
+                }
             }
         }
         noEmptyTap.clear()

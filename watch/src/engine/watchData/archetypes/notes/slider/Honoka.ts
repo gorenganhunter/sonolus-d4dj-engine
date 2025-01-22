@@ -2,7 +2,7 @@ import { options } from "../../../../configuration/options.js"
 import { slider } from "../../../slider.js"
 import { timeToScaledTime } from "../../timeScale.js"
 
-export class Honoka extends SpawnableArchetype({ start: Number, startLane: Number, startTSG: Number, end: Number, endLane: Number, endTSG: Number, flick: Boolean }) {
+export class Honoka extends SpawnableArchetype({ startBeat: Number, endBeat: Number, start: Number, startLane: Number, startTSG: Number, end: Number, endLane: Number, endTSG: Number, flick: Boolean }) {
     updated = this.entityMemory(Boolean)
     scaledTime = this.entityMemory({
         start: Number,
@@ -32,9 +32,9 @@ export class Honoka extends SpawnableArchetype({ start: Number, startLane: Numbe
 
         this.updated = true
 
-        slider.next.beat = this.spawnData.end
+        slider.next.beat = this.spawnData.endBeat
         slider.next.lane = this.spawnData.endLane
-        slider.prev.beat = this.spawnData.start
+        slider.prev.beat = this.spawnData.startBeat
         slider.isUsed = true
     }
 
