@@ -1,6 +1,6 @@
 {
   "name": "sonolus-d4dj-engine",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "A recreation of D4DJ Groovy Mix engine in Sonolus.",
   "type": "module",
   "author": "Gorengan Hunter",
