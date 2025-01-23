@@ -133,6 +133,7 @@ function findBestTouchIndex(index: number) {
         const id = flickDisallowEmptiesNow.indexOf(touch.id);
         if (id != -1) continue
         if (!origin.hitbox.contains(touch.position)) continue
+        if (!origin.hitbox.contains(touch.startPosition)) continue
 
         // let dis = Math.min(
         //     origin.getDis(touch.x, touch.y),
