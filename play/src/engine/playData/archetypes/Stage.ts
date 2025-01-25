@@ -65,8 +65,8 @@ export class Stage extends Archetype {
             slider.touch !== touch.id &&
             !(touch.started && !slider.isUsed && note.sliderBox.contains(touch.position) && !isUsed(touch)) &&
             !(touch.started && slider.isUsed && !isUsed(touch) && new Rect({
-                l: Math.max(slider.position - 2.1, -5.25),
-                r: Math.min(slider.position + 2.1, 5.25),
+                l: slider.position - 2.1,
+                r: slider.position + 2.1,
                 t: -5,
                 b: 10
             }).transform(skin.transform).contains(touch.position))
