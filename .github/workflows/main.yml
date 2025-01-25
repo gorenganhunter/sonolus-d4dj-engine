@@ -52,6 +52,7 @@ jobs:
 
       - name: Publish NPM
         run: npm publish
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
