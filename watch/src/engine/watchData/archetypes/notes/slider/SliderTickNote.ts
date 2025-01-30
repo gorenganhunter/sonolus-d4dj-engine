@@ -9,6 +9,7 @@ import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
 import { archetypes } from "../../index.js";
 import { timeToScaledTime } from "../../timeScale.js";
+import { scaledScreen } from "../../../scaledScreen.js";
 
 export class SliderTickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
@@ -118,39 +119,63 @@ export class SliderTickNote extends SliderNote {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
 
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.import.timescaleGroup)
-
+        const nextScaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.nextImport.timescaleGroup)
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(this.visualTime.max, scaledTime + hiddenDuration),
+            min: this.visualTime.max,
             max: Math.min(this.next.scaledTime, scaledTime + note.duration * options.laneLength),
         }
         
-        const l = {
-            min: this.getL(visibleTime.min),
-            max: this.getL(visibleTime.max),
-        }
+        // const l = {
+        //     min: this.getL(visibleTime.min),
+        //     max: this.getL(visibleTime.max),
+        // }
 
-        const r = {
-            min: this.getR(visibleTime.min),
-            max: this.getR(visibleTime.max),
+        // const r = {
+        //     min: this.getR(visibleTime.min),
+        //     max: this.getR(visibleTime.max),
+        // }
+
+        const x = {
+            min: this.import.lane * 2.1,
+            max: this.getLane(visibleTime.max),
         }
 
         const y = {
             min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, nextScaledTime),
+        }
+        
+        const thickness = 0.25 * options.noteSize
+        const width = x.max - x.min
+        const height = (y.max - y.min) / scaledScreen.wToH
+        const length = Math.sqrt(width * width + height * height)
+        // debug.log(thickness)
+        // debug.log(width)
+        // debug.log(height)
+        // debug.log(length)
+
+        const xS = (thickness * height / length) / 2
+        const yS = ((thickness * width / length) / 2) * scaledScreen.wToH
+// debug.log(scaledScreen.wToH)
+//         debug.log(xS)
+//         debug.log(yS)
+        const layout = {
+            x1: (x.min - xS)/*  * (y.min + yS) */,
+            x2: (x.max - xS)/*  * (y.max + yS) */,
+            x3: (x.max + xS)/*  * (y.max - yS) */,
+            x4: (x.min + xS)/*  * (y.min - yS) */,
+            y1: (y.min + yS * y.min),
+            y2: (y.max + yS * y.max),
+            y3: (y.max - yS * y.max),
+            y4: (y.min - yS * y.min),
         }
 
-        const layout = {
-            x1: l.min * y.min,
-            x2: l.max * y.max,
-            x3: r.max * y.max,
-            x4: r.min * y.min,
-            y1: y.min,
-            y2: y.max,
-            y3: y.max,
-            y4: y.min,
-        }
+        layout.x1 *= layout.y1
+        layout.x2 *= layout.y2
+        layout.x3 *= layout.y3
+        layout.x4 *= layout.y4
 
         skin.sprites.sliderConnector.draw(layout, this.z - 5, options.connectorAlpha)
         if (time.now < this.bsTime) skin.sprites.shadow.draw(layout, this.z - 4, (1 - options.backspinBrightness) * options.connectorAlpha)
@@ -160,11 +185,11 @@ export class SliderTickNote extends SliderNote {
         return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1, this.nextImport.lane * 2.1, time)
     }
 
-    getL(time: number) {
-        return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 - (0.125 * options.noteSize), this.nextImport.lane * 2.1 - (0.125 * options.noteSize), time)
-    }
+    // getL(time: number) {
+    //     return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 - (0.125 * options.noteSize), this.nextImport.lane * 2.1 - (0.125 * options.noteSize), time)
+    // }
 
-    getR(time: number) {
-        return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 + (0.125 * options.noteSize), this.nextImport.lane * 2.1 + (0.125 * options.noteSize), time)
-    }
+    // getR(time: number) {
+    //     return Math.remap(this.visualTime.max, this.next.scaledTime, this.import.lane * 2.1 + (0.125 * options.noteSize), this.nextImport.lane * 2.1 + (0.125 * options.noteSize), time)
+    // }
 }

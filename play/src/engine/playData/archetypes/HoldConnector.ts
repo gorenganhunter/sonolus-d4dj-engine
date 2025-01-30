@@ -126,7 +126,7 @@ export class HoldConnector extends Archetype {
 
         this.renderConnector()
 
-        if (scaledTime < (options.backspinAssist ? this.head.time : this.head.scaledTime)) return
+        if (time.now < (this.head.time)) return
 
         this.renderSlide()
         this.updateEffects()
@@ -176,7 +176,7 @@ export class HoldConnector extends Archetype {
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(options.backspinAssist ? this.head.time : time.now > this.head.time ? scaledTime : this.head.scaledTime, scaledTime + hiddenDuration),
+            min: Math.max(time.now > this.head.time ? scaledTime : options.backspinAssist ? this.head.time : this.head.scaledTime/* , scaledTime + hiddenDuration */),
             max: Math.min(options.backspinAssist ? this.tail.time : this.tail.scaledTime, scaledTime + note.duration * options.laneLength),
         }
 

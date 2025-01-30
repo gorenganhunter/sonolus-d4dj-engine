@@ -155,7 +155,7 @@ export class HoldConnector extends Archetype {
 
         // if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < this.visualTime.min) return
 
-        if (scaledTime < (this.head.scaledTime)) return
+        if (time.now < (this.head.time)) return
 
         this.renderSlide()
         this.updateEffects()
@@ -227,7 +227,7 @@ export class HoldConnector extends Archetype {
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(options.backspinAssist ? this.head.time : time.now > this.head.time ? scaledTime : this.head.scaledTime, scaledTime + hiddenDuration),
+            min: Math.max(time.now > this.head.time ? scaledTime : options.backspinAssist ? this.head.time : this.head.scaledTime/* , scaledTime + hiddenDuration */),
             max: Math.min(this.tail.scaledTime, scaledTime + note.duration * options.laneLength),
         }
 
