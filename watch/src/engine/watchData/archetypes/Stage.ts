@@ -113,7 +113,10 @@ export class Stage extends Archetype {
     }
 
     updateSequential() {
-        if (bpmChanges.at(slider.next.beat).time < time.now || bpmChanges.at(slider.prev.beat).time > time.now) slider.isUsed = false
+        if (bpmChanges.at(slider.next.beat).time < time.now || bpmChanges.at(slider.prev.beat).time > time.now) {
+            slider.isUsed = false
+            slider.position = slider.next.lane * 2.1
+        }
         // if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
         //     slider.position = slider.next.lane * 2.1
         //     // debug.log(slider.position)
