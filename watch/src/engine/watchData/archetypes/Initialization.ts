@@ -43,6 +43,7 @@ export class Initialization extends Archetype {
         note.duration = 0.5 + (12 - options.noteSpeed) * 0.4
         slider.isUsed = false
         slider.next.beat = 99999999
+        slider.updated = false
 
         const gap = 0.05
         const uiRect = screen.rect.shrink(gap, gap)

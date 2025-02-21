@@ -11,7 +11,7 @@ const lastdyOld = levelMemory(Dictionary(16, Number, Number))
 
 export const scratchTouches = levelMemory(Collection(16, Number))
 const scratchTouchesOld = levelMemory(Collection(16, Number))
-
+levelMemory(Tuple(16, Number))
 // const minFlickV = 0.2
 const minFlickVr = 3
 

@@ -11,5 +11,6 @@ export const slider = levelMemory({
         beat: Number,
         lane: Number,
         timescaleGroup: Number
-    }
+    },
+    updated: Boolean
 })

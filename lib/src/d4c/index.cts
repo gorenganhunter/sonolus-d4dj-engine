@@ -39,7 +39,7 @@ export type D4CSoflanGroup = {
 }
 
 export type D4CBarLineData = number | {
-    Time: number;
+    Beat: number;
     TimeScaleGroupId?: string;
 }
 

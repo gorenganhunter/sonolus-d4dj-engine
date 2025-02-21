@@ -112,10 +112,12 @@ export class Stage extends Archetype {
         // this.renderDisk()
     }
 
+    updateSequentialOrder = -999
     updateSequential() {
+        slider.updated = false
         if (bpmChanges.at(slider.next.beat).time < time.now || bpmChanges.at(slider.prev.beat).time > time.now) {
             slider.isUsed = false
-            slider.position = slider.next.lane * 2.1
+            if (!replay.isReplay) slider.position = slider.next.lane * 2.1
         }
         // if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
         //     slider.position = slider.next.lane * 2.1

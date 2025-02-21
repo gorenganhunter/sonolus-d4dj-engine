@@ -22,8 +22,9 @@ export class Slider extends SpawnableArchetype({}) {
     //     claimed.clear()
     // }
 
-    updateSequentialOrder = -3
+    updateSequentialOrder = -4
     updateSequential(): void {
+        slider.saved = false
         claimed.clear()
 
         flickDisallowEmptiesOld.clear()

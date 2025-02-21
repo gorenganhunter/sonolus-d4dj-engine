@@ -7,5 +7,8 @@ export const slider = levelMemory({
         beat: Number,
         lane: Number,
         timescaleGroup: Number
-    }
+    },
+    saved: Boolean,
+    lastSavedTime: Number,
+    lastSavedPosition: Number
 })

@@ -19,7 +19,7 @@ export class TimeScaleGroup extends Archetype {
         return 999999
     }
 
-    updateSequentialOrder = 0
+    updateSequentialOrder = -1000
 
     updateSequential() {
         this.sharedMemory.currentScaledTime = timeToScaledTime(time.now, this.info.index, true)

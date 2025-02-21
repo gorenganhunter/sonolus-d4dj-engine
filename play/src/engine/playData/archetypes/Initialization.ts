@@ -43,6 +43,9 @@ export class Initialization extends Archetype {
         note.duration = 0.5 + (12 - options.noteSpeed) * 0.4
         slider.isUsed = false
         slider.next.beat = 99999999
+        slider.saved = false
+        slider.lastSavedPosition = 100000
+        slider.lastSavedTime = -999
 
         switch (options.scratchSensitivity) {
             case -2:

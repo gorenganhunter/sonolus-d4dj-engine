@@ -42,6 +42,7 @@ export abstract class SliderNote extends Note {
             slider.next.beat = this.import.beat
             slider.next.lane = this.import.lane
             slider.next.timescaleGroup = this.import.timescaleGroup
+            slider.position = slider.next.lane * 2.1
         }
     }
 

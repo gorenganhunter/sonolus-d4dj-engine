@@ -17,6 +17,7 @@ import { Honoka } from './notes/slider/Honoka.js'
 import { TimeScaleGroup } from './timeScale/TimeScaleGroup.js'
 import { TimeScaleChange } from './timeScale/TimeScaleChange.js'
 import { Disk } from './Disk.js'
+import { SliderData } from './SliderData.js'
 
 export const archetypes = defineArchetypes({
     Initialization,
@@ -45,5 +46,7 @@ export const archetypes = defineArchetypes({
     Disk,
 
     TimeScaleChange,
-    TimeScaleGroup
+    TimeScaleGroup,
+
+    SliderData
 })
