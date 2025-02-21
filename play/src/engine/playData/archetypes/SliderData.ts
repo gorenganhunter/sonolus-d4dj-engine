@@ -21,7 +21,7 @@ export class SliderData extends Archetype {
 
         slider.saved = true
 
-        if ((time.now - slider.lastSavedTime) < 0.01) return
+        // if ((time.now - slider.lastSavedTime) < 0.01) return
         if (slider.position === slider.lastSavedPosition) return
 
         switch (this.used) {
