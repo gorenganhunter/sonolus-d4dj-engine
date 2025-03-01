@@ -309,7 +309,7 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
     }));
     let notes = note(chart);
 
-    const sd = Array.from({ length: Math.max(chart[3][chart[3].length - 1][2], chart[2][chart[2].length - 1]) * 60 / 16 }, (_, index) => ({
+    const sd = Array.from({ length: (Math.max(chart[3][chart[3].length - 1][2], chart[2][chart[2].length - 1]) + offset + 5) * 120 / 16 }, (_, index) => ({
       archetype: 'SliderData',
       data: [],
     }))

@@ -15,6 +15,10 @@ export class ScratchNote extends Note {
     effect = {
         linear: particle.effects.scratchNoteLinear,
         circular: particle.effects.scratchNoteCircular,
+        fallback: {
+            linear: particle.effects.scratchNoteLinearFallback,
+            circular: particle.effects.scratchNoteCircularFallback,
+        }
     }
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
         perfect: effect.clips.scratchPerfect,
@@ -37,10 +41,12 @@ export class ScratchNote extends Note {
     })
     played = this.entityMemory(Boolean)
     
-    // playEffect() {
-    //     particle.effects.scratch.spawn(this.notePosition, 0.2, false)
-    //     particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
-    // }
+    playEffect() {
+        if (!options.noteEffectEnabled) return
+
+        this.effect.linear.exists ? this.effect.linear.spawn(this.notePosition, 0.2, false) : this.effect.fallback.linear.spawn(this.notePosition, 0.2, false)
+        this.effect.circular.exists ? this.effect.circular.spawn(this.notePosition, 0.2, false) : this.effect.fallback.circular.spawn(this.notePosition, 0.2, false)
+    }
 
     preprocess() {
         super.preprocess()

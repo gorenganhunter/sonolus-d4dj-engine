@@ -29,13 +29,15 @@ export const particle = defineParticle({
         stopLinear: ParticleEffectName.NoteCircularHoldRed,
         stopCircular: ParticleEffectName.NoteCircularHoldRed,
 
-        scratchNoteLinear: ParticleEffectName.NoteLinearTapGreen,
-        scratchNoteCircular: ParticleEffectName.NoteCircularTapGreen,
+        scratchNoteLinear: "DJ Scratch Linear Particle",
+        scratchNoteCircular: "DJ Scratch Circular Particle",
+        scratchNoteLinearFallback: ParticleEffectName.NoteLinearTapGreen,
+        scratchNoteCircularFallback: ParticleEffectName.NoteCircularTapGreen,
 
         sliderNoteLinear: ParticleEffectName.NoteLinearTapPurple,
         sliderNoteCircular: ParticleEffectName.NoteCircularTapPurple,
 
-        sliderFlick: "DJ Slider Flick Effect"
+        sliderFlick: "DJ Slider Flick Particle"
     },
 })
 
