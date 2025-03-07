@@ -5,7 +5,7 @@ const pkg = require("./package.json")
 
 const engine = {
     name: 'd4dj',
-    version: 12,
+    version: 13,
     title: { en: 'D4DJ' },
     subtitle: { en: 'D4DJ Groovy Mix!' },
     author: { en: 'Gorengan Hunter' },
