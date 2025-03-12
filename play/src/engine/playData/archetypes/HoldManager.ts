@@ -85,13 +85,13 @@ const playHoldSFX = () => {
 const spawnCircularHoldEffect = (lane: number) => {
     if (!shouldPlay.circularHoldEffect) return 0
 
-    return (lane === -3 || lane === 3) ? particle.effects.stopCircular.spawn(Quad.zero, 1, true) : particle.effects.holdCircular.spawn(Quad.zero, 1, true)
+    return (lane === -3 || lane === 3) ? particle.effects.stopCircular.spawn(Quad.zero, 0.6, true) : particle.effects.holdCircular.spawn(Quad.zero, 0.6, true)
 }
 
 const spawnLinearHoldEffect = (lane: number) => {
     if (!shouldPlay.linearHoldEffect) return 0
 
-    return (lane === -3 || lane === 3) ? particle.effects.stopLinear.spawn(Quad.zero, 1, true) : particle.effects.holdLinear.spawn(Quad.zero, 1, true)
+    return (lane === -3 || lane === 3) ? particle.effects.stopLinear.spawn(Quad.zero, 0.6, true) : particle.effects.holdLinear.spawn(Quad.zero, 0.6, true)
 }
 
 const moveCircularHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {

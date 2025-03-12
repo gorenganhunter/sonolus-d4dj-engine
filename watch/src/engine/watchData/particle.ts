@@ -27,7 +27,7 @@ export const particle = defineParticle({
         holdLinear: ParticleEffectName.NoteLinearHoldYellow,
         holdCircular: ParticleEffectName.NoteCircularHoldYellow,
 
-        stopLinear: ParticleEffectName.NoteCircularHoldRed,
+        stopLinear: ParticleEffectName.NoteLinearHoldRed,
         stopCircular: ParticleEffectName.NoteCircularHoldRed,
 
         scratchNoteLinear: "DJ Scratch Linear Particle",

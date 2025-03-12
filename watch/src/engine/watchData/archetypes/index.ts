@@ -1,7 +1,6 @@
 import { HoldConnector } from './HoldConnector.js'
 import { Initialization } from './Initialization.js'
 import { Stage } from './Stage.js'
-import { HoldManager } from './HoldManager.js'
 import { BarLine } from './lines/BarLine.js'
 import { SimLine } from './lines/SimLine.js'
 import { HoldEndNote } from './notes/hold/HoldEndNote.js'
@@ -30,7 +29,6 @@ export const archetypes = defineArchetypes({
     HoldStartNote,
     HoldEndNote,
     HoldConnector,
-    HoldManager,
 
     ScratchNote,
 

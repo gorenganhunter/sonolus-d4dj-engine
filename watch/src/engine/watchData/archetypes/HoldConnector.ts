@@ -2,9 +2,8 @@ import { approach, perspectiveLayout } from '../../../../../shared/src/engine/da
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note, getSpawnTime, getBackspinTime } from '../note.js'
-import { particle } from '../particle.js'
+import { particle, linearEffectLayout, circularEffectLayout } from '../particle.js'
 import { getZ, skin } from '../skin.js'
-import { moveHold } from './HoldManager.js'
 import { archetypes } from './index.js'
 import { scaledTimeToEarliestTime, timeToScaledTime } from './timeScale.js'
 
@@ -148,9 +147,9 @@ export class HoldConnector extends Archetype {
         // if (this.shouldScheduleSFX && !this.hasSFXScheduled && (/* (this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : */ time.scaled) >= this.scheduleSFXTime) this.scheduleSFX()
 
         if (time.skip) {
-            if (this.shouldUpdateCircularEffect) this.effectInstanceIds.circular = 0
+            if (this.shouldScheduleCircularEffect) this.effectInstanceIds.circular = 0
 
-            if (this.shouldUpdateLinearEffect) this.effectInstanceIds.linear = 0
+            if (this.shouldScheduleLinearEffect) this.effectInstanceIds.linear = 0
         }
 
         // if (((this.headImport.lane === -3 || this.headImport.lane === 3) ? time.now : time.scaled) < this.visualTime.min) return
@@ -158,7 +157,26 @@ export class HoldConnector extends Archetype {
         if (time.now < (this.head.time)) return
 
         this.renderSlide()
-        this.updateEffects()
+        
+        if (time.now < this.startSharedMemory.despawnTime) return
+
+        if (this.shouldScheduleCircularEffect && !this.effectInstanceIds.circular)
+            this.spawnCircularEffect(this.headImport.lane)
+
+        if (this.shouldScheduleLinearEffect && !this.effectInstanceIds.linear)
+            this.spawnLinearEffect(this.headImport.lane)
+
+        if (this.effectInstanceIds.circular) this.updateCircularEffect()
+
+        if (this.effectInstanceIds.linear) this.updateLinearEffect()
+    }
+
+    terminate() {
+        if (this.shouldScheduleCircularEffect && this.effectInstanceIds.circular)
+            this.destroyCircularEffect()
+
+        if (this.shouldScheduleLinearEffect && this.effectInstanceIds.linear)
+            this.destroyLinearEffect()
     }
 
     scheduleSFX() {
@@ -205,11 +223,11 @@ export class HoldConnector extends Archetype {
         return options.sfxEnabled && effect.clips.longLoop.exists /* && options.autoSFX */
     }
 
-    get shouldUpdateCircularEffect() {
+    get shouldScheduleCircularEffect() {
         return options.noteEffectEnabled && particle.effects.holdCircular.exists
     }
 
-    get shouldUpdateLinearEffect() {
+    get shouldScheduleLinearEffect() {
         return options.noteEffectEnabled && particle.effects.holdLinear.exists
     }
 
@@ -283,9 +301,41 @@ export class HoldConnector extends Archetype {
         )
     }
 
-    updateEffects() {
-        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
-        moveHold(this.import.headRef, this.getLane(scaledTime))
+    spawnCircularEffect(lane: number) {
+        this.effectInstanceIds.circular = (lane === -3 || lane === 3) ? particle.effects.stopCircular.spawn(new Quad(), 0.6, true) : particle.effects.holdCircular.spawn(new Quad(), 0.6, true)
+    }
+
+    updateCircularEffect() {
+        const layout = circularEffectLayout({
+            lane: this.getLane(time.now),
+            w: 1.05,
+            h: 0.8,
+        })
+
+        particle.effects.move(this.effectInstanceIds.circular, layout)
+    }
+
+    destroyCircularEffect() {
+        particle.effects.destroy(this.effectInstanceIds.circular)
+        this.effectInstanceIds.circular = 0
+    }
+
+    spawnLinearEffect(lane: number) {
+        this.effectInstanceIds.linear = (lane === -3 || lane === 3) ? particle.effects.stopLinear.spawn(new Quad(), 0.6, true) : particle.effects.holdLinear.spawn(new Quad(), 0.6, true)
+    }
+
+    updateLinearEffect() {
+        const layout = linearEffectLayout({
+            lane: this.getLane(time.now),
+            size: 1.05,
+        })
+
+        particle.effects.move(this.effectInstanceIds.linear, layout)
+    }
+
+    destroyLinearEffect() {
+        particle.effects.destroy(this.effectInstanceIds.linear)
+        this.effectInstanceIds.linear = 0
     }
 
     getLane(time: number) {
