@@ -20,7 +20,7 @@ const engine = {
     skin: 'd4dj-2-3-1',
     background: 'd4dj-default-stage',
     effect: 'd4dj-01',
-    particle: 'bandori-1',
+    particle: 'd4dj-particle-2',
     thumbnail: {
         hash: '821631ad43438350041d139113edd2040543f49a',
         url: 'https://cdn.jsdelivr.net/gh/gorenganhunter/d4dj-private-data/821631ad43438350041d139113edd2040543f49a'
