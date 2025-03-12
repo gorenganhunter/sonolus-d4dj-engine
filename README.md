@@ -2,8 +2,6 @@
 
 A recreation of D4DJ Groovy Mix engine in Sonolus.
 
-Unfinished.
-
 Todo list:
 
 - [x] Finish writing play mode
