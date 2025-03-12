@@ -1,7 +1,8 @@
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
-import { effectLayout, particle } from '../particle.js'
+import { linearEffectLayout, circularEffectLayout, particle } from '../particle.js'
+import { archetypes } from './index.js'
 
 const Hold = {
     clipInstanceId: LoopedEffectClipInstanceId,
@@ -44,11 +45,12 @@ export class HoldManager extends SpawnableArchetype({}) {
         for (const id of holds.queue) {
             if (holds.now.has(id)) continue
 
+            const note = archetypes.HoldStartNote.import.get(id)
             holds.now.set(id, {
-                clipInstanceId: playHoldSFX(),
+                clipInstanceId: (note.lane != -3 && note.lane != 3) ? playHoldSFX() : 0,
                 effectInstanceIds: {
-                    circular: spawnCircularHoldEffect(),
-                    linear: spawnLinearHoldEffect(),
+                    circular: spawnCircularHoldEffect(note.lane),
+                    linear: spawnLinearHoldEffect(note.lane),
                 },
             })
         }
@@ -79,25 +81,25 @@ const playHoldSFX = () => {
     return effect.clips.longLoop.loop()
 }
 
-const spawnCircularHoldEffect = () => {
+const spawnCircularHoldEffect = (lane: number) => {
     if (!shouldPlay.circularHoldEffect) return 0
 
-    return particle.effects.holdCircular.spawn(Quad.zero, 1, true)
+    return (lane === -3 || lane === 3) ? particle.effects.stopCircular.spawn(Quad.zero, 0.6, true) : particle.effects.holdCircular.spawn(Quad.zero, 0.6, true)
 }
 
-const spawnLinearHoldEffect = () => {
+const spawnLinearHoldEffect = (lane: number) => {
     if (!shouldPlay.linearHoldEffect) return 0
 
-    return particle.effects.holdLinear.spawn(Quad.zero, 1, true)
+    return (lane === -3 || lane === 3) ? particle.effects.stopLinear.spawn(Quad.zero, 0.6, true) : particle.effects.holdLinear.spawn(Quad.zero, 0.6, true)
 }
 
 const moveCircularHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
     if (!shouldPlay.circularHoldEffect) return
 
-    const layout = effectLayout({
+    const layout = circularEffectLayout({
         lane,
         w: 1.05,
-        h: note.radius,
+        h: 0.8,
     })
 
     particle.effects.move(id, layout)
@@ -106,10 +108,9 @@ const moveCircularHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
 const moveLinearHoldEffect = (id: ParticleEffectInstanceId, lane: number) => {
     if (!shouldPlay.linearHoldEffect) return
 
-    const layout = effectLayout({
+    const layout = linearEffectLayout({
         lane,
-        w: 1.05,
-        h: note.radius,
+        size: 1.05
     })
 
     particle.effects.move(id, layout)

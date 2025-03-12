@@ -7,7 +7,7 @@ import { getBackspinTime, note } from '../../note.js'
 import { toBucketWindows, toWindows, windows } from '../../../../../../shared/src/engine/data/windows.js'
 import { inputNoteIndexes, isUsed, markAsUsed } from '../InputManager.js'
 import { skin } from '../../skin.js'
-import { particle } from '../../particle.js'
+import { circularEffectLayout, linearEffectLayout, particle } from '../../particle.js'
 import { scaledTimeToEarliestTime, timeToScaledTime } from '../utils.js'
 import { archetypes } from '../index.js'
 
@@ -81,8 +81,17 @@ export abstract class Note extends Archetype {
     playEffect() {
         if (!options.noteEffectEnabled) return
 
-        this.effect.linear.spawn(this.notePosition, 0.2, false)
-        this.effect.circular.spawn(this.notePosition, 0.2, false)
+        const lane = this.import.lane * 2.1
+
+        this.effect.linear.spawn(linearEffectLayout({
+            lane,
+            size: 1.05
+        }), 0.6, false)
+        this.effect.circular.spawn(circularEffectLayout({
+            lane,
+            w: 1.05,
+            h: 0.8
+        }), 0.6, false)
         // particle.effects.lane.spawn(perspectiveLayout({ l: (this.import.lane * 24) / 100 - 0.12, r: (this.import.lane * 24) / 100 + 0.12, b: 1 + note.radius, t: 1 - note.radius * 2 }), 0.2, false)
     }
 

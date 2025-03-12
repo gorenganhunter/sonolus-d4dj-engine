@@ -44,6 +44,11 @@ export abstract class SliderNote extends Note {
         }
         if (this.sliderImport.direction && !replay.isReplay) {
             archetypes.Honoka.spawn({ startBeat: this.import.beat, endBeat: this.import.beat + (0.05 * Math.abs(this.sliderImport.direction) * bpmChanges.at(this.targetTime).bpm / 60), start: this.targetTime, startLane: this.import.lane, startTSG: this.import.timescaleGroup, end: this.targetTime + 0.05 * Math.abs(this.sliderImport.direction), endLane: this.import.lane + this.sliderImport.direction, endTSG: this.import.timescaleGroup, flick: true, judgment: this.import.judgment, hitTime: 0, nextHitTime: 0 })
+            archetypes.SliderFlickParticle.spawn({ start: this.targetTime, startLane: this.import.lane, direction: this.sliderImport.direction })
+        }
+
+        if (this.sliderImport.direction && replay.isReplay && this.import.judgment) {
+            archetypes.SliderFlickParticle.spawn({ start: this.hitTime, startLane: this.import.lane, direction: this.sliderImport.direction })
         }
 
         if (this.import.beat < slider.next.beat) {

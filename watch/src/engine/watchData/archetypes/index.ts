@@ -18,6 +18,7 @@ import { TimeScaleGroup } from './timeScale/TimeScaleGroup.js'
 import { TimeScaleChange } from './timeScale/TimeScaleChange.js'
 import { Disk } from './Disk.js'
 import { SliderData } from './SliderData.js'
+import { SliderFlickParticle } from './notes/slider/SliderFlickParticle.js'
 
 export const archetypes = defineArchetypes({
     Initialization,
@@ -48,5 +49,7 @@ export const archetypes = defineArchetypes({
     TimeScaleChange,
     TimeScaleGroup,
 
-    SliderData
+    SliderData,
+
+    SliderFlickParticle
 })

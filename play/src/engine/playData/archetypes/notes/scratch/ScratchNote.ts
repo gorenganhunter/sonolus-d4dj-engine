@@ -1,7 +1,7 @@
 import { EffectClip, ParticleEffect, SkinSprite } from "@sonolus/sonolus.js-compiler/play";
 import { approach, perspectiveLayout } from "../../../../../../../shared/src/engine/data/utils.js";
 import { note } from "../../../note.js";
-import { particle } from "../../../particle.js";
+import { circularEffectLayout, linearEffectLayout, particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
 import { isUsed, markAsUsed, markAsUsedId } from "../../InputManager.js";
 import { Note } from "../Note.js";
@@ -44,8 +44,21 @@ export class ScratchNote extends Note {
     playEffect() {
         if (!options.noteEffectEnabled) return
 
-        this.effect.linear.exists ? this.effect.linear.spawn(this.notePosition, 0.2, false) : this.effect.fallback.linear.spawn(this.notePosition, 0.2, false)
-        this.effect.circular.exists ? this.effect.circular.spawn(this.notePosition, 0.2, false) : this.effect.fallback.circular.spawn(this.notePosition, 0.2, false)
+        const lane = this.import.lane * 2.1
+
+        const linear = linearEffectLayout({
+            lane,
+            size: 1.05
+        })
+
+        const circular = circularEffectLayout({
+            lane,
+            w: 1.05,
+            h: 0.8
+        })
+
+        this.effect.linear.exists ? this.effect.linear.spawn(linear, 0.6, false) : this.effect.fallback.linear.spawn(linear, 0.6, false)
+        this.effect.circular.exists ? this.effect.circular.spawn(circular, 0.6, false) : this.effect.fallback.circular.spawn(circular, 0.6, false)
     }
 
     preprocess() {

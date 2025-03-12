@@ -11,7 +11,7 @@ Todo list:
 - [x] Finish writing tutorial mode
 - [x] Finish writing preview mode
 - [x] Finish writing watch mode
-- [ ] Designed particle effect for D4DJ
+- [x] Designed particle effect for D4DJ
 
 ## Links
 
@@ -36,6 +36,14 @@ npm install sonolus-d4dj-engine
 | `DJ Slider`                                   |
 | `DJ Slider Bar`                               |
 | `DJ Line`                                     |
+| `DJ Disk Outside`                             |
+| `DJ Disk Inside`                              |
+| `DJ Turntable Base`                           |
+| `DJ Shadow`                                   |
+| `DJ Shadow Note`                              |
+| `DJ Shadow Slider`                            |
+| `DJ Shadow Slider Arrow`                      |
+| `DJ Slider Arrow Glow`                        |
 
 ### Effect Clips
 
@@ -56,6 +64,13 @@ npm install sonolus-d4dj-engine
 | `DJ Slider Great`                             |
 | `DJ Slider Perfect`                           |
 | `DJ Slider Flick Perfect`                     |
+
+### Particle Effects
+
+| Name                                          |
+| --------------------------------------------- |
+| `DJ Scratch Linear Particle`                  |
+| `DJ Scratch Circular Particle`                |
 
 ## Documentation
 

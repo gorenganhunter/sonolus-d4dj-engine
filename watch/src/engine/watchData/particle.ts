@@ -1,5 +1,6 @@
 import { ParticleEffectName } from '@sonolus/core'
 import { perspectiveLayout } from '../../../../shared/src/engine/data/utils.js'
+import { scaledScreen } from './scaledScreen.js';
 
 export const particle = defineParticle({
     effects: {
@@ -37,12 +38,14 @@ export const particle = defineParticle({
         sliderNoteLinear: ParticleEffectName.NoteLinearTapPurple,
         sliderNoteCircular: ParticleEffectName.NoteCircularTapPurple,
 
-        sliderFlick: "DJ Slider Flick Particle"
+        sliderFlick: ParticleEffectName.NoteLinearAlternativePurple
     },
 })
 
-export const effectLayout = ({ lane, w, h }: { lane: number, w: number, h: number }) => {
-    return perspectiveLayout({
+export const circularEffectLayout = ({ lane, w, h }: { lane: number; w: number; h: number }) => {
+    h *= scaledScreen.wToH
+
+    return new Rect({
         l: lane - w,
         r: lane + w,
         t: 1 - h,
@@ -50,14 +53,14 @@ export const effectLayout = ({ lane, w, h }: { lane: number, w: number, h: numbe
     })
 }
 
-// export const linearEffectLayout = ({ lane, size }: { lane: number, size: number }) => {
-//     const w = size
-//     const h = size
+export const linearEffectLayout = ({ lane, size }: { lane: number; size: number }) => {
+    const w = size
+    const h = 2 * size * scaledScreen.wToH
 
-//     return perspectiveLayout({
-//         l: lane - w,
-//         r: lane + w,
-//         t: 1 - h,
-//         b: 1 + h,
-//     })
-// }
+    return new Rect({
+        l: lane - w,
+        r: lane + w,
+        t: 1 - h,
+        b: 1,
+    })
+}

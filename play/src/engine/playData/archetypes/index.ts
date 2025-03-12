@@ -20,6 +20,7 @@ import { LightTapNote } from './notes/tap/LightTapNote.js'
 import { TimeScaleChange } from './timescale/TimeScaleChange.js'
 import { TimeScaleGroup } from './timescale/TimeScaleGroup.js'
 import { SliderData } from './SliderData.js'
+import { SliderFlickParticle } from './notes/slider/SliderFlickParticle.js'
 
 export const archetypes = defineArchetypes({
     Initialization,
@@ -52,5 +53,7 @@ export const archetypes = defineArchetypes({
 
     Disk,
 
-    SliderData
+    SliderData,
+
+    SliderFlickParticle
 })

@@ -10,6 +10,7 @@ import { isUsed, markAsUsed, markAsUsedId } from "../../InputManager.js";
 import { SliderNote } from "./SliderNote.js";
 import { options } from '../../../../configuration/options.js'
 import { flickClaimStart, flickGetClaimedStart, noEmptyTap } from "../../Slider.js";
+import { archetypes } from "../../index.js";
 
 export class SliderFlickNote extends SliderNote {
     sfx: { perfect: EffectClip; great: EffectClip; good: EffectClip; fallback: { perfect: EffectClip; great: EffectClip; good: EffectClip } } = {
@@ -167,14 +168,16 @@ export class SliderFlickNote extends SliderNote {
         super.playEffect()
         if (!options.noteEffectEnabled) return
 
-        const layout = perspectiveLayout({
-            t: 1.5,
-            b: 0,
-            l: this.import.lane * 2.1,
-            r: (this.import.lane + this.sliderImport.direction) * 2.1
-        })
+        archetypes.SliderFlickParticle.spawn({ startLane: this.import.lane, start: time.now, direction: this.sliderImport.direction })
 
-        particle.effects.sliderFlick.spawn(layout, 0.2, false)
+        // const layout = perspectiveLayout({
+        //     t: 1.5,
+        //     b: 0,
+        //     l: this.import.lane * 2.1,
+        //     r: (this.import.lane + this.sliderImport.direction) * 2.1
+        // })
+
+        // particle.effects.sliderFlick.spawn(layout, 0.2, false)
     }
 
     updateSequential() {
@@ -224,7 +227,7 @@ export class SliderFlickNote extends SliderNote {
         // this.playEffect()
 
         // claim(touch)
-        
+
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction
     }
