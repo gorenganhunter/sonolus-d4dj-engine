@@ -5,7 +5,7 @@ export { d4cToLevelData } from './d4c/convert.cjs'
 export * from './b34dj/index.cjs'
 export * from './d4c/index.cjs'
 
-export const version = '1.4.2'
+export const version = '1.4.3'
 
 export const databaseEngineItem = {
     name: 'd4dj',
@@ -18,7 +18,7 @@ export const databaseEngineItem = {
         ja: 'D4DJグルミク',
     },
     author: {
-        en: 'Gorengan Hunter',
+        en: 'Gorengan Hunter#329978',
     },
     description: {
         en: [

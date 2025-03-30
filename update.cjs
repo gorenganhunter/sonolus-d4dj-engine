@@ -8,7 +8,7 @@ const engine = {
     version: 13,
     title: { en: 'D4DJ' },
     subtitle: { en: 'D4DJ Groovy Mix!' },
-    author: { en: 'Gorengan Hunter' },
+    author: { en: 'Gorengan Hunter#329978' },
     tags: [],
     description: {
         en: 'A recreation of D4DJ Groovy Mix engine in Sonolus.\n' +
