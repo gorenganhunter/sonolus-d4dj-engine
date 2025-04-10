@@ -148,7 +148,7 @@ export class SliderTickNote extends SliderNote {
 
         const visibleTime = {
             min: this.visualTime.max,
-            max: Math.min(this.next.scaledTime, scaledTime + note.duration * options.laneLength),
+            max: Math.min(this.next.scaledTime, nextScaledTime + note.duration * options.laneLength),
         }
         
         // const l = {

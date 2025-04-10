@@ -171,13 +171,14 @@ export class HoldConnector extends Archetype {
 
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
-        const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
+        const scaledTimeHead = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.headImport.timescaleGroup)
+        const scaledTimeTail = options.backspinAssist ? time.now : timeToScaledTime(time.now, this.tailImport.timescaleGroup)
 
         const hiddenDuration = /* options.hidden > 0 ? note.duration * options.hidden : */ 0
 
         const visibleTime = {
-            min: Math.max(time.now > this.head.time ? scaledTime : options.backspinAssist ? this.head.time : this.head.scaledTime/* , scaledTime + hiddenDuration */),
-            max: Math.min(options.backspinAssist ? this.tail.time : this.tail.scaledTime, scaledTime + note.duration * options.laneLength),
+            min: Math.max(time.now > this.head.time ? scaledTimeHead : options.backspinAssist ? this.head.time : this.head.scaledTime/* , scaledTime + hiddenDuration */),
+            max: Math.min(options.backspinAssist ? this.tail.time : this.tail.scaledTime, scaledTimeTail + note.duration * options.laneLength),
         }
 
         const l = {
@@ -191,8 +192,8 @@ export class HoldConnector extends Archetype {
         }
 
         const y = {
-            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
-            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
+            min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTimeHead),
+            max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTimeTail),
         }
 
         const layout = {
