@@ -10,7 +10,7 @@ jobs:
   master:
     name: Update Build
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
