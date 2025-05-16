@@ -19,7 +19,7 @@ export class HoldEndNote extends HoldNote {
 
         this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
-    
+
     updateParallel() {
         if (
             this.prevInfo.state === EntityState.Despawned &&
@@ -39,7 +39,7 @@ export class HoldEndNote extends HoldNote {
                 if (touch.id !== id) continue
 
                 if (!touch.ended) {
-                    if (time.now > this.targetTime) return this.complete(this.targetTime)
+                    if (time.now > this.targetTime && hitbox.contains(touch.position)) return this.complete(this.targetTime)
                     else return queueHold(this.holdImport.prevRef)
                 }
 
