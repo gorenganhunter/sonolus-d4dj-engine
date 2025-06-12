@@ -41,8 +41,8 @@ export class SliderTickNote extends SliderNote {
     initialize() {
         super.initialize()
         this.used = false
-        
-        if(this.sliderImport.next) {
+
+        if (this.sliderImport.next) {
             this.next.time = bpmChanges.at(this.nextImport.beat).time
             this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, this.nextImport.timescaleGroup)
             this.next.lane = this.nextImport.lane * 24 / 100
@@ -51,7 +51,7 @@ export class SliderTickNote extends SliderNote {
 
     touch() {
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
-        if ((time.now < this.targetTime - this.windows.good.max) && ((slider.next.beat !== this.import.beat) && (slider.next.lane !== this.import.lane))) return
+        if (time.now < this.targetTime - this.windows.good.max) return
         if (time.now > this.targetTime + this.windows.good.max) return
 
         const hitbox = this.getHitbox()
@@ -104,7 +104,7 @@ export class SliderTickNote extends SliderNote {
 
         if (this.sliderImport.next) this.renderConnector()
     }
-    
+
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
 
@@ -112,7 +112,7 @@ export class SliderTickNote extends SliderNote {
         slider.isUsed = false
         slider.next.lane = this.nextImport.lane
     }
-    
+
     complete(hitTime: number) {
         if (this.sliderImport.next) {
             slider.next.beat = this.nextImport.beat
@@ -150,7 +150,7 @@ export class SliderTickNote extends SliderNote {
             min: this.visualTime.max,
             max: Math.min(this.next.scaledTime, nextScaledTime + note.duration * options.laneLength),
         }
-        
+
         // const l = {
         //     min: this.getL(visibleTime.min),
         //     max: this.getL(visibleTime.max),
@@ -170,7 +170,7 @@ export class SliderTickNote extends SliderNote {
             min: approach(visibleTime.min - note.duration, visibleTime.min, scaledTime),
             max: approach(visibleTime.max - note.duration, visibleTime.max, nextScaledTime),
         }
-        
+
         const thickness = 0.25 * options.noteSize
         const width = x.max - x.min
         const height = (y.max - y.min) / scaledScreen.wToH
@@ -182,9 +182,9 @@ export class SliderTickNote extends SliderNote {
 
         const xS = (thickness * height / length) / 2
         const yS = ((thickness * width / length) / 2) * scaledScreen.wToH
-// debug.log(scaledScreen.wToH)
-//         debug.log(xS)
-//         debug.log(yS)
+        // debug.log(scaledScreen.wToH)
+        //         debug.log(xS)
+        //         debug.log(yS)
         const layout = {
             x1: (x.min - xS)/*  * (y.min + yS) */,
             x2: (x.max - xS)/*  * (y.max + yS) */,
