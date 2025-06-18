@@ -17,7 +17,7 @@ export class SliderData extends Archetype {
     })
 
     spawnTime() {
-        return replay.isReplay ? this.activeTime.min : 999999
+        return (replay.isReplay && !streams.has(0, -999999)) ? this.activeTime.min : 999999
     }
 
     despawnTime() {
@@ -92,6 +92,6 @@ export class SliderData extends Archetype {
         if (!slider.updated && this.import.time16 < time.now && (this.nextImport.time1 > time.now || (!this.nextImport.time1 && !this.nextImport.pos1))) { slider.updated = true; temp = this.import.pos16 }
 
         slider.position = temp
-//        debug.log(temp)
+        //        debug.log(temp)
     }
 }

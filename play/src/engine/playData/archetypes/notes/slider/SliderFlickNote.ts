@@ -38,15 +38,15 @@ export class SliderFlickNote extends SliderNote {
         super.preprocess()
 
         if (options.mirror) this.sliderImport.direction *= -1
-        
+
         const lane = this.import.lane
         const direction = this.sliderImport.direction
-        
+
         const l = (lane + (direction < 0 ? direction : 0)) * 2.1 - 1.05
         const r = (lane + (direction > 0 ? direction : 0)) * 2.1 + 1.05
 
         new Rect({ l, r, b: 5, t: -5 }).transform(skin.transform).copyTo(this.hitbox)
-        
+
         this.played = false
     }
 
@@ -58,7 +58,7 @@ export class SliderFlickNote extends SliderNote {
 
     drawNote() {
         super.drawNote()
-        
+
         const b = 1 + note.radius * 2
         const t = 1 - note.radius * 2
 
@@ -101,7 +101,7 @@ export class SliderFlickNote extends SliderNote {
             if (time.now < this.bsTime) skin.sprites.shadowSliderArrow.draw(layout, this.z - 1, 1 - options.backspinBrightness)
         }
     }
-    
+
     touch() {
         if (this.sliderImport.prev && this.prevInfo.state !== EntityState.Despawned) return
         if (this.played) return
@@ -109,59 +109,62 @@ export class SliderFlickNote extends SliderNote {
         for (const touch of touches) {
             // if(time.now < this.inputTime.min) return
             // if(time.now > this.inputTime.max) return this.incomplete(time.now)
-            if(!touch.started) continue
-            if(isUsed(touch)) continue
-            if(!this.hitbox.contains(touch.position)) continue
+            if (!touch.started) continue
+            if (isUsed(touch)) continue
+            if (!this.hitbox.contains(touch.position)) continue
             noEmptyTap.add(touch.id)
         }
         let index = flickGetClaimedStart(this.info.index)
         if (index === -1) return
         markAsUsedId(index)
         slider.isUsed = false
+        streams.set(0, time.now - 0.0001, slider.position)
+        streams.set(0, time.now, this.import.lane * 2.1)
+        slider.lastSavedPosition = this.import.lane * 2.1
         slider.touch = index
         this.played = true
         // debug.log(index)
-//         if(this.activatedTouch.id) {
-//             for (const touch of touches) {
-//                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
-//                 if(touch.id !== this.activatedTouch.id) continue
-//                 // if(isClaimed(touch)) return
+        //         if(this.activatedTouch.id) {
+        //             for (const touch of touches) {
+        //                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
+        //                 if(touch.id !== this.activatedTouch.id) continue
+        //                 // if(isClaimed(touch)) return
 
-//                 // slider.position = touch.position.x
+        //                 // slider.position = touch.position.x
 
-//                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
-// //debug.log(p)
-//                 if(p > 0.2) this.complete(touch)
-//                 else if(touch.ended) this.incomplete(time.now)
-//                 else if (this.hitbox.contains(touch.position)) {
-//                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
-//                     if (touch.position.x > this.activatedTouch.right.x) touch.position.copyTo(this.activatedTouch.right)
-//                 }
+        //                 const p = (touch.position.x - (this.sliderImport.direction > 0 ? this.activatedTouch.left.x : this.activatedTouch.right.x)) * (this.sliderImport.direction > 0 ? 1 : -1)
+        // //debug.log(p)
+        //                 if(p > 0.2) this.complete(touch)
+        //                 else if(touch.ended) this.incomplete(time.now)
+        //                 else if (this.hitbox.contains(touch.position)) {
+        //                     if (touch.position.x < this.activatedTouch.left.x) touch.position.copyTo(this.activatedTouch.left)
+        //                     if (touch.position.x > this.activatedTouch.right.x) touch.position.copyTo(this.activatedTouch.right)
+        //                 }
 
-//                 return
-//             }
-//         } else {
-//             for (const touch of touches) {
-//                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
-//                 if(slider.touch !== touch.id && isUsed(touch)) continue
-//                 if(!this.hitbox.contains(touch.position)) continue
-//                 // if(isClaimed(touch)) continue
-// //debug.log(touch.id)
-//                 markAsUsed(touch)
-//                 // startClaim(touch)
-//                 
-//                 slider.isUsed = false
-//                 // slider.touch = touch.id
+        //                 return
+        //             }
+        //         } else {
+        //             for (const touch of touches) {
+        //                 if(time.now > this.inputTime.max) return this.incomplete(time.now)
+        //                 if(slider.touch !== touch.id && isUsed(touch)) continue
+        //                 if(!this.hitbox.contains(touch.position)) continue
+        //                 // if(isClaimed(touch)) continue
+        // //debug.log(touch.id)
+        //                 markAsUsed(touch)
+        //                 // startClaim(touch)
+        //                 
+        //                 slider.isUsed = false
+        //                 // slider.touch = touch.id
 
-//                 // slider.position = touch.position.x
+        //                 // slider.position = touch.position.x
 
-//                 this.activatedTouch.id = touch.id
-//                 touch.position.copyTo(this.activatedTouch.right)
-//                 touch.position.copyTo(this.activatedTouch.left)
-//                 
-//                 return
-//            }
-//         }
+        //                 this.activatedTouch.id = touch.id
+        //                 touch.position.copyTo(this.activatedTouch.right)
+        //                 touch.position.copyTo(this.activatedTouch.left)
+        //                 
+        //                 return
+        //            }
+        //         }
     }
 
     playEffect() {
@@ -192,12 +195,12 @@ export class SliderFlickNote extends SliderNote {
         if (time.now > this.inputTime.max) this.incomplete(time.now)
         flickClaimStart(this.info.index)
     }
-    
+
     updateParallel() {
         super.updateParallel()
 
         if (!this.result.judgment || time.now <= this.targetTime /* + this.windows.perfect.min*/) return
-// // debug.log(this.result.judgment)
+        // // debug.log(this.result.judgment)
 
         this.playSFX()
         this.playEffect()
@@ -208,6 +211,9 @@ export class SliderFlickNote extends SliderNote {
     incomplete(hitTime: number) {
         super.incomplete(hitTime)
         // debug.log(hitTime - this.targetTime)
+        streams.set(0, time.now - 0.0001, slider.position)
+        streams.set(0, time.now, slider.next.lane * 2.1)
+        slider.lastSavedPosition = slider.next.lane * 2.1
         slider.touch = 0
         slider.isUsed = false
         slider.next.lane = this.import.lane + this.sliderImport.direction

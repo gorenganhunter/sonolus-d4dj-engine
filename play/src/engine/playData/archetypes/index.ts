@@ -53,7 +53,7 @@ export const archetypes = defineArchetypes({
 
     Disk,
 
-    SliderData,
+    // SliderData,
 
     SliderFlickParticle
 })

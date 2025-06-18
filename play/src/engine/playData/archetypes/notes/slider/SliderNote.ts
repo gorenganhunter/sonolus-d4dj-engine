@@ -43,6 +43,7 @@ export abstract class SliderNote extends Note {
             slider.next.lane = this.import.lane
             slider.next.timescaleGroup = this.import.timescaleGroup
             slider.position = slider.next.lane * 2.1
+            slider.lastSavedPosition = slider.position
         }
     }
 
@@ -52,7 +53,7 @@ export abstract class SliderNote extends Note {
     }
 
     get prevInfo() {
-         return entityInfos.get(this.sliderImport.prev)
+        return entityInfos.get(this.sliderImport.prev)
     }
 
     get nextImport() {

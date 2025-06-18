@@ -19,7 +19,7 @@ export class Stage extends Archetype {
     })
 
     touchOrder = 3
-    
+
     sprites = this.entityMemory({
         splitLine: SkinSpriteId,
         borderRight: SkinSpriteId,
@@ -27,7 +27,7 @@ export class Stage extends Archetype {
         slider: SkinSpriteId,
         sliderBar: SkinSpriteId
     })
-    
+
     next = this.entityMemory({
         time: Number,
         scaledTime: Number
@@ -36,7 +36,7 @@ export class Stage extends Archetype {
     get useFallbackStage() {
         return !skin.sprites.djStage.exists
     }
-    
+
     preprocess() {
         this.sprites.splitLine = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.splitLine.id
         this.sprites.borderRight = skin.sprites.line.exists ? skin.sprites.line.id : skin.sprites.borderRight.id
@@ -59,8 +59,8 @@ export class Stage extends Archetype {
 
     handleSlider(touch: Touch) {
         // if (isUsed(touch) && (slider.touch !== touch.id)) return false
-// debug.log(isUsed(touch))
-        
+        // debug.log(isUsed(touch))
+
         if (
             slider.touch !== touch.id &&
             !(touch.started && !slider.isUsed && note.sliderBox.contains(touch.position) && !isUsed(touch)) &&
@@ -73,14 +73,25 @@ export class Stage extends Archetype {
         ) return false
 
         slider.touch = touch.id
-        
+
         const tch = touch.x / (screen.h * options.width * (1.3225 - options.judgelineHeight * 0.02775) / 13.225) / slider.y
         const sliderPos = (tch > 4.2) ? 4.2 : (tch < -4.2) ? -4.2 : tch
-        
+
+        if (touch.started) {
+            streams.set(0, time.now - 0.0001, slider.position)
+            streams.set(0, time.now, sliderPos)
+            slider.lastSavedPosition = sliderPos
+        }
+
         if (!touch.ended) skin.sprites.sliderConnector.draw(perspectiveLayout({ l: sliderPos - 1.05, r: sliderPos + 1.05, b: 1 + note.radius, t: 1 - note.radius * 8 }), 101, 0.5)
 
         // debug.log(sliderPos)
         slider.position = sliderPos
+
+        if (slider.position !== slider.lastSavedPosition) {
+            streams.set(0, time.now, slider.position)
+            slider.lastSavedPosition = slider.position
+        }
 
         if (!isUsed(touch)) markAsUsed(touch)
         return true
@@ -93,7 +104,7 @@ export class Stage extends Archetype {
             const lane = this.getLane(touch)
             const t = 1 - note.radius
             const b = 1 + note.radius
-                
+
             // if (!(isUsed(touch) && isClaimed(touch)) && (lane === 3 || lane === -3) && (startLane === 3 || startLane === -3)) {
             //     // particle.effects.lane.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.3, false)
             //     if (touch.started) {
@@ -117,11 +128,13 @@ export class Stage extends Archetype {
             // const t = 1 - note.radius * 2
             // const b = 1 + note.radius
 
-            
+
             if (lane < 3 && lane > -3) {
                 if (options.sfxEnabled) effect.clips.tapEmpty.play(0.02)
                 // else if (!isClaimed(touch)) effect.clips.scratchEmpty.play(0.02)
                 if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(circularEffectLayout({ lane: lane * 2.1, w: 1.05, h: note.radius / scaledScreen.wToH }), 0.5, false)
+
+                streams.set(100 + lane, touch.st, 0)
                 // markAsUsed(touch)
             }
         }
@@ -135,7 +148,8 @@ export class Stage extends Archetype {
                     if (isUsed(touch) && !scratchTouches.has(id)) continue
                     const lane = this.getLane(touch) > 0 ? 3 : -3
                     if (options.sfxEnabled) effect.clips.scratchEmpty.play(0.02)
-                    if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(perspectiveLayout({ l: lane * 2.1 - 1.05, r: lane * 2.1 + 1.05, b, t }), 0.5, false)
+                    if (options.noteEffectEnabled) particle.effects.emptyTap.spawn(circularEffectLayout({ lane: lane * 2.1, w: 1.05, h: note.radius / scaledScreen.wToH }), 0.5, false)
+                    streams.set(100 + lane, time.now, 0)
                 }
             }
         }
@@ -152,22 +166,27 @@ export class Stage extends Archetype {
 
     updateSequentialOrder = 999
     updateSequential() {
+        if (slider.position !== slider.lastSavedPosition) {
+            streams.set(0, time.now, slider.position)
+            slider.lastSavedPosition = slider.position
+        }
         if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
+            streams.set(0, time.now, slider.position)
             slider.position = slider.next.lane * 2.1
             // debug.log(slider.position)
         }
         flickClaimStartEmpty()
     }
-    
+
     renderSlider() {
         skin.sprites.sliderNote.draw(perspectiveLayout({ l: slider.position - 0.66, r: slider.position + 0.66, b: 1 + note.radius * 2.5, t: 1 - note.radius * 2.5 }), 105, 1)
         this.renderConnector()
     }
-    
+
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-        
+
         this.next.time = bpmChanges.at(slider.next.beat).time
         this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
 
@@ -192,7 +211,7 @@ export class Stage extends Archetype {
             min: 1,
             max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
-        
+
         const thickness = 0.25 * options.noteSize
         const width = x.max - x.min
         const height = (y.max - y.min) / scaledScreen.wToH
@@ -204,9 +223,9 @@ export class Stage extends Archetype {
 
         const xS = (thickness * height / length) / 2
         const yS = ((thickness * width / length) / 2) * scaledScreen.wToH
-// debug.log(scaledScreen.wToH)
-//         debug.log(xS)
-//         debug.log(yS)
+        // debug.log(scaledScreen.wToH)
+        //         debug.log(xS)
+        //         debug.log(yS)
         const layout = {
             x1: (x.min - xS)/*  * (y.min + yS) */,
             x2: (x.max - xS)/*  * (y.max + yS) */,
@@ -242,8 +261,7 @@ export class Stage extends Archetype {
     // }
 
     initialize() {
-        this.sprites.slider = skin.sprites.slider.exists ? skin.sprites.slider.id : skin.sprites.sliderFallback.id
-        this.sprites.sliderBar = skin.sprites.sliderBar.exists ? skin.sprites.sliderBar.id : skin.sprites.sliderBarFallback.id
+        streams.set(0, -999999, slider.position)
 
         this.renderDisk()
     }
@@ -258,7 +276,7 @@ export class Stage extends Archetype {
         // })
         skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: slider.y + 0.01 * (slider.y / 1.21), t: slider.y - 0.01 * (slider.y / 1.21) }), -1, 1)
         skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }), 9, 1)
-        if(slider.isUsed) this.renderSlider()
+        if (slider.isUsed) this.renderSlider()
 
         const hidden = approach(0, 1, 1 - options.laneLength)
 

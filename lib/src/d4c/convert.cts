@@ -15,10 +15,10 @@ export function d4cToLevelData(chart: D4CChartData, offset = 0): LevelData {
     //     if (i === -1) d4chart[1].push(ts)
     //     else d4chart[1][i][2] = 3
     // })
-    
+
     let disc = {
-        left: chart.TimeScaleGroupList.flatMap(tsg => tsg.SoflanDataList).filter((soflan: D4CSoflanData) => [1,3].includes(soflan.LeftRight)).sort((a, b) => a.Beat - b.Beat),
-        right: chart.TimeScaleGroupList.flatMap(tsg => tsg.SoflanDataList).filter((soflan: D4CSoflanData) => [2,3].includes(soflan.LeftRight)).sort((a, b) => a.Beat - b.Beat)
+        left: chart.TimeScaleGroupList.flatMap(tsg => tsg.SoflanDataList).filter((soflan: D4CSoflanData) => [1, 3].includes(soflan.LeftRight)).sort((a, b) => a.Beat - b.Beat),
+        right: chart.TimeScaleGroupList.flatMap(tsg => tsg.SoflanDataList).filter((soflan: D4CSoflanData) => [2, 3].includes(soflan.LeftRight)).sort((a, b) => a.Beat - b.Beat)
     }
 
     chart.TimeScaleGroupList.push({ id: -4, SoflanDataList: disc.left }, { id: -3, SoflanDataList: disc.right })
@@ -125,18 +125,7 @@ export function d4cToLevelData(chart: D4CChartData, offset = 0): LevelData {
     }));
     let notes = note(chart);
 
-    const lastNoteBeat = chart.NoteDataList[chart.NoteDataList.length - 1].Beat
-    let lastBlBeat = chart.BarLine.List[chart.BarLine.List.length - 1]
-    lastBlBeat = typeof lastBlBeat === "number" ? lastBlBeat : lastBlBeat.Beat
-    
-    const end = chart.BpmDataList.map((data, i, arr) => 60 / data.Bpm * ((i < arr.length - 1 ? arr[i + 1].Beat : Math.max(lastNoteBeat, lastBlBeat)) - data.Beat)).reduce((a, b) => a + b) + chart.Offset + offset + 5
-
-    const sd = Array.from({ length: end * 120 / 16 }, (_, index) => ({
-      archetype: 'SliderData',
-      data: [],
-    }))
-
-    data.entities.push(...bpm, ...ts.flat(), ...notes, ...bl, ...sd);
+    data.entities.push(...bpm, ...ts.flat(), ...notes, ...bl);
     return data;
 }
 
@@ -150,22 +139,22 @@ function note(chart: D4CChartData): LevelDataEntity[] {
                 Type === D4CNoteType.Tap1
                     ? "DarkTapNote"
                     : Type === D4CNoteType.Tap2
-                      ? "LightTapNote"
-                      : Type === D4CNoteType.Scratch
-                        ? "ScratchNote"
-                        : Type === D4CNoteType.StopStart
-                          ? "StopStartNote"
-                          : Type === D4CNoteType.StopEnd
-                            ? "StopEndNote"
-                            : Type === D4CNoteType.LongStart
-                              ? "HoldStartNote"
-                              : Type === D4CNoteType.LongEnd
-                                ? "HoldEndNote"
-                                : Type === D4CNoteType.LongMiddle
-                                  ? "HoldMiddleNote"
-                                  : Direction !== 0
-                                    ? "SliderFlickNote"
-                                    : "SliderTickNote",
+                        ? "LightTapNote"
+                        : Type === D4CNoteType.Scratch
+                            ? "ScratchNote"
+                            : Type === D4CNoteType.StopStart
+                                ? "StopStartNote"
+                                : Type === D4CNoteType.StopEnd
+                                    ? "StopEndNote"
+                                    : Type === D4CNoteType.LongStart
+                                        ? "HoldStartNote"
+                                        : Type === D4CNoteType.LongEnd
+                                            ? "HoldEndNote"
+                                            : Type === D4CNoteType.LongMiddle
+                                                ? "HoldMiddleNote"
+                                                : Direction !== 0
+                                                    ? "SliderFlickNote"
+                                                    : "SliderTickNote",
 
             data: [
                 {

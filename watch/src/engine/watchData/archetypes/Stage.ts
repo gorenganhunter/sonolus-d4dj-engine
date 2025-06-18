@@ -2,7 +2,7 @@ import { approach, perspectiveLayout, diskLayout } from '../../../../../shared/s
 import { options } from '../../configuration/options.js'
 import { effect } from '../effect.js'
 import { note } from '../note.js'
-import { particle } from '../particle.js'
+import { particle, circularEffectLayout } from '../particle.js'
 import { skin } from '../skin.js'
 import { archetypes } from './index.js'
 import { slider } from "../slider.js";
@@ -27,7 +27,7 @@ export class Stage extends Archetype {
         slider: SkinSpriteId,
         sliderBar: SkinSpriteId
     })
-    
+
     get useFallbackStage() {
         return !skin.sprites.djStage.exists
     }
@@ -54,11 +54,28 @@ export class Stage extends Archetype {
         }
 
         this.renderDisk()
+
+        if (!options.sfxEnabled) return
+
+        for (let lane = -3; lane <= 3; lane++) {
+            let key = -9999
+
+            while (true) {
+                const newKey = streams.getNextKey(lane + 100, key)
+
+                if (key === newKey) break;
+
+                if (lane === -3 || lane === 3) effect.clips.scratchEmpty.schedule(newKey, 0.02)
+                else effect.clips.tapEmpty.schedule(newKey, 0.02)
+
+                key = newKey
+            }
+        }
     }
 
     updateParallel() {
         // debug.log(time.scaled)
-        
+
         const hidden = approach(0, 1, 1 - options.laneLength)
 
         const t = 0 + hidden
@@ -103,28 +120,38 @@ export class Stage extends Archetype {
         )
 
         if (!this.useFallbackStage) skin.sprites.djStage.draw(perspectiveLayout({ l: -7.35, r: 7.35, b, t }), 0, options.opacity)
-        
+
         skin.sprites.draw(this.sprites.sliderBar, perspectiveLayout({ l: -4.2, r: 4.2, b: slider.y + 0.01 * (slider.y / 1.21), t: slider.y - 0.01 * (slider.y / 1.21) }), -1, 1)
         skin.sprites.draw(this.sprites.slider, perspectiveLayout({ l: slider.position - 0.35, r: slider.position + 0.35, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }), 9, 1)
-        
-        if(slider.isUsed) this.renderSlider()
 
+        if (slider.isUsed) this.renderSlider()
+
+        if (!options.noteEffectEnabled) return
+        for (let lane = -3; lane <= 3; lane++) {
+            let key = streams.getNextKey(lane + 100, time.now - time.delta)
+
+            if (key === time.now - time.delta) continue
+
+            if (key < time.now) particle.effects.emptyTap.spawn(circularEffectLayout({ lane: lane * 2.1, w: 1.05, h: note.radius / scaledScreen.wToH }), 0.5, false)
+        }
         // this.renderDisk()
     }
 
     updateSequentialOrder = -999
     updateSequential() {
         slider.updated = false
+        if (replay.isReplay && streams.has(0, -999999)) slider.position = streams.getValue(0, time.now)
         if (bpmChanges.at(slider.next.beat).time < time.now || bpmChanges.at(slider.prev.beat).time > time.now) {
             slider.isUsed = false
             if (!replay.isReplay) slider.position = slider.next.lane * 2.1
         }
+        debug.log(slider.position)
         // if (/*(!slider.touch || touches.get(slider.touch).ended) &&*/ !slider.isUsed) {
         //     slider.position = slider.next.lane * 2.1
         //     // debug.log(slider.position)
         // }
     }
-    
+
     renderDisk() {
         if (options.disk) {
             this.renderLeftDisk()
@@ -166,11 +193,11 @@ export class Stage extends Archetype {
     //     slider.isUsed = false
     //     slider.next.lane = -2
     // }
-    
+
     renderConnector() {
         // if (options.hidden > 0 && time.now > this.visualTime.hidden) return
         const scaledTime = options.backspinAssist ? time.now : timeToScaledTime(time.now, slider.next.timescaleGroup)
-        
+
         this.next.time = bpmChanges.at(slider.next.beat).time
         this.next.scaledTime = options.backspinAssist ? this.next.time : timeToScaledTime(this.next.time, slider.next.timescaleGroup)
 
@@ -195,7 +222,7 @@ export class Stage extends Archetype {
             min: 1,
             max: approach(visibleTime.max - note.duration, visibleTime.max, scaledTime),
         }
-        
+
         const thickness = 0.25 * options.noteSize
         const width = x.max - x.min
         const height = (y.max - y.min) / scaledScreen.wToH
@@ -207,9 +234,9 @@ export class Stage extends Archetype {
 
         const xS = (thickness * height / length) / 2
         const yS = ((thickness * width / length) / 2) * scaledScreen.wToH
-// debug.log(scaledScreen.wToH)
-//         debug.log(xS)
-//         debug.log(yS)
+        // debug.log(scaledScreen.wToH)
+        //         debug.log(xS)
+        //         debug.log(yS)
         const layout = {
             x1: (x.min - xS)/*  * (y.min + yS) */,
             x2: (x.max - xS)/*  * (y.max + yS) */,

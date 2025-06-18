@@ -15,14 +15,14 @@ export function b34djToLevelData(chart: B34DJChart, offset = 0): LevelData {
         if (i === -1) d4chart[1].push(ts)
         else d4chart[1][i][2] = 3
     })
-    
+
     return d4djToLevelData(d4chart, offset);
 };
 
 export function d4djToLevelData(chart: any, offset = 0): LevelData {
     let disc = {
-        left: chart[1].filter((soflan: any) => [1,3].includes(soflan[2])),
-        right: chart[1].filter((soflan: any) => [2,3].includes(soflan[2]))
+        left: chart[1].filter((soflan: any) => [1, 3].includes(soflan[2])),
+        right: chart[1].filter((soflan: any) => [2, 3].includes(soflan[2]))
     }
     let data = {
         bgmOffset: offset,
@@ -309,12 +309,7 @@ export function d4djToLevelData(chart: any, offset = 0): LevelData {
     }));
     let notes = note(chart);
 
-    const sd = Array.from({ length: (Math.max(chart[3][chart[3].length - 1][2], chart[2][chart[2].length - 1]) + offset + 5) * 120 / 16 }, (_, index) => ({
-      archetype: 'SliderData',
-      data: [],
-    }))
-
-    data.entities.push(...ts, ...discL, ...discR, ...notes, ...bl, ...sd);
+    data.entities.push(...ts, ...discL, ...discR, ...notes, ...bl);
     return data;
 }
 
@@ -328,22 +323,22 @@ function note(chart: any) {
                 arr[1] === 0
                     ? "DarkTapNote"
                     : arr[1] === 1
-                      ? "LightTapNote"
-                      : arr[1] === 2 || arr[1] === 3
-                        ? "ScratchNote"
-                        : arr[1] === 4
-                          ? "StopStartNote"
-                          : arr[1] === 5
-                            ? "StopEndNote"
-                            : arr[1] === 6
-                              ? "HoldStartNote"
-                              : arr[1] === 8
-                                ? "HoldEndNote"
-                                : arr[1] === 7
-                                  ? "HoldMiddleNote"
-                                  : arr[4] !== 0
-                                    ? "SliderFlickNote"
-                                    : "SliderTickNote",
+                        ? "LightTapNote"
+                        : arr[1] === 2 || arr[1] === 3
+                            ? "ScratchNote"
+                            : arr[1] === 4
+                                ? "StopStartNote"
+                                : arr[1] === 5
+                                    ? "StopEndNote"
+                                    : arr[1] === 6
+                                        ? "HoldStartNote"
+                                        : arr[1] === 8
+                                            ? "HoldEndNote"
+                                            : arr[1] === 7
+                                                ? "HoldMiddleNote"
+                                                : arr[4] !== 0
+                                                    ? "SliderFlickNote"
+                                                    : "SliderTickNote",
 
             data: [
                 {
@@ -360,8 +355,8 @@ function note(chart: any) {
                         arr[0] === 0
                             ? "tsg:1"
                             : arr[0] === 6
-                              ? "tsg:2"
-                              : "tsg:0",
+                                ? "tsg:2"
+                                : "tsg:0",
                 },
             ],
 

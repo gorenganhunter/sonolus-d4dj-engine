@@ -71,7 +71,7 @@ export abstract class SliderNote extends Note {
     }
 
     get prevInfo() {
-         return entityInfos.get(this.sliderImport.prev)
+        return entityInfos.get(this.sliderImport.prev)
     }
 
     get nextImport() {
