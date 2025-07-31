@@ -1,5 +1,5 @@
 import { LevelData } from '@sonolus/core'
-import { B34DJChart, B34DJNoteData, B34DJSoflanData, D4DJNoteType } from './index.cjs'
+import { B34DJChart, B34DJNoteData, B34DJSoflanData, D4DJNoteType } from './index.js'
 
 export function b34djToLevelData(chart: B34DJChart, offset = 0): LevelData {
     let d4chart: any = []

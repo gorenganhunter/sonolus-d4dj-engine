@@ -1,5 +1,5 @@
 import { LevelData, LevelDataEntity } from '@sonolus/core'
-import { D4CChartData, D4CNoteType, D4CSoflanData } from './index.cjs'
+import { D4CChartData, D4CNoteType, D4CSoflanData } from './index.js'
 
 export function d4cToLevelData(chart: D4CChartData, offset = 0): LevelData {
     // let d4chart: any = []

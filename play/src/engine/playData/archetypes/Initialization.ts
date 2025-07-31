@@ -77,7 +77,7 @@ export class Initialization extends Archetype {
 
         new Rect({ l: -30, r: -5.25, b: 5, t: -5 }).transform(transform).copyTo(note.scratch.hitbox.left)
         new Rect({ l: 5.25, r: 30, b: 5, t: -5 }).transform(transform).copyTo(note.scratch.hitbox.right)
-        
+
         new Rect({ l: -4.2 * slider.y, r: 4.2 * slider.y, b: slider.y + 0.075 * (slider.y / 1.21), t: slider.y - 0.075 * (slider.y / 1.21) }).transform(transform).copyTo(note.sliderBox)
 
         const gap = 0.05
@@ -104,8 +104,8 @@ export class Initialization extends Archetype {
         })
         ui.metric.primary.value.set({
             anchor: uiRect.lt.add(
-                    new Vec(0.715, -0.035).mul(ui.configuration.metric.primary.scale),
-                ),
+                new Vec(0.715, -0.035).mul(ui.configuration.metric.primary.scale),
+            ),
             pivot: { x: 1, y: 1 },
             size: new Vec(0, 0.08).mul(ui.configuration.metric.primary.scale),
             rotation: 0,
@@ -137,7 +137,7 @@ export class Initialization extends Archetype {
             horizontalAlign: HorizontalAlign.Right,
             background: false,
         })
-        
+
         ui.judgment.set({
             anchor: { x: 0, y: -0.1 },
             pivot: { x: 0.5, y: 0 },

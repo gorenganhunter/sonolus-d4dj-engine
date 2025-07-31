@@ -6,14 +6,15 @@ const flickDisallowEmptiesNow = levelMemory(Dictionary(16, Number, Number))
 const flickDisallowEmptiesOld = levelMemory(Dictionary(16, Number, Number))
 const lastdx = levelMemory(Dictionary(16, Number, Number))
 const lastdy = levelMemory(Dictionary(16, Number, Number))
+const lastTime = levelMemory(Dictionary(16, Number, Number))
 const lastdxOld = levelMemory(Dictionary(16, Number, Number))
 const lastdyOld = levelMemory(Dictionary(16, Number, Number))
 
 export const scratchTouches = levelMemory(Collection(16, Number))
 const scratchTouchesOld = levelMemory(Collection(16, Number))
 levelMemory(Tuple(16, Number))
-// const minFlickV = 0.2
-const minFlickVr = 3
+
+const minFlickV = 0.2
 
 // const calcV = (touch: Touch) => ((touch.dx * touch.dx + touch.dy * touch.dy) ** 0.5) / time.delta
 
@@ -50,13 +51,18 @@ export class ScratchManager extends SpawnableArchetype({}) {
             lastdx.set(touch.id, touch.dx)
             lastdy.set(touch.id, touch.dy)
 
-            if(id === -1) continue
+            if (id === -1) continue
 
             const lastdxIndex = lastdxOld.indexOf(touch.id)
             const lastdxValue = lastdxIndex === -1 ? 0 : lastdxOld.getValue(lastdxIndex)
             const lastdyValue = lastdxIndex === -1 ? 0 : lastdyOld.getValue(lastdxIndex)
 
-            if (touch.vr < minFlickVr || (isUsed(touch) && !scratchTouches.has(touch.id))) {
+            const lastTimeIndex = lastTime.indexOf(touch.id)
+            const lastTimeValue = lastTimeIndex === -1 ? -9999 : lastTime.getValue(lastTimeIndex)
+
+            if (isUsed(touch) && !scratchTouches.has(touch.id)) continue
+
+            if (calcV(touch) < minFlickV * note.scratch.movement/* || time.now - lastTimeValue < note.scratch.distance*/) {
                 lastdx.set(touch.id, lastdxValue)
                 lastdy.set(touch.id, lastdyValue)
                 flickDisallowEmptiesNow.set(touch.id, 1)
@@ -64,12 +70,9 @@ export class ScratchManager extends SpawnableArchetype({}) {
                 continue
             }
 
-            // const dotmul = lastdxValue * touch.dx + lastdyValue * touch.dy
-            // if (dotmul <= 0) continue
-            
             const angle = vectorAngle([touch.dx, touch.dy], [lastdxValue, lastdyValue]) / (Math.PI / 180)
             if (angle > note.scratch.angle) continue
-            
+
             flickDisallowEmptiesNow.set(touch.id, 1)
         }
     }
@@ -85,14 +88,14 @@ function getHitbox(index: number) {
         const otherInfo = entityInfos.get(otherIndex)
 
         if (otherInfo.state === EntityState.Despawned || otherImport.beat !== noteImport.beat) continue
-        
+
         const otherHitbox = archetypes.ScratchNote.hitbox.get(otherIndex)
         const otherMid = (otherHitbox.l + otherHitbox.r) / 2
 
         if (otherMid > mid && hitbox.r > otherHitbox.l) hitbox.r = (hitbox.r + otherHitbox.l) / 2
         else if (otherMid < mid && hitbox.l < otherHitbox.r) hitbox.l = (hitbox.l + otherHitbox.r) / 2
     }
-// debug.log(mid)
+    // debug.log(mid)
     return hitbox
 }
 // class ClaimInfo {
@@ -129,7 +132,7 @@ function findBestTouchIndex(index: number) {
     let res = -1
     for (const touch of touches) {
         // debug.log(touch.vr)
-        if (touch.vr < minFlickVr) continue
+        if (calcV(touch) < minFlickV * note.scratch.movement) continue
         const id = flickDisallowEmptiesNow.indexOf(touch.id);
         if (id != -1) continue
         if (!origin.hitbox.contains(touch.position)) continue
@@ -153,7 +156,7 @@ function findBestTouchIndex(index: number) {
             res = touch.id
             continue
         }
-     
+
         // if (dis > Math.min(
         //     claim.getDis(touch.x, touch.y),
         //     claim.getDis(touch.x - touch.dx, touch.y - touch.dy)
@@ -170,12 +173,13 @@ function claim(index: number) {
     // const info = getInfo(currentId);
     while (true) {
         let touchIndex = findBestTouchIndex(currentId);
-//        debug.log(touchIndex)
+        //        debug.log(touchIndex)
         if (touchIndex == -1) break
         flickDisallowEmptiesNow.set(touchIndex, 1);
         let claimIndex = claimed.indexOf(touchIndex);
         if (claimIndex == -1) {
-            claimed.set(touchIndex, currentId); 
+            claimed.set(touchIndex, currentId);
+            lastTime.set(touchIndex, time.now);
             break
         }
 
@@ -190,7 +194,7 @@ function findBestTouchIndexEmpty() {
     let res = -1
     for (const touch of touches) {
         // debug.log(touch.vr)
-        if (touch.vr < minFlickVr || isUsed(touch)) continue
+        if (calcV(touch) < minFlickV * note.scratch.movement || isUsed(touch)) continue
         const id = flickDisallowEmptiesNow.indexOf(touch.id);
         if (id != -1) continue
         if (!(note.scratch.hitbox.left.contains(touch.startPosition) && note.scratch.hitbox.left.contains(touch.position)) && !(note.scratch.hitbox.right.contains(touch.startPosition) && note.scratch.hitbox.right.contains(touch.position))) continue
@@ -207,39 +211,44 @@ function findBestTouchIndexEmpty() {
             continue
         }
 
-     //    const claim = getInfo(claimed.getValue(claimIndex));
-     //    if (origin.time > claim.time) continue
-     //    if (origin.time < claim.time) {
-     //        res = touch.id
-     //        continue
-     //    }
-     // 
-     //    // if (dis > Math.min(
-     //    //     claim.getDis(touch.x, touch.y),
-     //    //     claim.getDis(touch.x - touch.dx, touch.y - touch.dy)
-     //    // )) continue
-     //    if (index > claimed.getValue(claimIndex)) continue // nmd 如果 time 和 dis 完全相等的话会导致一直 claim，然后 Sonolus 死机
-     //    // mlgb 老子在这里调了 6 个小时结果是 nm 这个问题
-     //    res = touch.id;
+        //    const claim = getInfo(claimed.getValue(claimIndex));
+        //    if (origin.time > claim.time) continue
+        //    if (origin.time < claim.time) {
+        //        res = touch.id
+        //        continue
+        //    }
+        // 
+        //    // if (dis > Math.min(
+        //    //     claim.getDis(touch.x, touch.y),
+        //    //     claim.getDis(touch.x - touch.dx, touch.y - touch.dy)
+        //    // )) continue
+        //    if (index > claimed.getValue(claimIndex)) continue // nmd 如果 time 和 dis 完全相等的话会导致一直 claim，然后 Sonolus 死机
+        //    // mlgb 老子在这里调了 6 个小时结果是 nm 这个问题
+        //    res = touch.id;
     }
     return res;
+}
+
+function calcV(touch: Touch): number {
+    return Math.sqrt(touch.dx ** 2 + touch.dy ** 2) / time.delta
 }
 
 function claimEmpty() {
     // let currentId = index;
     // const info = getInfo(currentId);
     let touchIndex = findBestTouchIndexEmpty();
-//    debug.log(touchIndex)
+    //    debug.log(touchIndex)
     if (touchIndex == -1) return
     flickDisallowEmptiesNow.set(touchIndex, 1);
     let claimIndex = claimed.indexOf(touchIndex);
     if (claimIndex == -1) {
         claimed.set(touchIndex, -1);
+        lastTime.set(touchIndex, time.now)
     }
 
-        //let tmp = currentId;
-        //currentId = claimed.getValue(claimIndex);
-        //claimed.set(touchIndex, tmp);
+    //let tmp = currentId;
+    //currentId = claimed.getValue(claimIndex);
+    //claimed.set(touchIndex, tmp);
 }
 
 function getClaimedTouchIndex(index: number) {
@@ -271,7 +280,7 @@ export const flickClaimStartEmpty = () => claimEmpty()
 //     return dx < 0 ? 180 - temp : temp
 // }
 
-const vectorAngle = (x: number[], y: number[]) => Math.acos( x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)) );
+const vectorAngle = (x: number[], y: number[]) => Math.acos(x.reduce((acc, n, i) => acc + n * y[i], 0) / (Math.hypot(...x) * Math.hypot(...y)));
 
 export const claimed = levelMemory(Dictionary(16, Number, Number))
 
