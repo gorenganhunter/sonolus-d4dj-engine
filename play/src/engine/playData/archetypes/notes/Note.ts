@@ -1,5 +1,9 @@
 import { EngineArchetypeDataName, SkinSpriteName } from '@sonolus/core'
-import { approach, perspectiveLayout } from '../../../../../../shared/src/engine/data/utils.js'
+import {
+    approach,
+    perspectiveAdjust,
+    perspectiveLayout
+} from '../../../../../../shared/src/engine/data/utils.js'
 import { options } from '../../../configuration/options.js'
 import { buckets } from '../../buckets.js'
 import { effect } from '../../effect.js'
@@ -96,8 +100,8 @@ export abstract class Note extends Archetype {
     }
 
     drawNote() {
-        this.sprite.draw(this.notePosition.mul(this.y), this.z, 1)
-        if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)
+        this.sprite.draw(perspectiveAdjust(this.notePosition, this.y), this.z, 1)
+        if (time.now < this.bsTime) this.shadow.draw(perspectiveAdjust(this.notePosition, this.y), this.z + 1, 1 - options.backspinBrightness)
     }
 
     touchOrder = 1

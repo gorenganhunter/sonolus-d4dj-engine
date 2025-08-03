@@ -67,21 +67,36 @@ const homogenousTransformQuad = (mat: Transform2d, quad: Quad) => {
     return new Quad({ x1: bl.x, y1: bl.y, x2: tl.x, y2: tl.y, x3: tr.x, y3: tr.y, x4: br.x, y4: br.y })
 }
 
-const d0 = 12
+const d0 = 18
 const d1 = 1
 
 export const approach = (fromTime: number, toTime: number, now: number) => {
-    const scaled = now <= toTime
+    return now <= toTime
         ? 1 / Math.remap(fromTime, toTime, d0, d1, now)
         : Math.min(1.5, Math.remap(toTime, toTime + (toTime - fromTime), d1, d0, now))
+}
 
-    return Math.remap(
-        1 / d0,
-        1 / d1,
-        1 / 18,
-        1 / 1,
-        scaled
-    )
+export const perspectiveAdjust = (base: Quad, y: number) => {
+    const offset = 8;  // Decided via magic (trial and error)
+    const distance = 1 / y + offset;
+    const scale = y * distance;
+    const height = (base.y2 + base.y3 - base.y1 - base.y4) / 2 * (1 + offset);
+    const distTop = distance + height / 2;
+    const distBottom = distance - height / 2;
+    const yTop = scale / distTop;
+    const yBottom = scale / distBottom;
+    const xL = (base.x1 + base.x2) / 2;
+    const xR = (base.x3 + base.x4) / 2;
+    return new Quad({
+        x1: xL * yBottom,
+        x2: xL * yTop,
+        x3: xR * yTop,
+        x4: xR * yBottom,
+        y1: yBottom,
+        y2: yTop,
+        y3: yTop,
+        y4: yBottom,
+    })
 }
 
 export const leftRotated = ({ l, r, b, t }: RectLike) =>
