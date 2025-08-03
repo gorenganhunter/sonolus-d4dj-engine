@@ -1,5 +1,5 @@
 import { EffectClip, ParticleEffect, SkinSprite } from "@sonolus/sonolus.js-compiler/play";
-import { approach, perspectiveLayout } from "../../../../../../../shared/src/engine/data/utils.js";
+import { approach, perspectiveAdjust, perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.js'
 import { note } from "../../../note.js";
 import { circularEffectLayout, linearEffectLayout, particle } from "../../../particle.js";
 import { skin } from "../../../skin.js";
@@ -68,7 +68,7 @@ export class ScratchNote extends Note {
     }
 
     drawNote() {
-        skin.sprites.draw(this.sprites.note, this.notePosition.mul(this.y), this.z, 1)
+        skin.sprites.draw(this.sprites.note, perspectiveAdjust(this.notePosition, this.y), this.z, 1)
 
         const a1 = (time.now % 0.5) * 2
         const a2 = 1 - a1

@@ -1,5 +1,5 @@
 import { EffectClip, ParticleEffect, SkinSprite } from "@sonolus/sonolus.js-compiler/play";
-import { perspectiveLayout } from "../../../../../../../shared/src/engine/data/utils.js";
+import { perspectiveAdjust, perspectiveLayout } from '../../../../../../../shared/src/engine/data/utils.js'
 import { note } from "../../../note.js";
 import { skin } from "../../../skin.js";
 import { slider } from "../../../slider.js";
@@ -32,8 +32,8 @@ export abstract class SliderNote extends Note {
 
         perspectiveLayout({ l, r, t: 1 - note.radius * 2.5, b: 1 + note.radius * 2.5 }).copyTo(this.notePosition)
 
-        skin.sprites.sliderNote.draw(this.notePosition.mul(this.y), this.z, 1)
-        if (time.now < this.bsTime) this.shadow.draw(this.notePosition.mul(this.y), this.z + 1, 1 - options.backspinBrightness)
+        skin.sprites.sliderNote.draw(perspectiveAdjust(this.notePosition, this.y), this.z, 1)
+        if (time.now < this.bsTime) this.shadow.draw(perspectiveAdjust(this.notePosition, this.y), this.z + 1, 1 - options.backspinBrightness)
     }
 
     preprocess() {

@@ -1,5 +1,10 @@
 import { EffectClip } from "@sonolus/sonolus.js-compiler/play";
-import { leftRotated, perspectiveLayout, rightRotated } from "../../../../../../../shared/src/engine/data/utils.js";
+import {
+    leftRotated,
+    perspectiveAdjust,
+    perspectiveLayout,
+    rightRotated
+} from '../../../../../../../shared/src/engine/data/utils.js'
 import { buckets } from "../../../buckets.js";
 import { effect } from "../../../effect.js";
 import { note } from "../../../note.js";
@@ -66,12 +71,12 @@ export class SliderFlickNote extends SliderNote {
         if (this.sliderImport.direction > 0) for (let i = 0; i < n; i++) {
             const j = 0.6 + 0.41 * i
             const lane = (this.import.lane + j) * 2.1
-            const layout = perspectiveLayout({
+            const layout = perspectiveAdjust(perspectiveLayout({
                 r: lane - 0.8,
                 l: lane + 0.8,
                 b,
                 t
-            }).mul(this.y)
+            }), this.y)
             skin.sprites.sliderArrow.draw(layout, this.z - 3, 1)
 
             let a = ((time.now - (i / n)) % 1)
@@ -84,12 +89,12 @@ export class SliderFlickNote extends SliderNote {
         else for (let i = 0; i > n; i--) {
             const j = -0.6 + 0.41 * i
             const lane = (this.import.lane + j) * 2.1
-            const layout = perspectiveLayout({
+            const layout = perspectiveAdjust(perspectiveLayout({
                 l: lane - 0.8,
                 r: lane + 0.8,
                 b,
                 t
-            }).mul(this.y)
+            }), this.y);
             skin.sprites.sliderArrow.draw(layout, this.z - 3, 1)
 
             let a = ((time.now - (i / n)) % 1)
