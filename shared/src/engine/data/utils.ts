@@ -67,13 +67,21 @@ const homogenousTransformQuad = (mat: Transform2d, quad: Quad) => {
     return new Quad({ x1: bl.x, y1: bl.y, x2: tl.x, y2: tl.y, x3: tr.x, y3: tr.y, x4: br.x, y4: br.y })
 }
 
-const d0 = 18
+const d0 = 12
 const d1 = 1
 
 export const approach = (fromTime: number, toTime: number, now: number) => {
-    return now <= toTime
+    const scaled = now <= toTime
         ? 1 / Math.remap(fromTime, toTime, d0, d1, now)
         : Math.min(1.5, Math.remap(toTime, toTime + (toTime - fromTime), d1, d0, now))
+
+    return Math.remap(
+        1 / d0,
+        1 / d1,
+        1 / 18,
+        1 / 1,
+        scaled
+    )
 }
 
 export const perspectiveAdjust = (base: Quad, y: number) => {
