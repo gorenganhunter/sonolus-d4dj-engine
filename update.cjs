@@ -16,7 +16,7 @@ const engine = {
             '\n' +
             'Github Repository\n' +
             'https://github.com/gorenganhunter/sonolus-d4dj-engine'
-        },
+    },
     skin: 'd4dj-2-3-1',
     background: 'd4dj-default-stage',
     effect: 'd4dj-01',
@@ -62,7 +62,7 @@ for (const file of Object.keys(files)) {
     const path = files[file]
     const buffer = fs.readFileSync(path)
     const hashed = hash(buffer)
-    fs.rmSync(`./d4dj-private-data/${db.engines[0][file].hash}`)
+    fs.rmSync(`./d4dj-private-data/${db.engines[0][file].hash}`, { force: true })
     fs.writeFileSync(`./d4dj-private-data/${hashed}`, buffer)
     engine[file] = {
         hash: hashed,
