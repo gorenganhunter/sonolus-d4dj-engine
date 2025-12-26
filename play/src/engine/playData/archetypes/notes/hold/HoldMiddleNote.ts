@@ -7,9 +7,9 @@ import { HoldNote } from "./HoldNote.js";
 import { options } from '../../../../configuration/options.js'
 import { note } from "../../../note.js";
 
-export class HoldEndNote extends HoldNote {
-    sprite = skin.sprites.holdTail
-    bucket = buckets.holdEndNote
+export class HoldMiddleNote extends HoldNote {
+    sprite = skin.sprites.holdMiddle
+    bucket = buckets.holdMiddleNote
 
     preprocess() {
         super.preprocess()
@@ -40,12 +40,12 @@ export class HoldEndNote extends HoldNote {
             if (touch.id !== id) continue
 
             if (!touch.ended) {
-                if (time.now > this.targetTime && hitbox.contains(touch.position)) return this.complete(this.targetTime)
+                if (time.now > this.targetTime && hitbox.contains(touch.position)) return this.complete(id, this.targetTime)
                 else return queueHold(this.holdImport.prevRef)
             }
 
             if ((time.now >= this.inputTime.min && hitbox.contains(touch.position))) {
-                this.complete(touch.t)
+                this.complete(id, touch.t)
             } else {
                 this.incomplete(touch.t)
             }
@@ -53,14 +53,14 @@ export class HoldEndNote extends HoldNote {
         }
 
         if (time.now >= this.inputTime.min) {
-            this.complete(time.now)
+            this.complete(id, time.now)
         } else {
             this.incomplete(time.now)
         }
         return
-        //     }
+        // }
         //
-        //     if(this.prevInfo.state !== EntityState.Despawned) return
+        // if (this.prevInfo.state !== EntityState.Despawned) return
         // if (time.now < this.inputTime.min) return
         //
         // for (const touch of touches) {
@@ -72,7 +72,9 @@ export class HoldEndNote extends HoldNote {
         // }
     }
 
-    complete(hitTime: number) {
+    complete(id: TouchId, hitTime: number) {
+        this.sharedMemory.activatedTouchId = id
+
         this.result.judgment = input.judge(hitTime, this.targetTime, this.windows)
         this.result.accuracy = hitTime - this.targetTime
 

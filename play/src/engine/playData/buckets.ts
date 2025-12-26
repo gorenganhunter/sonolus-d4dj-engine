@@ -89,19 +89,19 @@ export const buckets = defineBuckets({
     holdStartNote: {
         sprites: [
             {
-                id: skin.sprites.holdHead.id,
-                x: -2,
-                y: 0,
-                w: 2,
-                h: 2,
-                rotation: 90
-            },
-            {
                 id: skin.sprites.holdConnector.id,
                 x: 0.5,
                 y: 0,
                 w: 2,
                 h: 5,
+                rotation: 90
+            },
+            {
+                id: skin.sprites.holdHead.id,
+                x: -2,
+                y: 0,
+                w: 2,
+                h: 2,
                 rotation: 90
             },
         ],
@@ -128,22 +128,35 @@ export const buckets = defineBuckets({
         ],
         unit: Text.MillisecondUnit
     },
-    stopStartNote: {
+    holdMiddleNote: {
         sprites: [
             {
-                id: skin.sprites.stopHead.id,
-                x: -2,
+                id: skin.sprites.holdConnector.id,
+                x: 0,
                 y: 0,
                 w: 2,
-                h: 2,
+                h: 5,
                 rotation: 90
             },
+        ],
+        unit: Text.MillisecondUnit
+    },
+    stopStartNote: {
+        sprites: [
             {
                 id: skin.sprites.stopConnector.id,
                 x: 0.5,
                 y: 0,
                 w: 2,
                 h: 5,
+                rotation: 90
+            },
+            {
+                id: skin.sprites.stopHead.id,
+                x: -2,
+                y: 0,
+                w: 2,
+                h: 2,
                 rotation: 90
             },
         ],

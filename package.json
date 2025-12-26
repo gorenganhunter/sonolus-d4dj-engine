@@ -1,6 +1,6 @@
 {
   "name": "sonolus-d4dj-engine",
-  "version": "1.5.4",
+  "version": "1.6.0",
   "description": "A recreation of D4DJ Groovy Mix engine in Sonolus.",
   "type": "module",
   "author": "Gorengan Hunter",
@@ -33,7 +33,7 @@
     "build": "tsc -p ./lib && sonolus-cli --build ./play && sonolus-cli --build ./watch && sonolus-cli --build ./preview && sonolus-cli --build ./tutorial && node ./lib/build.mjs"
   },
   "dependencies": {
-    "@sonolus/core": "^7.14.0"
+    "@sonolus/core": "^7.14.2"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",

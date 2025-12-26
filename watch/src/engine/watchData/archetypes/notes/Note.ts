@@ -33,7 +33,7 @@ export abstract class Note extends Archetype {
     abstract bucket: Bucket
 
     shadow = skin.sprites.shadowNote
-    
+
     import = this.defineImport({
         beat: { name: EngineArchetypeDataName.Beat, type: Number },
         lane: { name: 'lane', type: Number },
@@ -52,11 +52,11 @@ export abstract class Note extends Archetype {
     sharedMemory = this.defineSharedMemory({
         despawnTime: Number
     })
-    
+
     get hitTime() {
         return this.targetTime + this.import.accuracy
     }
-    
+
     get windows() {
         return toWindows(windows, options.strictJudgment)
     }

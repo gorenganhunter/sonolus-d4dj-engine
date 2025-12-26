@@ -19,6 +19,7 @@ export const skin = defineSkin({
         lightTapNote: SkinSpriteName.NoteHeadCyan,
 
         holdHead: SkinSpriteName.NoteHeadYellow,
+        holdMiddle: SkinSpriteName.NoteTickYellow,
         holdTail: SkinSpriteName.NoteTailYellow,
         holdConnector: SkinSpriteName.NoteConnectionYellow,
 

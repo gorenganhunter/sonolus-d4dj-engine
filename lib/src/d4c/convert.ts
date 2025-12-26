@@ -174,11 +174,11 @@ function note(chart: D4CChartData): LevelDataEntity[] {
             name: `note${i}`,
         };
 
-        notes[Beat]
+        if (Type !== D4CNoteType.LongMiddle) notes[Beat]
             ? notes[Beat].push({ name: `note${i}`, lane: LaneId })
             : (notes[Beat] = [{ name: `note${i}`, lane: LaneId }]);
 
-        if (NextId && (Type === D4CNoteType.LongStart || Type === D4CNoteType.StopStart)) {
+        if (NextId && (Type === D4CNoteType.LongStart || Type === D4CNoteType.StopStart || Type === D4CNoteType.LongMiddle)) {
             let note: any = {};
             note.head = not.name;
             note.tail = `note${NextId}`;
@@ -206,7 +206,7 @@ function note(chart: D4CChartData): LevelDataEntity[] {
                 });
         }
 
-        if (Type === D4CNoteType.LongEnd || Type === D4CNoteType.StopEnd) {
+        if (Type === D4CNoteType.LongEnd || Type === D4CNoteType.StopEnd || D4CNoteType.LongMiddle) {
             not.data.push({
                 name: "head",
                 ref: hold.find((note) => note.tail === not.name).head,

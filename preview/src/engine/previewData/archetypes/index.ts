@@ -1,6 +1,7 @@
 import { Initialization } from './Initialization.js'
 import { Stage } from './Stage.js'
 import { HoldEndNote } from './notes/hold/HoldEndNote.js'
+import { HoldMiddleNote } from './notes/hold/HoldMiddleNote.js'
 import { HoldStartNote } from './notes/hold/HoldStartNote.js'
 import { ScratchNote } from './notes/scratch/Scratch.js'
 import { SliderTickNote } from './notes/slider/SliderTickNote.js'
@@ -26,6 +27,7 @@ export const archetypes = defineArchetypes({
     LightTapNote,
 
     HoldStartNote,
+    HoldMiddleNote,
     HoldEndNote,
 
     ScratchNote,

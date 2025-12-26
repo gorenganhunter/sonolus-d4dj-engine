@@ -363,11 +363,11 @@ function note(chart: any) {
             name: `note${i}`,
         };
 
-        notes[arr[2]]
+        if (arr[1] !== 7) notes[arr[2]]
             ? notes[arr[2]].push({ name: `note${i}`, lane: arr[0] })
             : (notes[arr[2]] = [{ name: `note${i}`, lane: arr[0] }]);
 
-        if (arr[3] && (arr[1] === 4 || arr[1] === 6)) {
+        if (arr[3] && (arr[1] === 4 || arr[1] === 6 || arr[1] === 7)) {
             let note: any = {};
             note.head = not.name;
             note.tail = `note${arr[3]}`;
@@ -395,7 +395,7 @@ function note(chart: any) {
                 });
         }
 
-        if (arr[1] === 5 || arr[1] === 8) {
+        if (arr[1] === 5 || arr[1] === 8 || arr[1] === 7) {
             not.data.push({
                 name: "head",
                 ref: hold.find((note) => note.tail === not.name).head,

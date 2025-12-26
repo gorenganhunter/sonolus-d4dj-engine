@@ -9,6 +9,7 @@ import { Slider } from './Slider.js'
 import { BarLine } from './lines/BarLine.js'
 import { SimLine } from './lines/SimLine.js'
 import { HoldEndNote } from './notes/hold/HoldEndNote.js'
+import { HoldMiddleNote } from './notes/hold/HoldMiddleNote.js'
 import { HoldStartNote } from './notes/hold/HoldStartNote.js'
 import { ScratchNote } from './notes/scratch/ScratchNote.js'
 import { SliderFlickNote } from './notes/slider/SliderFlickNote.js'
@@ -34,6 +35,7 @@ export const archetypes = defineArchetypes({
     LightTapNote,
 
     HoldStartNote,
+    HoldMiddleNote,
     HoldEndNote,
     HoldConnector,
 
