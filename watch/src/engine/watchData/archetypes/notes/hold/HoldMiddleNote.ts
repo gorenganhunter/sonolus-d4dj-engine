@@ -18,6 +18,8 @@ export class HoldMiddleNote extends HoldNote {
         // this.spawnTime = Math.min(this.spawnTime, minPrevInputTime)
     }
 
+    drawNote() { }
+
     // touch() {
     //     const id = this.prevSingleSharedMemory.activatedTouchId
     //     if (id) {

@@ -30,6 +30,8 @@ export class HoldMiddleNote extends HoldNote {
         super.updateParallel()
     }
 
+    drawNote() { }
+
     touch() {
         const id = this.prevSingleSharedMemory.activatedTouchId
         const hitbox = this.getHitbox()
