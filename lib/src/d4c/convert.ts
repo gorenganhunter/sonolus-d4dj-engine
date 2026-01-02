@@ -206,7 +206,7 @@ function note(chart: D4CChartData): LevelDataEntity[] {
                 });
         }
 
-        if (Type === D4CNoteType.LongEnd || Type === D4CNoteType.StopEnd || D4CNoteType.LongMiddle) {
+        if (Type === D4CNoteType.LongEnd || Type === D4CNoteType.StopEnd || Type === D4CNoteType.LongMiddle) {
             not.data.push({
                 name: "head",
                 ref: hold.find((note) => note.tail === not.name).head,
